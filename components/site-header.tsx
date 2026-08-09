@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 import { navigation } from "@/lib/site";
 
 export function SiteHeader() {
@@ -6,9 +7,9 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-black/[0.07] bg-background/90 backdrop-blur-xl">
       <div className="container-page flex h-[76px] items-center justify-between gap-5">
         <Link href="/" aria-label="LG Subscribe หน้าแรก" className="group flex shrink-0 items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-full bg-primary text-xs font-bold text-white transition-transform group-hover:rotate-6">LG</span>
+          <BrandLogo alt="LG" className="w-[4.75rem] transition-transform group-hover:scale-[1.03]" />
           <span>
-            <span className="block text-lg font-bold leading-none tracking-[-0.02em] text-neutral-950">LG Subscribe</span>
+            <span className="block text-lg font-bold leading-none tracking-[-0.02em] text-neutral-950">Subscribe</span>
             <span className="mt-1 hidden text-[9px] font-semibold uppercase tracking-[0.22em] text-neutral-400 sm:block">Living made simpler</span>
           </span>
         </Link>

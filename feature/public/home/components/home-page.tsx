@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ContactCta } from "@/components/contact-cta";
 import { GeneratedIcon } from "@/components/generated-icon";
+import { HeroProductShowcase } from "@/components/hero-product-showcase";
 import { ImageFallback } from "@/components/image-fallback";
 import { JsonLd } from "@/components/json-ld";
 import { ProductCard } from "@/components/product-card";
@@ -64,15 +65,7 @@ export function HomePage() {
             </div>
           </div>
 
-          <ImageFallback
-            label="ภาพ Hero เครื่องใช้ไฟฟ้า LG ภายในบ้าน"
-            src="/images/generated/lg-subscribe-home-hero-v2.webp"
-            fallbackSrc="/images/hero-appliances-generated.webp"
-            aspect="portrait"
-            tone="dark"
-            loading="eager"
-            className="relative z-10 max-h-[560px] min-h-[420px]"
-          />
+          <HeroProductShowcase />
 
           <div className="relative z-10 col-span-full grid grid-cols-3 border-y border-white/15">
             {[["เริ่มต้น", "หลักร้อย/เดือน"], ["ระยะสัญญา", "ตามรุ่นและแพ็กเกจ"], ["บริการ", "นัดหมายถึงบ้าน"]].map(([label, value]) => (
@@ -83,7 +76,6 @@ export function HomePage() {
             ))}
           </div>
         </div>
-        <div className="pointer-events-none absolute -right-36 -top-44 size-[520px] rounded-full border-[110px] border-red-600/15" />
       </section>
 
       <section className="border-b border-black/10 bg-white">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 import { navigation, siteConfig } from "@/lib/site";
 
 export function SiteFooter() {
@@ -7,8 +8,10 @@ export function SiteFooter() {
       <div className="container-page grid gap-12 py-16 md:grid-cols-[1.3fr_0.8fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
-            <span className="grid size-10 place-items-center rounded-full bg-primary text-sm font-bold">LG</span>
-            <span className="text-xl font-bold">LG Subscribe</span>
+            <span className="rounded-xl bg-white px-3 py-2">
+              <BrandLogo alt="LG" className="w-[4.5rem]" />
+            </span>
+            <span className="text-xl font-bold">Subscribe</span>
           </div>
           <p className="mt-5 max-w-md text-sm leading-7 text-white/65">
             บริการเช่าใช้เครื่องใช้ไฟฟ้า LG แบบชำระรายเดือน พร้อมทีมดูแลและคำแนะนำก่อนทำสัญญา
@@ -35,18 +38,20 @@ export function SiteFooter() {
           <h2 className="text-base font-semibold">ติดต่อฝ่ายขาย</h2>
           <ul className="mt-4 grid gap-4 text-sm text-white/65">
             <li>
-              <a href={siteConfig.phoneHref} className="flex items-start gap-3 hover:text-white">
-                โทร {siteConfig.phone} ทุกวัน 09:30–20:00 น.
+              <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer" className="flex items-start gap-3 hover:text-white">
+                LINE Official Account {siteConfig.lineId}
               </a>
             </li>
+            {siteConfig.phoneNumbers.map((phone) => (
+              <li key={phone.href}>
+                <a href={phone.href} className="flex items-start gap-3 hover:text-white">
+                  โทร {phone.label}
+                </a>
+              </li>
+            ))}
             <li>
               <a href={`mailto:${siteConfig.email}`} className="flex items-start gap-3 hover:text-white">
                 อีเมล {siteConfig.email}
-              </a>
-            </li>
-            <li>
-              <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer" className="flex items-start gap-3 hover:text-white">
-                ติดต่อ LINE Official Account
               </a>
             </li>
             <li>ให้บริการในประเทศไทย</li>

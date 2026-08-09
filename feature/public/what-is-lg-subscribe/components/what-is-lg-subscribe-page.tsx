@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactCta } from "@/components/contact-cta";
 import { GeneratedIcon } from "@/components/generated-icon";
-import { ImageFallback } from "@/components/image-fallback";
+import { HeroProductShowcase } from "@/components/hero-product-showcase";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,7 +12,6 @@ export const metadata: Metadata = createPageMetadata({
   title: "LG Subscribe คืออะไร ดีไหม คุ้มไหม และเหมาะกับใคร",
   description: "ทำความเข้าใจ LG Subscribe รูปแบบเช่าซื้อรายเดือน ข้อดี ข้อควรรู้ ค่าใช้จ่าย บริการซ่อม และสิ่งที่ต้องอ่านก่อนทำสัญญา",
   path: "/what-is-lg-subscribe/",
-  image: "/images/generated/lg-subscribe-home-hero-v2.webp",
 });
 
 const questions = [
@@ -28,7 +27,11 @@ export default function WhatIsPage() {
     headline: "LG Subscribe คืออะไร ดีไหม คุ้มไหม และเหมาะกับใคร",
     description: metadata.description,
     author: { "@type": "Organization", name: siteConfig.shortName },
-    publisher: { "@type": "Organization", name: siteConfig.shortName },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.shortName,
+      logo: { "@type": "ImageObject", url: `${siteConfig.url}/brand/lg-logo.svg` },
+    },
     mainEntityOfPage: `${siteConfig.url}/what-is-lg-subscribe/`,
   };
 
@@ -43,7 +46,7 @@ export default function WhatIsPage() {
               <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">LG Subscribe คืออะไร ดีไหม และคุ้มกับคุณหรือไม่?</h1>
               <p className="mt-6 text-lg leading-8 text-white/65">สรุปทุกประเด็นที่คนค้นหาบ่อย เพื่อช่วยให้เปรียบเทียบและอ่านสัญญาอย่างเข้าใจก่อนตัดสินใจ</p>
             </div>
-            <ImageFallback label="ภาพอธิบายบริการ LG Subscribe" src="/images/generated/lg-subscribe-home-hero-v2.webp" fallbackSrc="/images/service-showcase-generated.webp" aspect="portrait" tone="dark" className="max-h-[520px]" />
+            <HeroProductShowcase />
           </div>
         </header>
 

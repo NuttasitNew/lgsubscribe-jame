@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { BrandLogo } from "@/components/brand-logo";
 import { LineMark } from "@/components/line-mark";
 import { Button } from "@/components/ui/button";
 import { getCurrentPageLabel } from "@/lib/current-page-label";
@@ -67,9 +68,9 @@ export function MobileDock() {
 
             <SheetHeader className="px-5 pb-5 pt-5 text-left">
               <div className="mb-7 flex items-center gap-3 pr-12">
-                <span className="grid size-11 place-items-center rounded-full bg-primary text-xs font-bold text-white">LG</span>
+                <BrandLogo alt="LG" className="w-[4.25rem]" />
                 <span>
-                  <span className="block text-base font-bold leading-none">LG Subscribe</span>
+                  <span className="block text-base font-bold leading-none">Subscribe</span>
                   <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-400">Life&apos;s Good</span>
                 </span>
               </div>
@@ -96,11 +97,13 @@ export function MobileDock() {
             <div className="mt-auto grid gap-2 border-t border-black/[0.07] bg-white p-4">
               <p className="mb-1 text-xs font-semibold text-neutral-500">ต้องการให้ช่วยเลือกแพ็กเกจ?</p>
               <Button asChild className="h-12 rounded-xl bg-[#06C755] hover:bg-[#05b64d]">
-                <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">แชทกับฝ่ายขายทาง LINE</a>
+                <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">แชทผ่าน LINE {siteConfig.lineId}</a>
               </Button>
-              <Button asChild variant="outline" className="h-12 rounded-xl border-black/10 bg-neutral-950 text-white hover:bg-neutral-800 hover:text-white">
-                <a href={siteConfig.phoneHref}>โทร {siteConfig.phone}</a>
-              </Button>
+              {siteConfig.phoneNumbers.map((phone) => (
+                <Button asChild key={phone.href} variant="outline" className="h-12 rounded-xl border-black/10 bg-neutral-950 text-white hover:bg-neutral-800 hover:text-white">
+                  <a href={phone.href}>โทร {phone.label}</a>
+                </Button>
+              ))}
             </div>
           </SheetContent>
         </Sheet>

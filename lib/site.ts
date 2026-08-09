@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lgsubscribeofficial.com";
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lgsubscribe-jame.vercel.app";
 
 export const siteConfig = {
   name: "LG Subscribe Thailand",
@@ -9,10 +9,13 @@ export const siteConfig = {
   description:
     "เช่าใช้เครื่องใช้ไฟฟ้า LG แบบชำระรายเดือน ไม่กันวงเงินบัตร พร้อมบริการดูแลโดยช่าง LG ถึงบ้านและการคุ้มครองตลอดอายุสัญญา",
   url: rawSiteUrl.replace(/\/$/, ""),
-  phone: "02-124-4888",
-  phoneHref: "tel:+6621244888",
-  lineUrl: "https://lin.ee/Vo7i4Ny",
-  email: "thanon.lgs@lgeth.com",
+  lineId: "@lgsubscribe",
+  lineUrl: "https://line.me/R/ti/p/%40lgsubscribe",
+  phoneNumbers: [
+    { label: "084-974-8429", href: "tel:+66849748429" },
+    { label: "086-551-5949", href: "tel:+66865515949" },
+  ],
+  email: "lgsubscribe.th@gmail.com",
   offerReviewedAt: "9 สิงหาคม 2569",
   keywords: [
     "LG Subscribe",
@@ -123,7 +126,7 @@ export const faqs = [
   {
     question: "สมัครใช้บริการอย่างไร?",
     answer:
-      "เลือกสินค้าที่สนใจ ติดต่อฝ่ายขายผ่าน LINE หรือโทรศัพท์ จากนั้นเจ้าหน้าที่จะอธิบายแพ็กเกจ เอกสาร และขั้นตอนพิจารณาก่อนทำสัญญา",
+      "เลือกสินค้าที่สนใจ แล้วติดต่อฝ่ายขายผ่าน LINE OA @lgsubscribe จากนั้นเจ้าหน้าที่จะอธิบายแพ็กเกจ เอกสาร และขั้นตอนพิจารณาก่อนทำสัญญา",
   },
 ] as const;
 
@@ -131,7 +134,7 @@ export function createPageMetadata({
   title,
   description,
   path,
-  image = "/images/generated/lg-subscribe-home-hero-v2.webp",
+  image = "/brand/lg-logo-social.png",
 }: {
   title: string;
   description: string;

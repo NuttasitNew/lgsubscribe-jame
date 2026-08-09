@@ -32,11 +32,13 @@ export const metadata: Metadata = {
     siteName: siteConfig.shortName,
     title: siteConfig.title,
     description: siteConfig.description,
+    images: [{ url: "/brand/lg-logo-social.png", alt: "LG" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
+    images: ["/brand/lg-logo-social.png"],
   },
   robots: {
     index: true,
@@ -62,28 +64,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     "@id": `${siteConfig.url}/#organization`,
     name: siteConfig.shortName,
     url: siteConfig.url,
+    logo: `${siteConfig.url}/brand/lg-logo.svg`,
     description: siteConfig.description,
-    telephone: siteConfig.phone,
-    contactPoint: {
+    sameAs: [siteConfig.lineUrl],
+    email: siteConfig.email,
+    contactPoint: siteConfig.phoneNumbers.map((phone) => ({
       "@type": "ContactPoint",
-      telephone: siteConfig.phone,
+      telephone: phone.label,
+      url: siteConfig.lineUrl,
       contactType: "sales",
       availableLanguage: ["Thai"],
-      hoursAvailable: {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ],
-        opens: "09:30",
-        closes: "20:00",
-      },
-    },
+    })),
   };
 
   return (
