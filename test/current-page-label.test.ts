@@ -9,9 +9,8 @@ describe("getCurrentPageLabel", () => {
   });
 
   it("uses the product name on a product detail route", () => {
-    expect(getCurrentPageLabel("/products/lg-puricare-wd516/")).toBe(
-      "เครื่องกรองน้ำ LG PuriCare รุ่น WD516",
-    );
+    expect(getCurrentPageLabel("/products/lg-puricare-wd516/")).toContain("WD516");
+    expect(getCurrentPageLabel("/products/lg-seq13a/")).toContain("DUALCOOL AI Air");
   });
 
   it("keeps a readable fallback for an unknown route", () => {

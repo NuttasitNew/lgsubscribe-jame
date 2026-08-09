@@ -99,9 +99,22 @@
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[0.2em] text-primary;
   }
+
+  .home-hero {
+    @apply relative overflow-hidden border-b border-black/[0.06] bg-[#f5f1ec];
+  }
 }
 
 @layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   .text-gradient-red {
     @apply bg-gradient-to-r from-red-800 via-red-600 to-red-500 bg-clip-text text-transparent;
   }

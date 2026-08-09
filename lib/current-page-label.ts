@@ -1,4 +1,4 @@
-import { products } from "@/lib/site";
+import { allProducts } from "@/lib/catalog-products";
 
 const staticPageLabels: Record<string, string> = {
   "/": "หน้าแรก",
@@ -21,9 +21,7 @@ function normalizePathname(pathname: string) {
 
 export function getCurrentPageLabel(pathname: string) {
   const normalizedPathname = normalizePathname(pathname);
-  const currentProduct = products.find(
-    (product) => `/products/${product.slug}` === normalizedPathname,
-  );
+  const currentProduct = allProducts.find((product) => `/products/${product.slug}` === normalizedPathname);
 
   return currentProduct?.name ?? staticPageLabels[normalizedPathname] ?? "หน้าเว็บไซต์";
 }

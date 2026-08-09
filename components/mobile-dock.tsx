@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { BrandLogo } from "@/components/brand-logo";
+import { ArrowRight, Search, X } from "lucide-react";
 import { LineMark } from "@/components/line-mark";
 import { Button } from "@/components/ui/button";
 import { getCurrentPageLabel } from "@/lib/current-page-label";
@@ -32,7 +32,9 @@ const navigationDescriptions: Record<string, string> = {
 };
 
 export function MobileDock() {
-  const currentPageLabel = getCurrentPageLabel(usePathname());
+  const pathname = usePathname();
+  const currentPageLabel = getCurrentPageLabel(pathname);
+  const isProductsPage = pathname === "/products/";
 
   return (
     <div className="fixed inset-x-0 bottom-3 z-50 px-3 pb-[env(safe-area-inset-bottom)] lg:hidden">
@@ -60,35 +62,53 @@ export function MobileDock() {
               <button
                 type="button"
                 aria-label="ปิดเมนู"
-                className="absolute right-4 top-4 z-10 grid size-10 place-items-center rounded-full border border-black/10 bg-white text-xl text-neutral-700 shadow-sm transition hover:bg-neutral-950 hover:text-white"
+                className="absolute right-4 top-4 z-10 grid size-10 place-items-center rounded-[5px] border border-primary/20 bg-white text-primary shadow-sm transition hover:bg-primary/[0.06]"
               >
-                <span aria-hidden="true">×</span>
+                <X className="size-5" aria-hidden="true" />
               </button>
             </SheetClose>
 
             <SheetHeader className="px-5 pb-5 pt-5 text-left">
-              <div className="mb-7 flex items-center gap-3 pr-12">
-                <BrandLogo alt="LG" className="w-[4.25rem]" />
-                <span>
-                  <span className="block text-base font-bold leading-none">Subscribe</span>
-                  <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-400">Life&apos;s Good</span>
-                </span>
+              <div className="mb-7 pr-12">
+                <Image
+                  src="/brand/lg-subscribe-logo-red.png"
+                  alt="LG Subscribe"
+                  width={1620}
+                  height={360}
+                  className="h-auto w-[11rem]"
+                />
               </div>
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">เมนูหลัก</p>
-              <SheetTitle className="mt-2 pb-1 text-3xl font-bold leading-[1.2] tracking-normal text-neutral-950">เลือกข้อมูลที่ต้องการ</SheetTitle>
-              <SheetDescription className="mt-2 text-sm leading-6 text-neutral-500">สินค้า เงื่อนไข และข้อมูลสำคัญก่อนสมัคร</SheetDescription>
+              <SheetTitle className="mt-2 pb-1 text-3xl font-bold leading-[1.2] tracking-normal text-neutral-950">
+                เลือกข้อมูลที่ต้องการ
+              </SheetTitle>
+              <SheetDescription className="mt-2 text-sm leading-6 text-neutral-500">
+                สินค้า เงื่อนไข และข้อมูลสำคัญก่อนสมัคร
+              </SheetDescription>
             </SheetHeader>
 
             <nav className="grid gap-2 px-4 pb-5" aria-label="เมนูมือถือ">
               {navigation.map((item, index) => (
                 <SheetClose asChild key={item.href}>
-                  <Link href={item.href} className="group grid grid-cols-[2.25rem_1fr_auto] items-center gap-3 rounded-2xl border border-black/[0.07] bg-white px-3 py-3 shadow-[0_1px_0_rgba(0,0,0,0.03)] transition hover:border-primary/30 hover:shadow-sm">
-                    <span className="grid size-9 place-items-center rounded-xl bg-primary/[0.08] text-xs font-bold text-primary">0{index + 1}</span>
-                    <span className="min-w-0">
-                      <span className="block text-[15px] font-bold leading-6 text-neutral-900">{item.label}</span>
-                      <span className="block text-xs leading-5 text-neutral-500">{navigationDescriptions[item.href]}</span>
+                  <Link
+                    href={item.href}
+                    className="group grid grid-cols-[2.25rem_1fr_auto] items-center gap-3 rounded-2xl border border-black/[0.07] bg-white px-3 py-3 shadow-[0_1px_0_rgba(0,0,0,0.03)] transition hover:border-primary/30 hover:shadow-sm"
+                  >
+                    <span className="grid size-9 place-items-center rounded-xl bg-primary/[0.08] text-xs font-bold text-primary">
+                      0{index + 1}
                     </span>
-                    <span aria-hidden="true" className="text-lg text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-primary">→</span>
+                    <span className="min-w-0">
+                      <span className="block text-[15px] font-bold leading-6 text-neutral-900">
+                        {item.label}
+                      </span>
+                      <span className="block text-xs leading-5 text-neutral-500">
+                        {navigationDescriptions[item.href]}
+                      </span>
+                    </span>
+                    <ArrowRight
+                      className="size-4 text-primary transition-transform group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
                   </Link>
                 </SheetClose>
               ))}
@@ -97,10 +117,17 @@ export function MobileDock() {
             <div className="mt-auto grid gap-2 border-t border-black/[0.07] bg-white p-4">
               <p className="mb-1 text-xs font-semibold text-neutral-500">ต้องการให้ช่วยเลือกแพ็กเกจ?</p>
               <Button asChild className="h-12 rounded-xl bg-[#06C755] hover:bg-[#05b64d]">
-                <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">แชทผ่าน LINE {siteConfig.lineId}</a>
+                <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
+                  แชทผ่าน LINE {siteConfig.lineId}
+                </a>
               </Button>
               {siteConfig.phoneNumbers.map((phone) => (
-                <Button asChild key={phone.href} variant="outline" className="h-12 rounded-xl border-black/10 bg-neutral-950 text-white hover:bg-neutral-800 hover:text-white">
+                <Button
+                  asChild
+                  key={phone.href}
+                  variant="outline"
+                  className="h-12 border-black/10 bg-neutral-950 text-white hover:bg-neutral-800 hover:text-white"
+                >
                   <a href={phone.href}>โทร {phone.label}</a>
                 </Button>
               ))}
@@ -108,61 +135,117 @@ export function MobileDock() {
           </SheetContent>
         </Sheet>
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <button
-              type="button"
-              className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[1.25rem] bg-primary px-4 text-left text-white transition-colors hover:bg-primary/90"
-              aria-label="เปิดหมวดสินค้าแบบด่วน"
+        {isProductsPage ? (
+          <Link
+            href="#catalog-search"
+            className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[1.25rem] bg-primary px-4 text-left text-white transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+            aria-label="ไปยังช่องค้นหาสินค้า"
+          >
+            <span
+              aria-hidden="true"
+              className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/15"
             >
-              <span aria-hidden="true" className="grid size-9 shrink-0 grid-cols-2 gap-1 rounded-xl bg-white/15 p-2.5">
-                <span className="rounded-[2px] bg-white" /><span className="rounded-[2px] bg-white" />
-                <span className="rounded-[2px] bg-white" /><span className="rounded-[2px] bg-white" />
+              <Search className="size-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[10px] font-medium tracking-normal text-white/65">
+                ค้นหาได้ทันที
               </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[10px] font-medium tracking-normal text-white/65">เลือกหมวดหมู่</span>
-                <span className="block truncate text-sm font-bold">{currentPageLabel}</span>
-              </span>
-              <span aria-hidden="true" className="shrink-0 text-lg">⌃</span>
-            </button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="max-h-[88dvh] w-full overflow-y-auto rounded-t-[2rem] border-t bg-[#f7f5f2] px-4 pb-8 pt-3 sm:max-w-none">
-            <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-neutral-300" />
-            <SheetHeader className="px-2 text-left">
-              <SheetTitle className="text-2xl font-bold">เลือกหมวดสินค้า LG</SheetTitle>
-              <SheetDescription className="mt-1 leading-6">ดูรุ่น รายละเอียด และราคาอ้างอิงก่อนเปิดหน้าสินค้า</SheetDescription>
-            </SheetHeader>
-            <div className="mt-4 grid gap-3">
-              {categories.map(({ category, product }) => (
-                <SheetClose asChild key={category}>
-                  <Link
-                    href={`/products/${product.slug}/`}
-                    className="group grid min-h-24 grid-cols-[5rem_1fr_auto] items-center gap-3 rounded-2xl border border-black/[0.08] bg-white p-3 shadow-[0_1px_0_rgba(0,0,0,0.03)] transition hover:border-primary/30 hover:shadow-sm"
-                  >
-                    <span className="relative block aspect-square w-20 overflow-hidden rounded-xl border border-black/[0.06] bg-white">
-                      <Image src={product.image} alt={`ภาพสินค้า ${product.name}`} fill sizes="80px" className="object-contain p-2" />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-primary">{category}</span>
-                      <span className="mt-1 block text-sm font-bold leading-5 text-neutral-900">{product.name}</span>
-                      <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
-                        <span>{product.model}</span>
-                        <span aria-hidden="true" className="size-1 rounded-full bg-neutral-300" />
-                        <span className="font-semibold text-neutral-700">
-                          {product.monthlyPrice ? `เริ่มต้น ฿${product.monthlyPrice.toLocaleString("th-TH")}/เดือน` : "สอบถามราคาล่าสุด"}
+              <span className="block truncate text-sm font-bold">ชื่อ หมวด หรือรหัสรุ่น</span>
+            </span>
+            <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
+          </Link>
+        ) : (
+          <Sheet>
+            <SheetTrigger asChild>
+              <button
+                type="button"
+                className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[1.25rem] bg-primary px-4 text-left text-white transition-colors hover:bg-primary/90"
+                aria-label="เปิดหมวดสินค้าแบบด่วน"
+              >
+                <span
+                  aria-hidden="true"
+                  className="grid size-9 shrink-0 grid-cols-2 gap-1 rounded-xl bg-white/15 p-2.5"
+                >
+                  <span className="rounded-[2px] bg-white" />
+                  <span className="rounded-[2px] bg-white" />
+                  <span className="rounded-[2px] bg-white" />
+                  <span className="rounded-[2px] bg-white" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[10px] font-medium tracking-normal text-white/65">
+                    เลือกหมวดหมู่
+                  </span>
+                  <span className="block truncate text-sm font-bold">{currentPageLabel}</span>
+                </span>
+                <span aria-hidden="true" className="shrink-0 text-lg">
+                  ⌃
+                </span>
+              </button>
+            </SheetTrigger>
+            <SheetContent
+              side="bottom"
+              className="max-h-[88dvh] w-full overflow-y-auto rounded-t-[2rem] border-t bg-[#f7f5f2] px-4 pb-8 pt-3 sm:max-w-none"
+            >
+              <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-neutral-300" />
+              <SheetHeader className="px-2 text-left">
+                <SheetTitle className="text-2xl font-bold">เลือกหมวดสินค้า LG</SheetTitle>
+                <SheetDescription className="mt-1 leading-6">
+                  ดูรุ่น รายละเอียด และราคาอ้างอิงก่อนเปิดหน้าสินค้า
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-4 grid gap-3">
+                {categories.map(({ category, product }) => (
+                  <SheetClose asChild key={category}>
+                    <Link
+                      href={`/products/${product.slug}/`}
+                      className="group grid min-h-24 grid-cols-[5rem_1fr_auto] items-center gap-3 rounded-2xl border border-black/[0.08] bg-white p-3 shadow-[0_1px_0_rgba(0,0,0,0.03)] transition hover:border-primary/30 hover:shadow-sm"
+                    >
+                      <span className="relative block aspect-square w-20 overflow-hidden rounded-xl border border-black/[0.06] bg-white">
+                        <Image
+                          src={product.image}
+                          alt={`ภาพสินค้า ${product.name}`}
+                          fill
+                          sizes="80px"
+                          className="object-contain p-2"
+                        />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
+                          {category}
+                        </span>
+                        <span className="mt-1 block text-sm font-bold leading-5 text-neutral-900">
+                          {product.name}
+                        </span>
+                        <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
+                          <span>{product.model}</span>
+                          <span aria-hidden="true" className="size-1 rounded-full bg-neutral-300" />
+                          <span className="font-semibold text-neutral-700">
+                            {product.monthlyPrice
+                              ? `เริ่มต้น ฿${product.monthlyPrice.toLocaleString("th-TH")}/เดือน`
+                              : "สอบถามราคาล่าสุด"}
+                          </span>
                         </span>
                       </span>
-                    </span>
-                    <span aria-hidden="true" className="text-lg text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-primary">→</span>
-                  </Link>
-                </SheetClose>
-              ))}
-            </div>
-            <SheetClose asChild>
-              <Link href="/products/" className="mt-3 flex h-12 items-center justify-center rounded-xl bg-neutral-950 text-sm font-bold text-white">ดูสินค้าทั้งหมด</Link>
-            </SheetClose>
-          </SheetContent>
-        </Sheet>
+                      <ArrowRight
+                        className="size-4 text-primary transition-transform group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </SheetClose>
+                ))}
+              </div>
+              <SheetClose asChild>
+                <Link
+                  href="/products/"
+                  className="mt-3 flex h-12 items-center justify-center rounded-[5px] bg-neutral-950 text-sm font-bold text-white"
+                >
+                  ดูสินค้าทั้งหมด
+                </Link>
+              </SheetClose>
+            </SheetContent>
+          </Sheet>
+        )}
 
         <a
           href={siteConfig.lineUrl}
@@ -171,7 +254,10 @@ export function MobileDock() {
           aria-label="แชทกับฝ่ายขายทาง LINE"
           className="group relative grid size-14 shrink-0 place-items-center rounded-full bg-[#06C755] text-white shadow-[0_8px_22px_rgba(6,199,85,0.34)] transition-transform hover:scale-105 active:scale-95"
         >
-          <span aria-hidden="true" className="absolute inset-1 animate-ping rounded-full bg-white/20 [animation-duration:2.5s]" />
+          <span
+            aria-hidden="true"
+            className="absolute inset-1 animate-ping rounded-full bg-white/20 [animation-duration:2.5s]"
+          />
           <LineMark className="relative size-7" />
         </a>
       </div>

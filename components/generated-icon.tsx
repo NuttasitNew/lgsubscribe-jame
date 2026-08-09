@@ -1,4 +1,12 @@
-import Image from "next/image";
+import {
+  CreditCard,
+  FileText,
+  Headset,
+  MessageCircle,
+  ShieldCheck,
+  Truck,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type GeneratedIconProps = {
@@ -9,15 +17,29 @@ type GeneratedIconProps = {
 };
 
 export function GeneratedIcon({ src, alt = "", className, fit = "cover" }: GeneratedIconProps) {
+  const iconMap: Array<[string, LucideIcon]> = [
+    ["monthly-payment", CreditCard],
+    ["protection", ShieldCheck],
+    ["expert-care", Headset],
+    ["consultation", MessageCircle],
+    ["delivery", Truck],
+    ["document", FileText],
+  ];
+  const Icon = iconMap.find(([keyword]) => src.includes(keyword))?.[1] ?? FileText;
+
   return (
-    <span className={cn("relative block size-14 shrink-0 overflow-hidden rounded-2xl bg-[#f5f0e9]", className)}>
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="80px"
-        className={fit === "contain" ? "object-contain p-1" : "object-cover"}
-      />
+    <span
+      role={alt ? "img" : undefined}
+      aria-label={alt || undefined}
+      aria-hidden={alt ? undefined : "true"}
+      data-icon-source={src}
+      data-icon-fit={fit}
+      className={cn(
+        "grid size-14 shrink-0 place-items-center rounded-full border border-primary/20 bg-white text-primary",
+        className,
+      )}
+    >
+      <Icon className="size-6" strokeWidth={1.8} />
     </span>
   );
 }

@@ -3,11 +3,6 @@ import "@fontsource/ibm-plex-sans-thai/400.css";
 import "@fontsource/ibm-plex-sans-thai/500.css";
 import "@fontsource/ibm-plex-sans-thai/600.css";
 import "@fontsource/ibm-plex-sans-thai/700.css";
-import { JsonLd } from "@/components/json-ld";
-import { FloatingLineContact } from "@/components/floating-line-contact";
-import { MobileDock } from "@/components/mobile-dock";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -57,42 +52,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": `${siteConfig.url}/#organization`,
-    name: siteConfig.shortName,
-    url: siteConfig.url,
-    logo: `${siteConfig.url}/brand/lg-logo.svg`,
-    description: siteConfig.description,
-    sameAs: [siteConfig.lineUrl],
-    email: siteConfig.email,
-    contactPoint: siteConfig.phoneNumbers.map((phone) => ({
-      "@type": "ContactPoint",
-      telephone: phone.label,
-      url: siteConfig.lineUrl,
-      contactType: "sales",
-      availableLanguage: ["Thai"],
-    })),
-  };
-
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="th" className="scroll-smooth" data-scroll-behavior="smooth">
-      <body className="min-h-screen bg-background text-foreground antialiased">
-        <JsonLd data={organizationSchema} />
-        <a
-          href="#main-content"
-          className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
-        >
-          ข้ามไปยังเนื้อหาหลัก
-        </a>
-        <SiteHeader />
-        <main id="main-content" className="pb-36 lg:pb-0">{children}</main>
-        <SiteFooter />
-        <FloatingLineContact />
-        <MobileDock />
-      </body>
+      <body className="min-h-screen bg-background text-foreground antialiased">{children}</body>
     </html>
   );
 }

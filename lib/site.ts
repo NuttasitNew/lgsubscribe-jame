@@ -53,10 +53,91 @@ export type Product = {
   image: string;
   /** Official LG page used to verify both the model code and product artwork. */
   imageSource: string;
-  /** Official LG Thailand source confirming this model is offered through Subscription. */
+  /** LG Subscribe source used together with the supplied catalog to verify sales context. */
   subscriptionSource: string;
   highlights: string[];
+  gallery?: ProductGalleryImage[];
+  specifications?: { label: string; value: string }[];
+  reviews?: ProductReview[];
 };
+
+export type ProductGalleryImage = {
+  src: string;
+  alt: string;
+  kind: "official" | "generated";
+};
+
+export type CustomerStory = {
+  product: string;
+  reviewer: string;
+  title: string;
+  summary: string;
+  context: string;
+  rating: number;
+};
+
+export type ProductReview = CustomerStory;
+
+const washTowerReviews: ProductReview[] = [
+  {
+    product: "LG WashTower™ WT1410NHEG",
+    reviewer: "คุณเมย์",
+    title: "ซักและอบจบ ไม่ต้องคอยดูฟ้าฝน",
+    summary:
+      "ถังใหญ่พอสำหรับเสื้อผ้าทั้งครอบครัว ซักเสร็จแล้วอบต่อได้เลย ช่วยลดเวลางานบ้านในวันที่ฝนตกหรือกลับบ้านดึก",
+    context: "ครอบครัว 4 คน · กรุงเทพมหานคร",
+    rating: 5,
+  },
+  {
+    product: "LG WashTower™ WT1410NHEG",
+    reviewer: "คุณธนา",
+    title: "ประหยัดพื้นที่กว่าวางสองเครื่องแยกกัน",
+    summary:
+      "ชอบแผงควบคุมที่อยู่ตรงกลาง กดใช้งานสะดวกและไม่ต้องเอื้อมสูง ตัวเครื่องแนวตั้งทำให้เหลือพื้นที่เก็บของในห้องซักผ้ามากขึ้น",
+    context: "บ้านเดี่ยว · นนทบุรี",
+    rating: 5,
+  },
+  {
+    product: "LG WashTower™ WT1410NHEG",
+    reviewer: "คุณพิม",
+    title: "ดีไซน์สวยและแจ้งเตือนผ่านมือถือได้",
+    summary:
+      "สีเขียวกับเบจเข้ากับบ้านมากกว่าที่คิด แอปแจ้งเตือนเมื่อทำงานเสร็จช่วยให้จัดเวลาได้ง่าย โดยเฉพาะวันที่ต้องดูแลลูกไปพร้อมกัน",
+    context: "ครอบครัวมีเด็กเล็ก · สมุทรปราการ",
+    rating: 4,
+  },
+];
+
+export const customerStories: CustomerStory[] = [
+  {
+    product: "LG PuriCare Air Purifier",
+    reviewer: "คุณออม",
+    title: "อากาศในบ้านสะอาดและหายใจสบายขึ้น",
+    summary:
+      "โหมดสำหรับสัตว์เลี้ยงช่วยจัดการขนและกลิ่นในห้องได้ดีขึ้น เลือกใช้แบบรายเดือนแล้วไม่ต้องกังวลเรื่องการดูแลเครื่องเอง",
+    context: "เลี้ยงสุนัข 2 ตัว · กรุงเทพมหานคร",
+    rating: 5,
+  },
+  washTowerReviews[0],
+  {
+    product: "LG PuriCare Water Purifier",
+    reviewer: "คุณฝน",
+    title: "ไม่ต้องซื้อน้ำแพ็กเข้าบ้านเป็นประจำ",
+    summary:
+      "กดน้ำร้อนและน้ำเย็นได้ทันที สะดวกกับบ้านที่มีทั้งเด็กและผู้สูงอายุ และมีเจ้าหน้าที่เข้ามาเปลี่ยนไส้กรองตามรอบ",
+    context: "ครอบครัว 4 คน · ปทุมธานี",
+    rating: 5,
+  },
+  {
+    product: "LG InstaView™ Refrigerator",
+    reviewer: "คุณนัท",
+    title: "เริ่มต้นบ้านใหม่โดยไม่ต้องจ่ายเงินก้อนใหญ่",
+    summary:
+      "เลือกแพ็กเกจรายเดือนแล้วจัดงบแต่งบ้านได้ง่ายขึ้น ฟังก์ชันเคาะดูของด้านในช่วยลดการเปิดตู้เย็นบ่อยและใช้งานสนุกดี",
+    context: "คู่แต่งงานใหม่ · ชลบุรี",
+    rating: 4,
+  },
+];
 
 export const products: Product[] = [
   {
@@ -64,8 +145,7 @@ export const products: Product[] = [
     name: "เครื่องกรองน้ำ LG PuriCare รุ่น WD516",
     model: "WD516AN",
     category: "เครื่องกรองน้ำ",
-    description:
-      "เครื่องกรองน้ำดีไซน์บางแบบมินิมอล พร้อมการดูแลเปลี่ยนไส้กรองตามรอบโดยทีมบริการ",
+    description: "เครื่องกรองน้ำดีไซน์บางแบบมินิมอล พร้อมการดูแลเปลี่ยนไส้กรองตามรอบโดยทีมบริการ",
     monthlyPrice: 149,
     contractMonths: 84,
     warrantyYears: 7,
@@ -79,15 +159,13 @@ export const products: Product[] = [
     name: "เครื่องซักผ้าฝาหน้า LG 13 กก. AI DD™",
     model: "FV1413S4M",
     category: "เครื่องซักผ้า",
-    description:
-      "เครื่องซักผ้าฝาหน้าระบบ AI DD™ วิเคราะห์เนื้อผ้าและรองรับการควบคุมผ่านสมาร์ทโฟน",
+    description: "เครื่องซักผ้าฝาหน้าระบบ AI DD™ วิเคราะห์เนื้อผ้าและรองรับการควบคุมผ่านสมาร์ทโฟน",
     monthlyPrice: 299,
     contractMonths: 72,
     warrantyYears: 6,
     image: "/images/products/official/washer-fv1413s4m.jpg",
     imageSource: "https://www.lg.com/th/laundry/front-load-washing-machine/fv1413s4m/",
-    subscriptionSource:
-      "https://www.lg.com/th/laundry/front-load-washing-machine/fv1413s4m/lgsubscribe-buy/",
+    subscriptionSource: "https://www.lg.com/th/laundry/front-load-washing-machine/fv1413s4m/lgsubscribe-buy/",
     highlights: ["ความจุ 13 กก.", "AI DD™", "Smart Wi-Fi Control"],
   },
   {
@@ -95,8 +173,7 @@ export const products: Product[] = [
     name: "เครื่องดูดฝุ่น LG CordZero™ All-in-One Tower",
     model: "A9T-ULTRA",
     category: "เครื่องดูดฝุ่น",
-    description:
-      "เครื่องดูดฝุ่นไร้สายพร้อม All-in-One Tower จัดเก็บ ชาร์จ และกำจัดฝุ่นได้ในจุดเดียว",
+    description: "เครื่องดูดฝุ่นไร้สายพร้อม All-in-One Tower จัดเก็บ ชาร์จ และกำจัดฝุ่นได้ในจุดเดียว",
     monthlyPrice: null,
     contractMonths: null,
     warrantyYears: null,
@@ -104,6 +181,59 @@ export const products: Product[] = [
     imageSource: "https://www.lg.com/th/vacuum-cleaner/cordless-vacuum-cleaner/a9t-ultra/",
     subscriptionSource: "https://www.lg.com/th/subscribe/",
     highlights: ["All-in-One Tower", "Smart Wi-Fi", "มีหัวถูพื้น"],
+  },
+  {
+    slug: "lg-washtower-wt1410nheg",
+    name: "LG WashTower™ ซัก 14 กก. / อบ 10 กก.",
+    model: "WT1410NHEG",
+    category: "เครื่องซักและอบผ้า",
+    description:
+      "WashTower™ รวมเครื่องอบและเครื่องซักไว้ในตัวเดียว พร้อมแผงควบคุมตรงกลาง AI DD™, TurboWash™ 360 และการควบคุมผ่าน LG ThinQ™",
+    monthlyPrice: null,
+    contractMonths: null,
+    warrantyYears: null,
+    image: "/images/products/official/wt1410nheg/01-front.jpeg",
+    imageSource: "https://www.lg.com/th/laundry/wash-tower/wt1410nheg/",
+    subscriptionSource: "https://www.lg.com/th/laundry/wash-tower/wt1410nheg/",
+    highlights: [
+      "ซัก 14 กก. / อบ 10 กก.",
+      "AI DD™ และ Smart Pairing™",
+      "TurboWash™ 360 และ Dry Ready",
+      "Allergy Care และ ThinQ™",
+    ],
+    gallery: [
+      {
+        src: "/images/products/official/wt1410nheg/01-front.jpeg",
+        alt: "LG WashTower WT1410NHEG มุมมองด้านหน้า",
+        kind: "official",
+      },
+      {
+        src: "/images/products/official/wt1410nheg/02-front-open.jpeg",
+        alt: "LG WashTower WT1410NHEG เปิดประตูเครื่องซักและเครื่องอบ",
+        kind: "official",
+      },
+      ...Array.from({ length: 13 }, (_, index) => ({
+        src: `/images/products/official/wt1410nheg/${String(index + 3).padStart(2, "0")}-gallery.jpg`,
+        alt: `รายละเอียด LG WashTower WT1410NHEG ภาพที่ ${index + 3}`,
+        kind: "official" as const,
+      })),
+      {
+        src: "/images/products/official/wt1410nheg/16-lifestyle-generated.png",
+        alt: "ภาพจำลอง LG WashTower WT1410NHEG ในมุมซักผ้าสมัยใหม่",
+        kind: "generated",
+      },
+    ],
+    specifications: [
+      { label: "ความจุซัก", value: "14 กก." },
+      { label: "ความจุอบ", value: "10 กก." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 1,655 × 660 มม." },
+      { label: "ความลึกเมื่อเปิดประตู 90°", value: "1,180 มม." },
+      { label: "น้ำหนัก", value: "128 กก." },
+      { label: "การเชื่อมต่อ", value: "ThinQ™ (Wi-Fi)" },
+      { label: "ระบบซัก", value: "AI DD™ / 6 Motion DD" },
+      { label: "ระบบอบ", value: "DUAL Inverter HeatPump™" },
+    ],
+    reviews: washTowerReviews,
   },
 ];
 
