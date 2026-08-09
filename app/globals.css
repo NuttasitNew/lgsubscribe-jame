@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 25% 97%;
+    --foreground: 222 22% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 22% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 22% 10%;
+    --primary: 354 78% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 36 18% 92%;
+    --secondary-foreground: 222 22% 14%;
+    --muted: 34 16% 92%;
+    --muted-foreground: 220 9% 42%;
+    --accent: 354 75% 95%;
+    --accent-foreground: 354 78% 36%;
+    --destructive: 0 74% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 12% 84%;
+    --input: 30 12% 84%;
+    --ring: 354 78% 45%;
+    --radius: 1rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth font-sans;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    @apply bg-primary text-primary-foreground;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
+  }
+
+  .section-space {
+    @apply py-16 sm:py-20 lg:py-24;
+  }
+
+  .page-hero {
+    @apply relative isolate overflow-hidden border-b border-black/10 bg-[#171717] py-16 text-white sm:py-20 lg:py-24;
+    background-image:
+      radial-gradient(circle at 82% 45%, rgb(196 20 46 / 0.16), transparent 34%),
+      linear-gradient(115deg, rgb(255 255 255 / 0.025), transparent 42%);
+  }
+
+  .page-hero > .container-page {
+    @apply relative z-10;
+  }
+
+  .page-hero::before {
+    content: "LG";
+    @apply pointer-events-none absolute right-[4vw] top-1/2 select-none font-black leading-none text-white;
+    font-size: clamp(10rem, 24vw, 23rem);
+    letter-spacing: -0.12em;
+    opacity: 0.035;
+    transform: translateY(-48%);
+  }
+
+  .page-hero::after {
+    content: "";
+    @apply pointer-events-none absolute right-[-9rem] top-1/2 aspect-square w-[clamp(18rem,38vw,34rem)] rounded-full border border-white/[0.07];
+    box-shadow:
+      0 0 0 4.5rem rgb(196 20 46 / 0.035),
+      0 0 0 9rem rgb(196 20 46 / 0.02);
+    transform: translateY(-50%);
+  }
+
+  .editorial-card {
+    @apply rounded-2xl border border-black/10 bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)];
+  }
+
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.2em] text-primary;
+  }
+}
+
+@layer utilities {
+  .text-gradient-red {
+    @apply bg-gradient-to-r from-red-800 via-red-600 to-red-500 bg-clip-text text-transparent;
+  }
+}
