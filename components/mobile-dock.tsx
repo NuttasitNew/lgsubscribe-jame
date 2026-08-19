@@ -73,8 +73,8 @@ export function MobileDock() {
                 <Image
                   src="/brand/lg-subscribe-logo-red.png"
                   alt="LG Subscribe"
-                  width={1620}
-                  height={360}
+                  width={1581}
+                  height={316}
                   className="h-auto w-[11rem]"
                 />
               </div>

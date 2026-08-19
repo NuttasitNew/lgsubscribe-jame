@@ -20,6 +20,39 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## LINE webhook and backoffice
+
+The LINE webhook stores raw events, LINE profiles, messages, chat summaries, and daily activity in Neon Postgres. The backoffice is intentionally available only in local preview mode until real authentication is connected.
+
+1. Pull the Vercel Development environment after connecting the Neon Marketplace resource:
+
+   ```bash
+   npx vercel@latest env pull .env.local --environment=development --yes
+   ```
+
+2. Add `LINE_CHANNEL_SECRET`, `LINE_CHANNEL_ACCESS_TOKEN`, and `BACKOFFICE_DESIGN_PREVIEW=true` to `.env.local`. Never commit their values.
+
+3. Apply database migrations and start the app:
+
+   ```bash
+   npm run db:migrate
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000/backoffice/](http://localhost:3000/backoffice/). After deployment, configure LINE Developers to send events to:
+
+   ```text
+   https://your-domain.example/api/line/webhook/
+   ```
+
+The trailing slash is intentional because this project uses trailing-slash routes. A production backoffice needs an authentication provider before the local-only guard can be removed.
+
+Run the real-database integration test only against a disposable or development database:
+
+```bash
+RUN_DATABASE_INTEGRATION=true npm run test -- test/line-webhook-database.integration.test.ts
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

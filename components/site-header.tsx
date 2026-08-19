@@ -7,7 +7,6 @@ const headerNavigation = [
   ["/", "หน้าแรก"],
   ["/products/", "สินค้า"],
   ["/price/", "โปรโมชัน"],
-  ["/#calculator", "คำนวณค่าใช้จ่าย"],
   ["/#reviews", "คำถามลูกค้า"],
   ["/what-is-lg-subscribe/", "LG Subscribe คืออะไร"],
   ["/authorized/", "เกี่ยวกับเรา"],
@@ -22,8 +21,8 @@ export function SiteHeader() {
           <Image
             src="/brand/lg-subscribe-logo-red.png"
             alt="LG Subscribe"
-            width={1620}
-            height={360}
+            width={1581}
+            height={316}
             preload
             className="h-auto w-[9.75rem] transition-transform group-hover:scale-[1.02] sm:w-[11.5rem]"
           />

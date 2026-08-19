@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
-import { HomeCalculator } from "@/feature/public/home/components/home-calculator";
 import { customerStories, faqs, products } from "@/lib/site";
 
 const categoryCards = [
@@ -71,7 +70,7 @@ const trustItems = [
   [FileText, "ข้อมูลชัดเจน", "ตรวจสอบราคา ระยะสัญญา และข้อยกเว้นก่อนยืนยัน"],
   [Headset, "บริการหลังการขาย", "รับคำแนะนำและนัดหมายบริการกับเจ้าหน้าที่"],
   [House, "ย้ายบ้านไม่ต้องกังวล", "สอบถามเงื่อนไขการย้ายจุดติดตั้งได้ล่วงหน้า"],
-  [ShieldCheck, "มั่นใจ ปลอดภัย", "ข้อมูลสินค้าอ้างอิงจากหน้า LG ประเทศไทย"],
+  [ShieldCheck, "มั่นใจ ปลอดภัย", "ตรวจสอบราคาและรายละเอียดกับเจ้าหน้าที่ก่อนยืนยัน"],
 ] as const;
 
 export function HomePage() {
@@ -124,14 +123,6 @@ export function HomePage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="px-8">
                 <Link href="/price/">เช็กแพ็กเกจและราคา</Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-primary bg-white px-8 text-primary"
-              >
-                <Link href="#calculator">คำนวณค่าใช้จ่าย</Link>
               </Button>
             </div>
           </div>
@@ -223,7 +214,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <HomeCalculator />
 
       <section id="reviews" className="bg-white py-12 sm:py-16">
         <div className="container-page">

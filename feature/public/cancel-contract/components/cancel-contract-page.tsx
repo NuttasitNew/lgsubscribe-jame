@@ -54,7 +54,6 @@ export default function CancelContractPage() {
 
           <div className="mt-12 flex flex-wrap gap-3">
             <Button asChild className="bg-red-600 hover:bg-red-700"><Link href="/contact/">ติดต่อสอบถามเรื่องสัญญา</Link></Button>
-            <Button asChild variant="outline"><a href="https://www.lg.com/th/terms-and-conditions-of-subscription/" target="_blank" rel="noreferrer">อ่านเงื่อนไขฉบับเต็ม <span aria-hidden="true">↗</span></a></Button>
             <Button asChild variant="ghost"><Link href="/terms/">ดูสรุปเงื่อนไขทั้งหมด</Link></Button>
           </div>
         </div>

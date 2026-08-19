@@ -1,0 +1,656 @@
+export type ProductSpecificationItem = {
+  label: string;
+  value: string;
+};
+
+export type ProductSpecificationGroup = {
+  title: string;
+  items: ProductSpecificationItem[];
+};
+
+export type ProductSpecificationRecord = {
+  sourceUrl: string;
+  sourceModel: string;
+  sourceLocale: string;
+  verifiedAt: string;
+  status: "verified" | "unverified";
+  groups: ProductSpecificationGroup[];
+  note?: string;
+};
+
+const VERIFIED_AT = "2026-08-12";
+
+function verifiedRecord(
+  sourceUrl: string,
+  sourceModel: string,
+  items: ProductSpecificationItem[],
+  options: { sourceLocale?: string; note?: string; groupTitle?: string } = {},
+): ProductSpecificationRecord {
+  return {
+    sourceUrl,
+    sourceModel,
+    sourceLocale: options.sourceLocale ?? "th-TH",
+    verifiedAt: VERIFIED_AT,
+    status: "verified",
+    groups: [
+      {
+        title: options.groupTitle ?? "ข้อมูลจำเพาะสำคัญ",
+        items,
+      },
+    ],
+    ...(options.note ? { note: options.note } : {}),
+  };
+}
+
+export const productSpecificationRecords: Record<string, ProductSpecificationRecord> = {
+  SEQ13A: verifiedRecord(
+    "https://www.lg.com/th/air-conditioner-inverter/air-conditioner-with-air-purifier/seq13a/",
+    "SEQ13A",
+    [
+      { label: "ขนาดการทำความเย็น", value: "12,200 BTU" },
+      { label: "กำลังทำความเย็นพิกัด / ต่ำสุด", value: "3,605 / 645 วัตต์" },
+      { label: "กำลังไฟฟ้าพิกัด / ต่ำสุด", value: "1,150 / 200 วัตต์" },
+      { label: "ขนาดเครื่องภายใน (กว้าง × สูง × ลึก)", value: "799 × 307 × 235 มม." },
+      { label: "ขนาดเครื่องภายนอก (กว้าง × สูง × ลึก)", value: "717 × 495 × 230 มม." },
+      { label: "ระดับประหยัดพลังงาน", value: "1 ดาว" },
+      { label: "สารทำความเย็น", value: "R32" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+    { note: "ตารางเทคนิคของ LG ระบุรหัสเครื่องภายในเป็น S3-Q120AKDA" },
+  ),
+  SAQ13A: verifiedRecord(
+    "https://www.lg.com/th/air-conditioner-inverter/energy-saving-air-conditioner/saq13a/",
+    "SAQ13A",
+    [
+      { label: "ขนาดการทำความเย็น", value: "12,000 BTU" },
+      { label: "กำลังทำความเย็นพิกัด / ต่ำสุด", value: "3,517 / 630 วัตต์" },
+      { label: "กำลังไฟฟ้าพิกัด / ต่ำสุด", value: "850 / 200 วัตต์" },
+      { label: "ขนาดเครื่องภายใน (กว้าง × สูง × ลึก)", value: "895 × 307 × 235 มม." },
+      { label: "ขนาดเครื่องภายนอก (กว้าง × สูง × ลึก)", value: "770 × 545 × 288 มม." },
+      { label: "ระดับประหยัดพลังงาน", value: "5 ดาว" },
+      { label: "สารทำความเย็น", value: "R32" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+    { note: "ตารางเทคนิคของ LG ระบุรหัสเครื่องภายในเป็น S3-Q121L1CA" },
+  ),
+  AS10GDBY0: verifiedRecord("https://www.lg.com/th/air-puricare/puricare-360/as10gdby0/", "AS10GDBY0", [
+    { label: "พื้นที่แนะนำ", value: "104.0 ตร.ม." },
+    { label: "ค่า CADR", value: "810 ลบ.ม./ชม." },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "377 × 1,100 × 377 มม." },
+    { label: "น้ำหนัก", value: "20.6 กก." },
+    { label: "กำลังไฟฟ้า", value: "72 วัตต์" },
+    { label: "ระดับเสียงสูง / ต่ำ", value: "53 / 26 เดซิเบล" },
+    { label: "แผ่นกรอง", value: "H13 Dual V-Pet Filter" },
+    { label: "การเชื่อมต่อ", value: "UVnano และ LG ThinQ (Wi-Fi)" },
+  ]),
+  AS65GDBY0: verifiedRecord("https://www.lg.com/th/air-puricare/puricare-360/as65gdby0/", "AS65GDBY0", [
+    { label: "พื้นที่แนะนำ", value: "61.2 ตร.ม." },
+    { label: "ค่า CADR", value: "478 ลบ.ม./ชม." },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "347 × 612 × 347 มม." },
+    { label: "น้ำหนัก", value: "12.5 กก." },
+    { label: "กำลังไฟฟ้า", value: "48 วัตต์" },
+    { label: "ระดับเสียงสูง / ต่ำ", value: "53 / 26 เดซิเบล" },
+    { label: "มอเตอร์พัดลม", value: "BLDC" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  AS55GGSY0: verifiedRecord(
+    "https://www.lg.com/hk_en/puricare-air-care/air-purifier/as55ggsy0/",
+    "AS55GGSY0",
+    [
+      { label: "พื้นที่แนะนำ", value: "52.8 ตร.ม." },
+      { label: "ค่า CADR", value: "411 ลบ.ม./ชม." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "240 × 997 × 240 มม." },
+      { label: "น้ำหนัก", value: "9.3 กก." },
+      { label: "กำลังไฟฟ้า", value: "55 วัตต์" },
+      { label: "ระดับเสียงสูง / ต่ำ", value: "52 / 21 เดซิเบล" },
+      { label: "แผ่นกรอง", value: "H13 V-Pet Filter" },
+      { label: "การเชื่อมต่อ", value: "UVnano และ LG ThinQ (Wi-Fi)" },
+    ],
+    {
+      sourceLocale: "en-HK",
+      note: "อ้างอิงหน้า LG Hong Kong เนื่องจากไม่พบหน้าสินค้าสาธารณะของ LG Thailand สำหรับรหัสเดียวกัน",
+    },
+  ),
+  AS60GHWG0: verifiedRecord("https://www.lg.com/th/air-puricare/puricare-360/as60ghwg0/", "AS60GHWG0", [
+    { label: "พื้นที่แนะนำ", value: "61 ตร.ม." },
+    { label: "ค่า CADR", value: "483 ลบ.ม./ชม." },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "315 × 511 × 315 มม." },
+    { label: "น้ำหนัก", value: "6.75 กก." },
+    { label: "กำลังไฟฟ้า", value: "41 วัตต์" },
+    { label: "ระดับเสียงสูง / ต่ำ", value: "53 / 25 เดซิเบล" },
+    { label: "มอเตอร์พัดลม", value: "BLDC" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  AS25GCBY0: verifiedRecord("https://www.lg.com/th/air-puricare/puricare-aerotower/as25gcby0/", "AS25GCBY0", [
+    { label: "พื้นที่แนะนำ", value: "24.8 ตร.ม." },
+    { label: "ค่า CADR", value: "3.22 ลบ.ม./นาที" },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "710 × 800 × 422 มม." },
+    { label: "น้ำหนัก", value: "11.6 กก." },
+    { label: "กำลังไฟฟ้า", value: "52 วัตต์" },
+    { label: "ระดับเสียงสูง / ต่ำ", value: "52 / 21 เดซิเบล" },
+    { label: "มอเตอร์พัดลม", value: "BLDC" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  AS35GGW10: verifiedRecord("https://www.lg.com/th/air-puricare/puricare-360/as35ggw10/", "AS35GGW10", [
+    { label: "พื้นที่แนะนำ", value: "32 ตร.ม." },
+    { label: "ค่า CADR", value: "250 ลบ.ม./ชม." },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "240 × 500 × 240 มม." },
+    { label: "น้ำหนัก", value: "4.2 กก." },
+    { label: "กำลังไฟฟ้า", value: "35 วัตต์" },
+    { label: "ระดับเสียงสูง / ต่ำ", value: "53 / 25 เดซิเบล" },
+    { label: "มอเตอร์พัดลม", value: "BLDC" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  DD23GMWE1: verifiedRecord("https://www.lg.com/th/dehumidifier/dd23gmwe1/", "DD23GMWE1", [
+    { label: "ความสามารถลดความชื้น", value: "23 ลิตร/วัน" },
+    { label: "ความสามารถที่ 30°C / RH 80%", value: "40 ลิตร/วัน" },
+    { label: "ความจุถังน้ำ", value: "5.0 ลิตร" },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "410 × 640 × 210 มม." },
+    { label: "น้ำหนัก", value: "16.0 กก." },
+    { label: "กำลังไฟฟ้า", value: "379 วัตต์" },
+    { label: "ระดับเสียงสูง / ต่ำ", value: "40 / 34 เดซิเบล" },
+    { label: "ระบบอัจฉริยะ", value: "UVnano และ LG ThinQ (Wi-Fi)" },
+  ]),
+  DFC533FV: verifiedRecord("https://www.lg.com/th/dishwasher/dfc533fv/", "DFC533FV", [
+    { label: "ความจุ", value: "14 ชุดภาชนะ" },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 850 × 600 มม." },
+    { label: "น้ำหนัก", value: "47 กก." },
+    { label: "ระดับเสียง", value: "44 เดซิเบล" },
+    { label: "ปริมาณน้ำต่อรอบ", value: "9.9 ลิตร" },
+    { label: "ระบบล้าง", value: "TrueSteam และ QuadWash" },
+    { label: "ประตูเปิดอัตโนมัติ", value: "ไม่รองรับ" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  DFC335HM: verifiedRecord("https://www.lg.com/th/dishwasher/dfc335hm/", "DFC335HM", [
+    { label: "ความจุ", value: "14 ชุดภาชนะ" },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 850 × 600 มม." },
+    { label: "น้ำหนัก", value: "51 กก." },
+    { label: "ระดับเสียง", value: "41 เดซิเบล" },
+    { label: "ปริมาณน้ำต่อรอบ", value: "9.5 ลิตร" },
+    { label: "ระบบล้าง", value: "TrueSteam และ QuadWash" },
+    { label: "ประตูเปิดอัตโนมัติ", value: "รองรับ" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  MS4295DIS: verifiedRecord(
+    "https://www.lg.com/th/microwave-ovens/solo-microwave/mc4295dis/",
+    "MS4295DIS",
+    [
+      { label: "ประเภท", value: "ไมโครเวฟระบบอุ่นอาหาร" },
+      { label: "ความจุ", value: "42 ลิตร" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "544 × 308 × 432 มม." },
+      { label: "น้ำหนัก", value: "11.0 กก." },
+      { label: "กำลังไมโครเวฟ", value: "1,200 วัตต์" },
+      { label: "กำลังไฟฟ้ารวม", value: "1,350 วัตต์" },
+      { label: "แหล่งจ่ายไฟ", value: "220 โวลต์ / 50 เฮิรตซ์" },
+      { label: "เทคโนโลยี", value: "Smart Inverter และ EasyClean" },
+    ],
+    { note: "URL ของ LG ใช้ slug mc4295dis แต่ชื่อรุ่นและ product schema ระบุ MS4295DIS" },
+  ),
+  X257CMEW: verifiedRecord(
+    "https://www.lg.com/th/refrigerators/side-by-side-refrigerator/gc-x257cmew/",
+    "GC-X257CMEW",
+    [
+      { label: "ความจุรวม", value: "22.4 คิว" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "913 × 1,790 × 735 มม." },
+      { label: "น้ำหนัก", value: "131 กก." },
+      { label: "การใช้พลังงาน", value: "850 กิโลวัตต์-ชั่วโมง/ปี" },
+      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor (BLDC)" },
+      { label: "InstaView", value: "InstaView Door-in-Door" },
+      { label: "ระบบจ่ายน้ำ", value: "ไม่ต้องเดินท่อน้ำ" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  X257CMHW: verifiedRecord(
+    "https://www.lg.com/th/refrigerators/side-by-side-refrigerator/gc-x257cmhw/",
+    "GC-X257CMHW",
+    [
+      { label: "ความจุรวม", value: "635 ลิตร" },
+      { label: "ความจุช่องแช่แข็ง", value: "190 ลิตร" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "913 × 1,790 × 735 มม." },
+      { label: "น้ำหนัก", value: "129 กก." },
+      { label: "การใช้พลังงาน", value: "850 กิโลวัตต์-ชั่วโมง/ปี" },
+      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor (BLDC)" },
+      { label: "ระบบจ่ายน้ำ", value: "ต้องเดินท่อน้ำ" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  L257KQKW: verifiedRecord(
+    "https://www.lg.com/th/refrigerators/side-by-side-refrigerator/gc-l257kqkw/",
+    "GC-L257KQKW",
+    [
+      { label: "ความจุรวม", value: "641 ลิตร (22.6 คิว ตามตารางสเปก)" },
+      { label: "ความจุช่องแช่แข็ง", value: "192 ลิตร" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "913 × 1,790 × 735 มม." },
+      { label: "น้ำหนัก", value: "105 กก." },
+      { label: "การใช้พลังงาน", value: "603 กิโลวัตต์-ชั่วโมง/ปี" },
+      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor (BLDC)" },
+      { label: "ระบบจ่ายน้ำ", value: "ไม่ต้องเดินท่อน้ำ" },
+      { label: "LG ThinQ (Wi-Fi)", value: "ไม่รองรับ" },
+    ],
+    { note: "ชื่อหน้าระบุ 22.4 คิว แต่ตารางสเปกอย่างเป็นทางการระบุ 22.6 คิว / 641 ลิตร" },
+  ),
+  X24FFCRB: verifiedRecord(
+    "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-x24ffcrb/",
+    "GC-X24FFCRB",
+    [
+      { label: "ความจุรวม", value: "642 ลิตร (22.7 คิว ตามตารางสเปก)" },
+      { label: "ความจุช่องแช่แข็ง", value: "246 ลิตร" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "914 × 1,792 × 729 มม." },
+      { label: "น้ำหนัก", value: "149 กก." },
+      { label: "การใช้พลังงาน", value: "800 กิโลวัตต์-ชั่วโมง/ปี" },
+      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor (BLDC)" },
+      { label: "InstaView", value: "InstaView Door-in-Door" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+    { note: "ชื่อหน้าระบุ 22.5 คิว แต่ตารางสเปกอย่างเป็นทางการระบุ 22.7 คิว / 642 ลิตร" },
+  ),
+  G24FFQKB: verifiedRecord(
+    "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-g24ffqkb/",
+    "GC-G24FFQKB",
+    [
+      { label: "ความจุรวม", value: "637 ลิตร (22.5 คิว)" },
+      { label: "ความจุช่องแช่แข็ง", value: "246 ลิตร" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "914 × 1,792 × 733 มม." },
+      { label: "น้ำหนัก", value: "144 กก." },
+      { label: "การใช้พลังงาน", value: "711 กิโลวัตต์-ชั่วโมง/ปี" },
+      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor (BLDC)" },
+      { label: "InstaView", value: "รองรับ" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  S3MFC: verifiedRecord("https://www.lg.com/th/laundry/styler/s3mfc/", "S3MFC", [
+    { label: "ความจุ", value: "เสื้อผ้า 3 ชิ้น + กางเกง 1 ตัว" },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "445 × 1,850 × 585 มม." },
+    { label: "น้ำหนัก", value: "78 กก." },
+    { label: "ระบบดูแลผ้า", value: "TrueSteam" },
+    { label: "ระบบแขวน", value: "Moving Hanger" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  S5G0C: verifiedRecord(
+    "https://www.lg.com/th/laundry/styler/s5goc/",
+    "S5GOC",
+    [
+      { label: "ความจุ", value: "เสื้อผ้า 5 ชิ้น + กางเกง 1 ตัว" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 1,960 × 605 มม." },
+      { label: "น้ำหนัก", value: "100 กก." },
+      { label: "ระบบดูแลผ้า", value: "TrueSteam" },
+      { label: "ระบบแขวน", value: "Moving Hanger" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+    { note: "รหัสทางการของ LG ใช้ตัวอักษร O: S5GOC; รหัส route เดิม S5G0C ใช้เลข 0" },
+  ),
+  QNED86B: verifiedRecord("https://www.lg.com/th/tv-soundbars/qned-evo/55qned86bsa/", "55QNED86BSA", [
+    { label: "ขนาดหน้าจอ", value: "55 นิ้ว" },
+    { label: "ประเภทจอ", value: "4K QNED evo Mini LED" },
+    { label: "ความละเอียด", value: "3,840 × 2,160 พิกเซล" },
+    { label: "อัตรารีเฟรช", value: "120Hz (VRR สูงสุด 144Hz)" },
+    { label: "ช่อง HDMI", value: "4 ช่อง รองรับ 4K 120Hz, eARC, VRR และ ALLM" },
+    { label: "Wi-Fi", value: "Wi-Fi 5" },
+    { label: "Bluetooth", value: "เวอร์ชัน 5.3" },
+    { label: "การใช้พลังงานขณะสแตนด์บาย", value: "ต่ำกว่า 0.5 วัตต์" },
+  ]),
+  QNED80B: verifiedRecord("https://www.lg.com/th/tv-soundbars/qned-evo/55qned80bsa/", "55QNED80BSA", [
+    { label: "ขนาดหน้าจอ", value: "55 นิ้ว" },
+    { label: "ประเภทจอ", value: "4K QNED evo Mini LED" },
+    { label: "ความละเอียด", value: "3,840 × 2,160 พิกเซล" },
+    { label: "อัตรารีเฟรช", value: "60Hz (VRR สูงสุด 60Hz)" },
+    { label: "ช่อง HDMI", value: "3 ช่อง รองรับ eARC และ ALLM" },
+    { label: "Wi-Fi", value: "Wi-Fi 5" },
+    { label: "Bluetooth", value: "เวอร์ชัน 5.3" },
+    { label: "การใช้พลังงานขณะสแตนด์บาย", value: "ต่ำกว่า 0.5 วัตต์" },
+  ]),
+  NU855B: verifiedRecord("https://www.lg.com/th/tv-soundbars/nano-4k-uhd/55nu855bpsa/", "55NU855BPSA", [
+    { label: "ขนาดหน้าจอ", value: "55 นิ้ว" },
+    { label: "ประเภทจอ", value: "NANO 4K UHD" },
+    { label: "ความละเอียด", value: "3,840 × 2,160 พิกเซล" },
+    { label: "อัตรารีเฟรช", value: "60Hz (VRR สูงสุด 60Hz)" },
+    { label: "ช่อง HDMI", value: "3 ช่อง รองรับ eARC และ ALLM" },
+    { label: "Wi-Fi", value: "Wi-Fi 5" },
+    { label: "Bluetooth", value: "เวอร์ชัน 5.3" },
+    { label: "การใช้พลังงานขณะสแตนด์บาย", value: "ต่ำกว่า 0.5 วัตต์" },
+  ]),
+  S95TR: verifiedRecord("https://www.lg.com/th/speakers/home-theater-soundbar/s95tr/", "S95TR", [
+    { label: "ระบบเสียง", value: "9.1.5 แชนแนล" },
+    { label: "กำลังขับรวม", value: "810 วัตต์" },
+    { label: "ขนาดซาวด์บาร์ (กว้าง × สูง × ลึก)", value: "1,250 × 63 × 135 มม." },
+    { label: "ขนาดลำโพงหลัง (กว้าง × สูง × ลึก)", value: "159 × 223 × 142 มม." },
+    { label: "ขนาดซับวูฟเฟอร์ (กว้าง × สูง × ลึก)", value: "201.7 × 407 × 403 มม." },
+    { label: "ช่อง HDMI เข้า / ออก", value: "1 / 1 ช่อง พร้อม eARC" },
+    { label: "การเชื่อมต่อไร้สาย", value: "Wi-Fi" },
+    { label: "รูปแบบเสียง", value: "Dolby Atmos และ DTS:X" },
+  ]),
+  S70TY: verifiedRecord("https://www.lg.com/th/speakers/soundbars/s70ty/", "S70TY", [
+    { label: "ระบบเสียง", value: "3.1.1 แชนแนล" },
+    { label: "กำลังขับรวม", value: "400 วัตต์" },
+    { label: "ขนาดซาวด์บาร์ (กว้าง × สูง × ลึก)", value: "950 × 63 × 115 มม." },
+    { label: "ช่อง HDMI เข้า / ออก", value: "1 / 1 ช่อง" },
+    { label: "HDMI eARC", value: "รองรับ" },
+    { label: "รูปแบบเสียง", value: "Dolby Atmos" },
+  ]),
+  "StandbyME 2": verifiedRecord("https://www.lg.com/th/lifestyle-screens/stanbyme/27lx6tdga/", "27LX6TDGA", [
+    { label: "ขนาดหน้าจอ", value: "27 นิ้ว" },
+    { label: "ความละเอียด", value: "QHD 2,560 × 1,440 พิกเซล" },
+    { label: "อัตรารีเฟรช", value: "60Hz" },
+    { label: "ขนาดจอพร้อมขาตั้ง (กว้าง × สูง × ลึก)", value: "623 × 1,265 × 398 มม." },
+    { label: "น้ำหนักจอพร้อมขาตั้ง", value: "15.2 กก." },
+    { label: "แบตเตอรี่ในตัว", value: "ใช้งานสูงสุด 4 ชั่วโมง" },
+    { label: "พอร์ต", value: "HDMI 1 ช่อง และ USB 3 ช่อง" },
+    { label: "การเชื่อมต่อและระบบ", value: "Wi-Fi 5, Bluetooth 5.1 และ webOS 24" },
+  ]),
+  "A9T-ULTRA": verifiedRecord(
+    "https://www.lg.com/th/vacuum-cleaner/cordless-vacuum-cleaner/a9t-ultra/",
+    "A9T-ULTRA",
+    [
+      { label: "แบตเตอรี่", value: "ลิเธียมไอออน 2 ก้อน" },
+      { label: "เวลาใช้งานสูงสุดต่อแบตเตอรี่", value: "60 นาที (40 นาทีเมื่อใช้หัวดูดไฟฟ้า)" },
+      { label: "เวลาชาร์จ", value: "240 นาที" },
+      { label: "ขนาดตัวเครื่องตามหน้า LG", value: "260 × 1,120 × 270 มม.; 2.9 กก." },
+      { label: "ขนาด All-in-One Tower", value: "255 × 1,009 × 297 มม.; 9.7 กก." },
+      { label: "ความจุถังเก็บฝุ่น", value: "0.44 ลิตร / 0.88 ลิตรเมื่อบีบอัด" },
+      { label: "ความจุถุงเก็บฝุ่นใน Tower", value: "2.5 ลิตร" },
+      { label: "ระบบอัจฉริยะ", value: "Kompressor และ LG ThinQ (Wi-Fi)" },
+    ],
+  ),
+  "A9T-CORE": verifiedRecord(
+    "https://www.lg.com/th/vacuum-cleaner/cordless-vacuum-cleaner/a9t-core/",
+    "A9T-CORE",
+    [
+      { label: "แบตเตอรี่", value: "ลิเธียมไอออน 2 ก้อน" },
+      { label: "เวลาใช้งานสูงสุดต่อแบตเตอรี่", value: "60 นาที (40 นาทีเมื่อใช้หัวดูดไฟฟ้า)" },
+      { label: "เวลาชาร์จ", value: "240 นาที" },
+      { label: "ขนาดตัวเครื่องตามหน้า LG", value: "260 × 270 × 1,120 มม.; 2.9 กก." },
+      { label: "ขนาด All-in-One Tower", value: "255 × 1,009 × 297 มม.; 9.8 กก." },
+      { label: "ความจุถังเก็บฝุ่น", value: "0.44 ลิตร / 0.88 ลิตรเมื่อบีบอัด" },
+      { label: "ความจุถุงเก็บฝุ่นใน Tower", value: "2.5 ลิตร" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  "A9T-LITE": verifiedRecord(
+    "https://www.lg.com/th/vacuum-cleaner/cordless-vacuum-cleaner/a9t-lite/",
+    "A9T-LITE",
+    [
+      { label: "แบตเตอรี่", value: "ลิเธียมไอออน 1 ก้อน" },
+      { label: "เวลาใช้งานสูงสุด", value: "60 นาที (40 นาทีเมื่อใช้หัวดูดไฟฟ้า)" },
+      { label: "เวลาชาร์จ", value: "240 นาที" },
+      { label: "ขนาดตัวเครื่องตามหน้า LG", value: "260 × 270 × 1,120 มม.; 2.9 กก." },
+      { label: "ขนาด All-in-One Tower", value: "255 × 1,009 × 297 มม.; 9.7 กก." },
+      { label: "ความจุถังเก็บฝุ่น", value: "0.44 ลิตร / 0.88 ลิตรเมื่อบีบอัด" },
+      { label: "ความจุถุงเก็บฝุ่นใน Tower", value: "2.5 ลิตร" },
+      { label: "ระบบอัจฉริยะ", value: "Kompressor และ LG ThinQ (Wi-Fi)" },
+    ],
+  ),
+  WT1410NHEG: verifiedRecord(
+    "https://www.lg.com/th/laundry/wash-tower/wt1410nheg/",
+    "WT1410NHEG",
+    [
+      {
+        label: "ความจุซักสูงสุด (ข้อมูลบนหน้า LG ขัดกัน)",
+        value: "ชื่อสินค้า 14 กก. / ตารางสเปก 12 กก. — รอ LG ยืนยัน",
+      },
+      { label: "ความจุอบสูงสุด", value: "10 กก." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 1,655 × 660 มม." },
+      { label: "น้ำหนัก", value: "128 กก." },
+      { label: "ระบบซัก", value: "AI DD และ TurboWash 360" },
+      { label: "ระบบไอน้ำ", value: "Steam" },
+      { label: "ระบบอบ", value: "DUAL Inverter Heat Pump" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+    {
+      note: "หน้า LG มีข้อมูลขัดกัน: ชื่อสินค้าเขียนซัก 14 กก. แต่ตารางเทคนิคระบุซัก 12 กก. จึงแสดงทั้งสองค่าโดยไม่เลือกค่าใดแทน LG; ความจุอบตรงกันที่ 10 กก.",
+    },
+  ),
+  WT2116SHEG: verifiedRecord("https://www.lg.com/th/laundry/wash-tower/wt2116sheg/", "WT2116SHEG", [
+    { label: "ความจุซักสูงสุด", value: "21 กก." },
+    { label: "ความจุอบสูงสุด", value: "16 กก." },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "700 × 1,890 × 770 มม." },
+    { label: "น้ำหนัก", value: "154 กก." },
+    { label: "ระบบซัก", value: "AI DD และ TurboWash 360" },
+    { label: "ระบบไอน้ำ", value: "Steam" },
+    { label: "ระบบอบ", value: "DUAL Inverter Heat Pump" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  WT2520NHEG: verifiedRecord("https://www.lg.com/th/laundry/wash-tower/wt2520nheg/", "WT2520NHEG", [
+    { label: "ความจุซักสูงสุด", value: "25 กก." },
+    { label: "ความจุอบสูงสุด", value: "20 กก." },
+    { label: "ขนาด (กว้าง × สูง × ลึก)", value: "700 × 1,890 × 830 มม." },
+    { label: "น้ำหนัก", value: "160 กก." },
+    { label: "ระบบซัก", value: "AI DD และ TurboWash 360" },
+    { label: "ระบบไอน้ำ", value: "Steam" },
+    { label: "ระบบอบ", value: "DUAL Inverter Heat Pump" },
+    { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+  ]),
+  FV1413H4M: verifiedRecord(
+    "https://www.lg.com/th/laundry/front-load-washing-machine/fv1413h4m/",
+    "FV1413H4M",
+    [
+      { label: "ความจุซัก", value: "13 กก." },
+      { label: "ความจุอบ", value: "8 กก." },
+      { label: "ระบบถนอมผ้า", value: "AI DD" },
+      { label: "ระบบซักเร็ว", value: "TurboWash" },
+      { label: "ระบบไอน้ำ", value: "Steam" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+    {
+      note: "หน้า LG รูปแบบเดิมไม่มีตารางสเปกเต็ม ข้อมูลชุดนี้มาจากชื่อสินค้าและ key features ของรุ่นนี้เท่านั้น",
+    },
+  ),
+  F2520RNTB: verifiedRecord(
+    "https://www.lg.com/th/laundry/front-load-washing-machine/f2520rntb/",
+    "F2520RNTB",
+    [
+      { label: "ความจุซัก", value: "20 กก." },
+      { label: "ความจุอบ", value: "10 กก." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "650 × 780 × 950 มม." },
+      { label: "น้ำหนัก", value: "86 กก." },
+      { label: "ระบบถนอมผ้า", value: "AI DD" },
+      { label: "ระบบไอน้ำ", value: "Steam" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  TX2725AT9G: verifiedRecord(
+    "https://www.lg.com/th/laundry/top-load-washing-machine/tx2725at9g/",
+    "TX2725AT9G",
+    [
+      { label: "ประเภท", value: "เครื่องซักผ้าฝาบน" },
+      { label: "ความจุซักสูงสุด", value: "25 กก." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "686 × 1,092 × 721 มม." },
+      { label: "น้ำหนัก", value: "59 กก." },
+      { label: "ระดับประหยัดพลังงานการซัก", value: "5 ดาว" },
+      { label: "มอเตอร์", value: "Inverter Direct Drive" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  TX2723ST5J: verifiedRecord(
+    "https://www.lg.com/th/laundry/top-load-washing-machine/tx2723st5j/",
+    "TX2723ST5J",
+    [
+      { label: "ประเภท", value: "เครื่องซักผ้าฝาบน" },
+      { label: "ความจุซักสูงสุด", value: "23 กก." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "686 × 1,092 × 721 มม." },
+      { label: "น้ำหนัก", value: "59 กก." },
+      { label: "ระดับประหยัดพลังงานการซัก", value: "5 ดาว" },
+      { label: "มอเตอร์", value: "Inverter Direct Drive" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  RC90V9AV2W: verifiedRecord(
+    "https://www.lg.com/pt/tratamento-roupa/maquinas-de-secar-roupa/rc90v9av2w/",
+    "RC90V9AV2W",
+    [
+      { label: "ความจุอบสูงสุด", value: "9 กก." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 850 × 660 มม." },
+      { label: "น้ำหนัก", value: "57 กก." },
+      { label: "ระบบอบ", value: "DUAL Inverter Heat Pump" },
+      { label: "ระบบทำความสะอาดคอนเดนเซอร์", value: "อัตโนมัติ" },
+      { label: "ระดับเสียง", value: "62 เดซิเบล" },
+    ],
+    {
+      sourceLocale: "pt-PT",
+      note: "คัดและแปลสเปกทั่วไปจากหน้า LG Portugal เนื่องจากไม่พบหน้ารุ่นเดียวกันของ LG Thailand; ไม่แสดงฉลากพลังงาน EU และควรยืนยันรายละเอียดสำหรับตลาดไทยก่อนสั่งซื้อ",
+    },
+  ),
+  WS510SN: verifiedRecord(
+    "https://www.lg.com/th/water-purifiers/ws510sn/",
+    "WS510SN",
+    [
+      { label: "รูปแบบติดตั้ง", value: "แบบตั้งพื้น" },
+      { label: "ความจุถังน้ำเย็น", value: "7.5 ลิตร" },
+      { label: "ระบบกรอง", value: "4 ขั้นตอน" },
+      { label: "ระยะช่องจ่ายน้ำ", value: "270 มม." },
+      { label: "ความจุถาดรองน้ำ", value: "1.9 ลิตร" },
+      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor" },
+      { label: "รับประกันชิ้นส่วนคอมเพรสเซอร์", value: "10 ปี" },
+    ],
+    { note: "หน้า LG รูปแบบเดิมไม่มีตารางสเปกเต็ม ข้อมูลชุดนี้มาจาก key features ของรุ่นนี้เท่านั้น" },
+  ),
+  WD516AN: verifiedRecord(
+    "https://www.lg.com/th/water-purifiers/wd516an-aslplmt/",
+    "WD516AN.ASLPLMT",
+    [
+      { label: "สีของรุ่นอ้างอิง", value: "สีเงิน" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "170 × 419 × 550 มม." },
+      { label: "ปริมาณน้ำที่ตั้งไว้", value: "120 / 250 / 500 / 1,000 มล." },
+      { label: "อุณหภูมิน้ำ", value: "ร้อน / อุณหภูมิห้อง / เย็น" },
+      { label: "ระบบกรอง", value: "UF 4 ขั้นตอน" },
+      { label: "ระบบถัง", value: "Tankless" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+      { label: "รับประกันชิ้นส่วนคอมเพรสเซอร์อินเวอร์เตอร์", value: "10 ปี" },
+    ],
+    { note: "ข้อมูลสีและสเปกผูกกับ variant WD516AN.ASLPLMT ตาม URL ทางการ" },
+  ),
+  WD518AN: verifiedRecord(
+    "https://www.lg.com/th/water-purifiers/wd518an-abgplmt/",
+    "WD518AN.ABGPLMT",
+    [
+      { label: "สีของรุ่นอ้างอิง", value: "Calming Beige" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "168 × 398 × 400 มม." },
+      { label: "ปริมาณน้ำที่ตั้งไว้", value: "120 / 250 / 500 / 1,000 มล." },
+      { label: "อุณหภูมิน้ำ", value: "ร้อน / อุณหภูมิห้อง / เย็น" },
+      { label: "ระบบกรอง", value: "UF 4 ขั้นตอน" },
+      { label: "ระบบถัง", value: "Tankless" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+      { label: "รับประกันชิ้นส่วนคอมเพรสเซอร์อินเวอร์เตอร์", value: "10 ปี" },
+    ],
+    { note: "ข้อมูลสีและสเปกผูกกับ variant WD518AN.ABGPLMT ตาม URL ทางการ" },
+  ),
+  WD110AN: {
+    sourceUrl: "https://www.lg.com/th/subscribe/",
+    sourceModel: "WD110AN",
+    sourceLocale: "th-TH",
+    verifiedAt: VERIFIED_AT,
+    status: "unverified",
+    groups: [],
+    note: "ไม่พบหน้า LG สาธารณะหรือเอกสารสเปกที่ยืนยันรุ่น WD110AN โดยตรง จึงไม่ยืมข้อมูลจาก WD110MN",
+  },
+  WD110MN: verifiedRecord(
+    "https://www.lg.com/th/water-purifiers/wd110mn/",
+    "WD110MN.ABGPLMT",
+    [
+      { label: "สีของรุ่นอ้างอิง", value: "Calming Beige" },
+      { label: "อุณหภูมิน้ำ", value: "อุณหภูมิห้อง" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "132 × 358 × 230 มม." },
+      { label: "ปริมาณน้ำที่ตั้งไว้", value: "120 / 250 / 500 / 1,000 มล." },
+      { label: "ระบบกรอง", value: "UF 4 ขั้นตอน" },
+      { label: "ระบบถัง", value: "Tankless" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+    { note: "ข้อมูลสีและสเปกผูกกับ variant WD110MN.ABGPLMT ที่หน้า LG ระบุ" },
+  ),
+  "32GS95UV-B": verifiedRecord("https://www.lg.com/th/monitors/gaming/32gs95uv-b/", "32GS95UV-B", [
+    { label: "ขนาดหน้าจอ", value: "31.5 นิ้ว" },
+    { label: "ประเภทพาเนล", value: "OLED" },
+    { label: "ความละเอียด", value: "3,840 × 2,160 พิกเซล" },
+    { label: "อัตรารีเฟรชสูงสุด", value: "240Hz" },
+    { label: "เวลาตอบสนอง", value: "0.03 มิลลิวินาที (GtG)" },
+    { label: "ขอบเขตสี", value: "DCI-P3 98.5% (Typ.)" },
+    { label: "พอร์ตภาพ", value: "HDMI 2 ช่อง และ DisplayPort 1 ช่อง" },
+  ]),
+  "27GX790A-B": verifiedRecord("https://www.lg.com/th/monitors/gaming/27gx790a-b/", "27GX790A-B", [
+    { label: "ขนาดหน้าจอ", value: "26.5 นิ้ว" },
+    { label: "ประเภทพาเนล", value: "OLED" },
+    { label: "ความละเอียด", value: "2,560 × 1,440 พิกเซล" },
+    { label: "อัตรารีเฟรชสูงสุด", value: "480Hz" },
+    { label: "เวลาตอบสนอง", value: "0.03 มิลลิวินาที (GtG)" },
+    { label: "ขอบเขตสี", value: "DCI-P3 98.5% (Typ.)" },
+    { label: "พอร์ตภาพ", value: "HDMI 2 ช่อง และ DisplayPort 1 ช่อง" },
+  ]),
+  "34WR50QK-B": verifiedRecord("https://www.lg.com/th/monitors/ultrawide/34wr50qk-b/", "34WR50QK-B", [
+    { label: "ขนาดหน้าจอ", value: "34 นิ้ว" },
+    { label: "รูปแบบหน้าจอ", value: "Curved UltraWide อัตราส่วน 21:9" },
+    { label: "ความละเอียด", value: "3,440 × 1,440 พิกเซล" },
+    { label: "อัตรารีเฟรชสูงสุด", value: "100Hz" },
+    { label: "เวลาตอบสนอง", value: "5 มิลลิวินาที (GtG at Faster)" },
+    { label: "ขอบเขตสี", value: "sRGB 99% (Typ.)" },
+    { label: "ความโค้ง", value: "1800R" },
+    { label: "พอร์ตภาพ", value: "HDMI 2 ช่อง และ DisplayPort 1 ช่อง" },
+  ]),
+  "32SR85U-W": verifiedRecord("https://www.lg.com/th/monitors/smart-monitors/32sr85u-w/", "32SR85U-W", [
+    { label: "ขนาดหน้าจอ", value: "32 นิ้ว" },
+    { label: "ประเภทพาเนล", value: "4K UHD IPS" },
+    { label: "ความละเอียด", value: "3,840 × 2,160 พิกเซล" },
+    { label: "เวลาตอบสนอง", value: "5 มิลลิวินาที" },
+    { label: "ระบบ Smart Monitor", value: "webOS" },
+    { label: "พอร์ต", value: "HDMI 2 ช่อง และ USB-C สำหรับข้อมูล/ภาพ" },
+    { label: "USB-C Power Delivery", value: "90 วัตต์" },
+    { label: "กล้อง", value: "เว็บแคม Full HD" },
+  ]),
+  "32U889SA": verifiedRecord("https://www.lg.com/th/monitors/smart-monitors/32u889sa-w/", "32U889SA-W", [
+    { label: "ขนาดหน้าจอ", value: "31.5 นิ้ว" },
+    { label: "ประเภทพาเนล", value: "IPS แบบสัมผัส" },
+    { label: "ความละเอียด", value: "3,840 × 2,160 พิกเซล" },
+    { label: "อัตรารีเฟรช / เวลาตอบสนอง", value: "60Hz / 5 มิลลิวินาที (GtG)" },
+    { label: "ขอบเขตสี", value: "DCI-P3 95% (Typ.)" },
+    { label: "พอร์ต", value: "HDMI 2 ช่อง และ USB-C 3 ช่อง" },
+    { label: "USB-C Power Delivery", value: "65 วัตต์" },
+    { label: "การเชื่อมต่อและขาตั้ง", value: "Wi-Fi, Bluetooth และ Swing Stand แบบมีล้อ" },
+  ]),
+  "24U421A-B": verifiedRecord("https://www.lg.com/th/monitors/fhd-qhd/24u421a-b/", "24U421A-B", [
+    { label: "ขนาดหน้าจอ", value: "23.8 นิ้ว" },
+    { label: "รูปแบบหน้าจอ", value: "จอโค้ง อัตราส่วน 16:9" },
+    { label: "ความละเอียด", value: "1,920 × 1,080 พิกเซล" },
+    { label: "อัตรารีเฟรชสูงสุด", value: "100Hz" },
+    { label: "เวลาตอบสนอง", value: "5 มิลลิวินาที (GtG at Faster)" },
+    { label: "ขอบเขตสี", value: "sRGB 99% (Typ.)" },
+    { label: "พอร์ต", value: "HDMI 1 ช่อง และ USB-C 1 ช่อง" },
+    { label: "USB-C Power Delivery", value: "15 วัตต์" },
+  ]),
+  FV1413S4M: verifiedRecord(
+    "https://www.lg.com/th/laundry/front-load-washing-machine/fv1413s4m/",
+    "FV1413S4M",
+    [
+      { label: "ประเภท", value: "เครื่องซักผ้าฝาหน้า" },
+      { label: "ความจุซักสูงสุด", value: "13 กก." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 850 × 615 มม." },
+      { label: "น้ำหนัก", value: "73 กก." },
+      { label: "ระบบถนอมผ้า", value: "AI DD" },
+      { label: "ระบบซัก", value: "TurboWash และ Steam" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+};
+
+function normalizeModel(model: string) {
+  return model.trim().toUpperCase().replace(/\s+/g, " ");
+}
+
+const productSpecificationModelLookup = new Map<string, string>();
+
+for (const [catalogModel, record] of Object.entries(productSpecificationRecords)) {
+  productSpecificationModelLookup.set(normalizeModel(catalogModel), catalogModel);
+  productSpecificationModelLookup.set(normalizeModel(record.sourceModel), catalogModel);
+}
+
+for (const [alias, catalogModel] of Object.entries({
+  "WD516AN.ASLPLMT": "WD516AN",
+  "WD518AN.ABGPLMT": "WD518AN",
+  "WD110MN.ABGPLMT": "WD110MN",
+  STANBYME2: "StandbyME 2",
+  "STANBYME 2": "StandbyME 2",
+})) {
+  productSpecificationModelLookup.set(normalizeModel(alias), catalogModel);
+}
+
+export function getProductSpecificationRecord(model: string) {
+  const catalogModel = productSpecificationModelLookup.get(normalizeModel(model));
+  return catalogModel ? productSpecificationRecords[catalogModel] : undefined;
+}

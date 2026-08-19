@@ -16,7 +16,10 @@ describe("LG Thailand Subscription catalog", () => {
 
     expect(washTower?.gallery).toHaveLength(16);
     expect(washTower?.gallery?.filter((image) => image.kind === "official")).toHaveLength(15);
-    expect(washTower?.specifications).toContainEqual({ label: "ความจุซัก", value: "14 กก." });
+    expect(washTower?.specifications).toContainEqual({
+      label: "ความจุซัก (ข้อมูลบนหน้า LG ขัดกัน)",
+      value: "ชื่อสินค้า 14 กก. / ตารางสเปก 12 กก. — รอ LG ยืนยัน",
+    });
     expect(washTower?.reviews).toHaveLength(3);
     expect(washTower?.reviews?.every((review) => review.rating >= 4)).toBe(true);
   });

@@ -1,7 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Clock3, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { navigation, siteConfig } from "@/lib/site";
+import { siteConfig } from "@/lib/site";
+
+const footerNavigation = [
+  { href: "/", label: "หน้าแรก" },
+  { href: "/contact/", label: "ติดต่อเรา" },
+  { href: "/price/", label: "ราคาและโปรโมชัน" },
+  { href: "/payment-options/", label: "ช่องทางชำระเงิน" },
+] as const;
 
 export function SiteFooter() {
   return (
@@ -12,8 +19,8 @@ export function SiteFooter() {
             <Image
               src="/brand/lg-subscribe-logo-red.png"
               alt="LG Subscribe"
-              width={1620}
-              height={360}
+              width={1581}
+              height={316}
               className="h-auto w-[12rem]"
             />
           </Link>
@@ -25,28 +32,13 @@ export function SiteFooter() {
         <div>
           <h2 className="text-base font-semibold">เมนูเว็บไซต์</h2>
           <ul className="mt-4 grid gap-3 text-sm text-white/65">
-            {navigation.map((item) => (
+            {footerNavigation.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="hover:text-white">
                   {item.label}
                 </Link>
               </li>
             ))}
-            <li>
-              <Link href="/price/" className="hover:text-white">
-                ราคาและโปรโมชัน
-              </Link>
-            </li>
-            <li>
-              <Link href="/payment-options/" className="hover:text-white">
-                ช่องทางชำระเงิน
-              </Link>
-            </li>
-            <li>
-              <Link href="/cancel-contract/" className="hover:text-white">
-                การยกเลิกสัญญา
-              </Link>
-            </li>
           </ul>
         </div>
 

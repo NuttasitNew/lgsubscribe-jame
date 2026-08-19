@@ -5,11 +5,13 @@ import { ContactCta } from "@/components/contact-cta";
 import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { ProductGallery } from "@/feature/public/products/components/product-gallery";
+import { ProductSpecifications } from "@/feature/public/products/components/product-specifications";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { allProducts } from "@/lib/catalog-products";
 import { getProductKnowledgeGuide } from "@/lib/product-knowledge";
+import { getProductSpecificationRecord } from "@/lib/product-specifications";
 import { createPageMetadata, siteConfig } from "@/lib/site";
 
 type ProductPageProps = { params: Promise<{ slug: string }> };
@@ -39,16 +41,29 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = allProducts.find((item) => item.slug === slug);
   if (!product) notFound();
+  const specificationRecord = getProductSpecificationRecord(product.model);
+  const structuredSpecifications =
+    specificationRecord?.status === "verified"
+      ? specificationRecord.groups.flatMap((group) =>
+          group.items.map((item) => ({
+            "@type": "PropertyValue",
+            name: `${group.title} - ${item.label}`,
+            value: item.value,
+          })),
+        )
+      : [];
 
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    model: product.model,
+    model: specificationRecord?.sourceModel ?? product.model,
+    mpn: specificationRecord?.sourceModel ?? product.model,
     category: product.category,
     image: (product.gallery ?? [{ src: product.image }]).map((item) => `${siteConfig.url}${item.src}`),
     description: product.description,
     brand: { "@type": "Brand", name: "LG" },
+    ...(structuredSpecifications.length ? { additionalProperty: structuredSpecifications } : {}),
     ...(product.reviews?.length
       ? {
           aggregateRating: {
@@ -182,15 +197,10 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                 ))}
               </ul>
 
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-9">
                 <Button asChild size="lg" className="rounded-full bg-red-600 px-7 hover:bg-red-700">
                   <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
                     สอบถามรุ่นนี้
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="rounded-full px-7">
-                  <a href={product.imageSource} target="_blank" rel="noreferrer">
-                    ดูข้อมูลต้นฉบับที่ LG ↗
                   </a>
                 </Button>
               </div>
@@ -199,31 +209,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         </div>
       </section>
 
-      {product.specifications?.length ? (
-        <section className="section-space border-y border-black/10 bg-[#e7ebe5]">
-          <div className="container-page grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#315247]">
-                {product.model} at a glance
-              </p>
-              <h2 className="mt-4 text-3xl font-bold leading-tight text-neutral-950 sm:text-4xl">
-                สเปกสำคัญสำหรับวางแผนพื้นที่และการใช้งาน
-              </h2>
-              <p className="mt-5 leading-7 text-neutral-600">
-                ตรวจวัดประตู ทางเดิน พื้นที่ติดตั้ง และระยะใช้งานจริงก่อนยืนยันคำสั่งซื้อ
-                เนื่องจากรายละเอียดอุปกรณ์และบริการอาจต่างกันตามแพ็กเกจ
-              </p>
-            </div>
-            <dl className="grid overflow-hidden rounded-2xl border border-black/10 bg-white sm:grid-cols-2">
-              {product.specifications.map((specification) => (
-                <div key={specification.label} className="border-b border-black/10 p-6 sm:border-r">
-                  <dt className="text-sm text-neutral-500">{specification.label}</dt>
-                  <dd className="mt-2 text-lg font-bold text-neutral-950">{specification.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
+      {specificationRecord ? (
+        <ProductSpecifications model={product.model} record={specificationRecord} />
       ) : null}
 
       {knowledgeGuide ? (

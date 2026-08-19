@@ -53,7 +53,6 @@ export default function AuthorizedPage() {
             </ul>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild className="bg-red-600 hover:bg-red-700"><a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">ยืนยันกับเจ้าหน้าที่</a></Button>
-              <Button asChild variant="outline"><a href="https://www.lg.com/th/subscribe/" target="_blank" rel="noreferrer">ดูข้อมูลจาก LG Thailand <span aria-hidden="true">↗</span></a></Button>
             </div>
           </div>
         </div>

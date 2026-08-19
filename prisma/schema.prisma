@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum LineWebhookStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+// LINE identity is deliberately separate from future customer/application
+// records. A person can follow or message the OA before sharing business data.
+model LineUser {
+  userLineId           String    @id
+  displayName          String
+  pictureUrl           String?
+  statusMessage        String?
+  language             String?
+  isFollowing          Boolean   @default(false)
+  followStateChangedAt DateTime?
+  followedAt           DateTime?
+  unfollowedAt         DateTime?
+  profileSyncedAt      DateTime?
+  lastSeenAt           DateTime
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  messages      LineMessage[]
+  threads       LineChatThread[]
+  dailyActivity LineDailyActivity[]
+
+  @@index([isFollowing])
+  @@index([lastSeenAt(sort: Desc)])
+}
+
+// Durable idempotency and audit record for every event accepted from LINE.
+model LineWebhookEvent {
+  id             String            @id @default(uuid())
+  webhookEventId String            @unique
+  destination    String
+  eventType      String
+  eventData      Json
+  timestamp      BigInt
+  status         LineWebhookStatus @default(PENDING)
+  attemptCount   Int               @default(1)
+  processedAt    DateTime?
+  errorMessage   String?           @db.Text
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  message LineMessage?
+
+  @@index([status, updatedAt])
+  @@index([eventType, timestamp(sort: Desc)])
+}
+
+// Normalized/searchable message plus the complete LINE message object.
+model LineMessage {
+  lineMessageId    String   @id
+  webhookEventId   String   @unique
+  messageType      String
+  sourceType       String
+  sourceUserId     String?
+  sourceGroupId    String?
+  sourceRoomId     String?
+  replyToken       String?
+  text             String?  @db.Text
+  messageData      Json
+  timestamp        BigInt
+  contentUpdatedAt BigInt?
+  isRedelivery     Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  webhookEvent LineWebhookEvent @relation(fields: [webhookEventId], references: [webhookEventId], onDelete: Cascade)
+  user         LineUser?        @relation(fields: [sourceUserId], references: [userLineId], onDelete: SetNull)
+
+  @@index([sourceUserId, timestamp(sort: Desc)])
+  @@index([sourceGroupId, timestamp(sort: Desc)])
+  @@index([messageType, timestamp(sort: Desc)])
+}
+
+// Durable privacy tombstone so an unsend that arrives before a redelivered
+// message still prevents that message body from being stored later.
+model LineUnsentMessage {
+  lineMessageId        String   @id
+  unsendWebhookEventId String   @unique
+  unsentAt             DateTime
+  createdAt            DateTime @default(now())
+}
+
+// Latest edit received before its original message. LINE may deliver edit
+// webhooks out of order, so this is applied when the original arrives later.
+model LinePendingMessageEdit {
+  lineMessageId  String   @id
+  webhookEventId String   @unique
+  text           String?  @db.Text
+  messageData    Json
+  editedAt       BigInt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// Fast chat-list projection. Messages and raw events remain the source of truth.
+model LineChatThread {
+  threadKey       String    @id
+  sourceType      String
+  lineUserId      String?
+  groupId         String?
+  roomId          String?
+  lastMessageId   String?
+  lastMessageText String?   @db.Text
+  lastMessageAt   DateTime?
+  unreadCount     Int       @default(0)
+  totalMessages   Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user LineUser? @relation(fields: [lineUserId], references: [userLineId], onDelete: SetNull)
+
+  @@index([lastMessageAt(sort: Desc)])
+  @@index([lineUserId])
+}
+
+// One row per LINE user per UTC day for inexpensive operational reporting.
+model LineDailyActivity {
+  id             String   @id @default(uuid())
+  activityDate   DateTime @db.Date
+  userLineId     String
+  firstEventType String
+  lastEventType  String
+  firstEventAt   DateTime
+  lastEventAt    DateTime
+  messageCount   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user LineUser @relation(fields: [userLineId], references: [userLineId], onDelete: Cascade)
+
+  @@unique([activityDate, userLineId])
+  @@index([activityDate(sort: Desc)])
+}

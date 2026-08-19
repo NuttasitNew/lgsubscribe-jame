@@ -57,12 +57,6 @@ export default function TermsPage() {
               <div>
                 <h2 className="text-2xl font-bold text-amber-950">หน้านี้เป็นคำอธิบาย ไม่ใช่ตัวสัญญา</h2>
                 <p className="mt-3 leading-8 text-amber-950/75">ราคาหรือเงื่อนไขสามารถเปลี่ยนแปลงได้ และแบบฟอร์มคำสั่งซื้อเป็นส่วนหนึ่งของสัญญา ให้ยึดเอกสารที่ออกในวันที่สมัครเป็นหลัก</p>
-                <Button asChild variant="link" className="mt-4 h-auto p-0 text-amber-900">
-                  <a href="https://www.lg.com/th/terms-and-conditions-of-subscription/" target="_blank" rel="noreferrer">
-                    เปิดเงื่อนไขฉบับเต็มจาก LG Thailand
-                    <span aria-hidden="true">↗</span>
-                  </a>
-                </Button>
               </div>
             </div>
           </div>

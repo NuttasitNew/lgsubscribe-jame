@@ -61,7 +61,7 @@ export default function PaymentOptionsPage() {
 
           <div className="mt-12 flex flex-wrap gap-3">
             <Button asChild className="bg-red-600 hover:bg-red-700"><Link href="/application-guide/">ดูเอกสารและขั้นตอนสมัคร</Link></Button>
-            <Button asChild variant="outline"><a href="https://www.lg.com/th/subscribe/promotions/" target="_blank" rel="noreferrer">ตรวจ FAQ จาก LG Thailand <span aria-hidden="true">↗</span></a></Button>
+            <Button asChild variant="outline"><Link href="/faq/">ดูคำถามที่พบบ่อย</Link></Button>
           </div>
         </div>
       </section>

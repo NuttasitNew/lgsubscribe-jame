@@ -210,9 +210,9 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     officialUrl: "https://www.lg.com/th/vacuum-cleaner/cordless-vacuum-cleaner/a9t-lite/",
   },
   WT1410NHEG: {
-    name: "WashTower ซักผ้า 14 กก. และอบผ้า 10 กก. รุ่น WT1410NHEG ระบบ AI DD™ พร้อม Smart WI-FI control ควบคุมสั่งงานผ่านสมาร์ทโฟน",
+    name: "LG WashTower™ รุ่น WT1410NHEG พร้อม AI DD™ และ Smart Wi-Fi Control",
     description:
-      "เครื่องซักอบผ้า Wash Tower ความจุซัก 14 กก./อบ 10 กก รุ่น WT1410NHEG ดีไซน์สวยหรูประหยัดพื้นที่ ซักอบจบที่เดียว แผงควบคุมกดได้สะดวก ซื้อและดูรายละเอียดที่นี่",
+      "WashTower™ รวมเครื่องซักและเครื่องอบไว้ในดีไซน์แนวตั้ง พร้อมแผงควบคุมตรงกลาง AI DD™, TurboWash™ 360 และการควบคุมผ่าน LG ThinQ™",
     image: "/images/products/lg-catalog/wt1410nheg.jpg",
     officialUrl: "https://www.lg.com/th/laundry/wash-tower/wt1410nheg/",
   },
@@ -288,7 +288,8 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
   },
   WD110AN: {
     name: "เครื่องกรองน้ำ LG PuriCare รุ่น WD110AN",
-    description: "เครื่องกรองน้ำ LG PuriCare รุ่น WD110AN สำหรับน้ำอุณหภูมิห้อง ดีไซน์สีเบจขนาดกะทัดรัด",
+    description:
+      "เครื่องกรองน้ำ LG PuriCare รุ่น WD110AN ตามรายการผลิตภัณฑ์ LG Subscribe โดยรายละเอียดทางเทคนิคอยู่ระหว่างยืนยันรหัสรุ่นกับ LG",
     image: "/images/products/lg-catalog/wd110an.jpg",
     officialUrl: "https://www.lg.com/th/subscribe/",
   },
@@ -351,9 +352,7 @@ export const catalogProducts: Product[] = productKnowledgeGuides.flatMap((guide)
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "")}`;
-    const modelNote = source.officialModel
-      ? ` หน้า LG ใช้รหัสสินค้า ${source.officialModel} สำหรับภาพและรายละเอียดอ้างอิงนี้`
-      : "";
+    const modelNote = source.officialModel ? ` รหัสสินค้าที่เกี่ยวข้อง ${source.officialModel}` : "";
 
     return {
       slug,
@@ -369,7 +368,7 @@ export const catalogProducts: Product[] = productKnowledgeGuides.flatMap((guide)
       subscriptionSource: "https://www.lg.com/th/subscribe/",
       highlights: guide.highlights.slice(0, 4),
       specifications: source.officialModel
-        ? [{ label: "รหัสบนหน้า LG", value: source.officialModel }]
+        ? [{ label: "รหัสสินค้าเพิ่มเติม", value: source.officialModel }]
         : featuredProduct?.specifications,
       gallery: featuredProduct?.gallery,
       reviews: featuredProduct?.reviews,

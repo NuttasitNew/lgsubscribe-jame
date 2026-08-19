@@ -1,5 +1,4 @@
 import {
-  ArrowUpRight,
   CalendarDays,
   Check,
   Circle,
@@ -13,42 +12,27 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
-
-const pipeline = [
-  { label: "รับคำถาม", detail: "รอ LINE webhook", state: "waiting" },
-  { label: "วิเคราะห์", detail: "จัดกลุ่มความต้องการ", state: "locked" },
-  { label: "ร่างบทความ", detail: "OpenAI + SEO", state: "locked" },
-  { label: "ตรวจเผยแพร่", detail: "รอผู้ดูแลอนุมัติ", state: "locked" },
-] as const;
-
-const questions = [
-  { question: "เครื่องซักผ้ารุ่นไหนเหมาะกับครอบครัว 4 คน", group: "เลือกสินค้า", count: 12 },
-  { question: "เช่าเครื่องฟอกอากาศรวมเปลี่ยนไส้กรองไหม", group: "บริการหลังการขาย", count: 8 },
-  { question: "ตู้เย็นแบบรายเดือนต่างจากผ่อนอย่างไร", group: "เงื่อนไขบริการ", count: 6 },
-] as const;
-
-const articles = [
-  {
-    title: "เลือกเครื่องซักผ้าสำหรับครอบครัว 4 คน ต้องดูอะไรบ้าง",
-    keyword: "เครื่องซักผ้าครอบครัว 4 คน",
-    status: "รอตรวจ",
-    updated: "ฉบับร่างตัวอย่าง",
-  },
-  {
-    title: "เช่าเครื่องฟอกอากาศรายเดือน รวมบริการอะไรบ้าง",
-    keyword: "เช่าเครื่องฟอกอากาศ",
-    status: "กำลังค้นคว้า",
-    updated: "ข้อมูลตัวอย่าง",
-  },
-] as const;
+import type { BackofficeLineOverview } from "@/feature/backoffice/get-line-dashboard";
 
 const navItems = [
   { label: "ภาพรวม", icon: LayoutDashboard, active: true },
-  { label: "คำถามลูกค้า", icon: MessageCircle, active: false },
+  { label: "ผู้ใช้ LINE", icon: MessageCircle, active: false },
+  { label: "ข้อความ LINE", icon: Inbox, active: false },
   { label: "บทความ", icon: FileText, active: false },
   { label: "คำค้นหา", icon: Search, active: false },
   { label: "ตั้งค่าระบบ", icon: Settings, active: false },
 ] as const;
+
+const bangkokDateTime = new Intl.DateTimeFormat("th-TH", {
+  timeZone: "Asia/Bangkok",
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+const bangkokDate = new Intl.DateTimeFormat("th-TH", {
+  timeZone: "Asia/Bangkok",
+  dateStyle: "long",
+});
 
 function SectionHeading({
   id,
@@ -74,7 +58,24 @@ function SectionHeading({
   );
 }
 
-export function BackofficeDashboard() {
+export function BackofficeDashboard({ lineOverview }: { lineOverview: BackofficeLineOverview }) {
+  const pipeline = [
+    {
+      label: "รับ LINE webhook",
+      detail: lineOverview.lineConfigured
+        ? `${lineOverview.messagesToday} ข้อความวันนี้`
+        : "รอ LINE credentials",
+      state: lineOverview.lineConfigured ? "ready" : "waiting",
+    },
+    {
+      label: "บันทึก Neon",
+      detail: `${lineOverview.totalUsers} LINE users`,
+      state: lineOverview.databaseConnected ? "ready" : "waiting",
+    },
+    { label: "วิเคราะห์", detail: "ยังไม่ส่งข้อมูลให้ AI", state: "locked" },
+    { label: "ตรวจเผยแพร่", detail: "รอระบบอนุมัติ", state: "locked" },
+  ] as const;
+
   return (
     <div className="min-h-screen bg-[#eef0f2] text-[#1d1f22]">
       <div className="mx-auto grid min-h-screen w-full max-w-[1600px] lg:grid-cols-[248px_minmax(0,1fr)]">
@@ -110,7 +111,7 @@ export function BackofficeDashboard() {
               ปิดการเข้าถึงอยู่
             </div>
             <p className="mt-2 text-xs leading-5 text-[#6f7479]">
-              หน้านี้เป็นแบบร่างในเครื่อง ยังไม่เชื่อม Auth หรือข้อมูลจริง
+              เชื่อมข้อมูล Neon แล้ว แต่ยังเปิดเฉพาะ local preview จนกว่าจะมีระบบ Auth จริง
             </p>
           </div>
         </aside>
@@ -134,10 +135,10 @@ export function BackofficeDashboard() {
               <div>
                 <div className="flex flex-wrap items-center gap-2 text-xs text-white/60">
                   <span className="rounded-full border border-white/15 px-3 py-1">
-                    ข้อมูลตัวอย่างสำหรับออกแบบ
+                    ข้อมูลจริงจาก Neon Development
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Circle className="size-2 fill-[#e53b55] text-[#e53b55]" /> ระบบยังไม่เปิดใช้งาน
+                    <Circle className="size-2 fill-[#4fc38a] text-[#4fc38a]" /> ฐานข้อมูลเชื่อมต่อแล้ว
                   </span>
                 </div>
                 <p className="mt-8 text-xs font-semibold uppercase tracking-[0.22em] text-[#ef7184]">
@@ -152,7 +153,7 @@ export function BackofficeDashboard() {
                 <CalendarDays className="size-5 text-[#ef7184]" strokeWidth={1.7} />
                 <div>
                   <p className="text-xs text-white/50">รอบข้อมูลประจำวัน</p>
-                  <p className="mt-1 text-sm font-medium">10 สิงหาคม 2569 · กรุงเทพฯ</p>
+                  <p className="mt-1 text-sm font-medium">{bangkokDate.format(new Date())} · กรุงเทพฯ</p>
                 </div>
               </div>
             </div>
@@ -175,7 +176,9 @@ export function BackofficeDashboard() {
                     <span className="grid size-7 place-items-center rounded-full bg-[#f4dce0] text-xs font-bold text-[#a80f28]">
                       {index + 1}
                     </span>
-                    {step.state === "waiting" ? (
+                    {step.state === "ready" ? (
+                      <Check className="size-4 text-[#16794f]" />
+                    ) : step.state === "waiting" ? (
                       <Clock3 className="size-4 text-[#a80f28]" />
                     ) : (
                       <LockKeyhole className="size-4 text-[#9b9fa3]" />
@@ -194,50 +197,56 @@ export function BackofficeDashboard() {
           >
             <SectionHeading
               id="signals-title"
-              eyebrow="Customer signals"
-              title="คำถามที่ลูกค้าถามซ้ำ"
-              description="รวมเฉพาะข้อความที่ตัดข้อมูลส่วนบุคคลแล้ว เพื่อใช้ตัดสินใจว่าจะเขียนเรื่องอะไร"
+              eyebrow="LINE messages"
+              title="ข้อความล่าสุดจาก LINE"
+              description="ข้อความจริงที่ webhook บันทึกไว้ ใช้ตรวจการรับข้อมูลก่อนเข้าสู่กระบวนการวิเคราะห์"
             />
             <div className="mt-6 grid gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(250px,0.7fr)]">
               <div className="overflow-hidden rounded-2xl border border-[#dcdee0] bg-white">
                 <div className="flex items-center justify-between border-b border-[#e0e2e4] px-5 py-4">
                   <div className="flex items-center gap-2 text-sm font-semibold">
-                    <Inbox className="size-4 text-[#a80f28]" /> หัวข้อที่พบวันนี้
+                    <Inbox className="size-4 text-[#a80f28]" /> ข้อความที่รับเข้าระบบ
                   </div>
-                  <span className="text-xs text-[#777c81]">ตัวอย่าง 3 กลุ่ม</span>
+                  <span className="text-xs text-[#777c81]">
+                    ล่าสุด {lineOverview.recentMessages.length} รายการ
+                  </span>
                 </div>
                 <div className="divide-y divide-[#e6e7e9]">
-                  {questions.map((item) => (
+                  {lineOverview.recentMessages.map((message) => (
                     <article
-                      key={item.question}
+                      key={message.id}
                       className="grid gap-3 px-5 py-5 sm:grid-cols-[1fr_auto] sm:items-center"
                     >
                       <div>
-                        <p className="text-sm font-medium leading-6 text-[#25282c]">{item.question}</p>
-                        <p className="mt-1.5 text-xs text-[#7b8085]">{item.group}</p>
+                        <p className="text-sm font-medium leading-6 text-[#25282c]">{message.text}</p>
+                        <p className="mt-1.5 text-xs text-[#7b8085]">{message.displayName}</p>
                       </div>
-                      <div className="flex items-center justify-between gap-4 sm:justify-end">
-                        <span className="text-xs text-[#6f7479]">พบ {item.count} ครั้ง</span>
-                        <ArrowUpRight className="size-4 text-[#9a9ea2]" />
-                      </div>
+                      <span className="text-xs text-[#6f7479]">
+                        {bangkokDateTime.format(message.occurredAt)}
+                      </span>
                     </article>
                   ))}
+                  {lineOverview.recentMessages.length === 0 ? (
+                    <p className="px-5 py-8 text-sm text-[#777c81]">ยังไม่มีข้อความ LINE ในฐานข้อมูล</p>
+                  ) : null}
                 </div>
               </div>
 
               <div className="rounded-2xl bg-[#c4142e] p-5 text-white">
                 <Sparkles className="size-5" strokeWidth={1.7} />
                 <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
-                  หัวข้อแนะนำ
+                  สถานะวันนี้
                 </p>
                 <h3 className="mt-3 text-xl font-semibold leading-8">
-                  คู่มือเลือกเครื่องซักผ้าตามจำนวนสมาชิกในบ้าน
+                  {lineOverview.messagesToday} ข้อความเข้า
                 </h3>
                 <p className="mt-4 text-sm leading-6 text-white/75">
-                  สัญญาณจากคำถามซ้ำชัดที่สุด แต่ยังต้องตรวจ keyword และข้อมูลสินค้าจริงก่อนสร้างร่าง
+                  ผู้ใช้ทั้งหมด {lineOverview.totalUsers} คน · กำลังติดตาม OA {lineOverview.followingUsers} คน
                 </p>
                 <div className="mt-7 border-t border-white/20 pt-4 text-xs text-white/65">
-                  ยังไม่ส่งข้อมูลไป OpenAI
+                  {lineOverview.failedEvents > 0
+                    ? `มี event ประมวลผลไม่สำเร็จ ${lineOverview.failedEvents} รายการ`
+                    : "ไม่พบ event ที่ประมวลผลล้มเหลว"}
                 </div>
               </div>
             </div>
@@ -249,14 +258,14 @@ export function BackofficeDashboard() {
           >
             <SectionHeading
               id="articles-title"
-              eyebrow="Editorial queue"
-              title="คิวบทความ"
-              description="ทุกบทความหยุดที่ฉบับร่างจนกว่าผู้ดูแลจะตรวจและกดอนุมัติ"
+              eyebrow="LINE users"
+              title="ผู้ใช้ LINE ล่าสุด"
+              description="แยก LINE identity ออกจากข้อมูลลูกค้าธุรกิจ เพื่อเก็บผู้ติดตามและผู้ที่เพิ่งเริ่มสนทนาได้ครบ"
             />
             <div className="mt-6 space-y-3">
-              {articles.map((article, index) => (
+              {lineOverview.recentUsers.map((user, index) => (
                 <article
-                  key={article.title}
+                  key={user.userLineId}
                   className="grid gap-4 rounded-2xl border border-[#dcdee0] bg-white p-5 lg:grid-cols-[44px_minmax(0,1fr)_auto] lg:items-center"
                 >
                   <div className="grid size-11 place-items-center rounded-xl bg-[#f0f1f2] text-sm font-semibold text-[#74797e]">
@@ -264,19 +273,29 @@ export function BackofficeDashboard() {
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold leading-6 text-[#24272a] sm:text-base">
-                      {article.title}
+                      {user.displayName}
                     </h3>
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#777c81]">
-                      <span>คำค้นหา: {article.keyword}</span>
+                      <span className="max-w-[20rem] truncate">LINE ID: {user.userLineId}</span>
                       <span aria-hidden="true">•</span>
-                      <span>{article.updated}</span>
+                      <span>{user.lastMessage ?? "ยังไม่มีข้อความ"}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 justify-self-start rounded-full border border-[#dddfe1] px-3 py-1.5 text-xs font-medium text-[#5e6368] lg:justify-self-end">
-                    <Clock3 className="size-3.5" /> {article.status}
+                    {user.isFollowing ? (
+                      <Check className="size-3.5 text-[#16794f]" />
+                    ) : (
+                      <Circle className="size-3" />
+                    )}
+                    {user.isFollowing ? "กำลังติดตาม" : "เลิกติดตาม"}
                   </div>
                 </article>
               ))}
+              {lineOverview.recentUsers.length === 0 ? (
+                <p className="rounded-2xl border border-[#dcdee0] bg-white px-5 py-8 text-sm text-[#777c81]">
+                  ยังไม่มีผู้ใช้ LINE ในฐานข้อมูล
+                </p>
+              ) : null}
             </div>
           </section>
 
@@ -292,10 +311,14 @@ export function BackofficeDashboard() {
             />
             <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {[
-                ["Neon Auth", "ยังไม่เปิด", false],
-                ["LINE webhook", "ยังไม่เชื่อม", false],
+                ["Neon Database", "เชื่อมต่อแล้ว", lineOverview.databaseConnected],
+                [
+                  "LINE webhook",
+                  lineOverview.lineConfigured ? "พร้อมรับข้อมูลจริง" : "รอ LINE credentials",
+                  lineOverview.lineConfigured,
+                ],
                 ["OpenAI API", "ยังไม่ตั้งค่า", false],
-                ["สิทธิ์การเข้าถึง", "ล็อกอยู่", true],
+                ["สิทธิ์การเข้าถึง", "จำกัดเฉพาะ local", true],
               ].map(([label, status, safe]) => (
                 <div key={String(label)} className="rounded-2xl border border-[#dcdee0] bg-white p-4">
                   <div className="flex items-center justify-between gap-3">
@@ -315,8 +338,8 @@ export function BackofficeDashboard() {
           </section>
 
           <footer className="flex flex-col gap-2 px-1 pb-4 pt-6 text-xs text-[#777c81] sm:flex-row sm:items-center sm:justify-between">
-            <p>LG Subscribe Content Desk · แบบร่างหน้าจอภายใน</p>
-            <p>ไม่มีข้อมูลลูกค้าจริงในหน้านี้</p>
+            <p>LG Subscribe Content Desk · Neon Development</p>
+            <p>หน้า local preview เท่านั้น · ห้ามเปิด production ก่อนมี Auth</p>
           </footer>
         </main>
       </div>
