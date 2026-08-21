@@ -318,6 +318,33 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
     { label: "HDMI eARC", value: "รองรับ" },
     { label: "รูปแบบเสียง", value: "Dolby Atmos" },
   ]),
+  GRAB: verifiedRecord("https://www.lg.com/th/speakers/xboom/grab/", "GRAB", [
+    { label: "กำลังขับ", value: "20 W + 10 W" },
+    { label: "จำนวนช่อง", value: "1.1 แชนแนล (2Way)" },
+    { label: "Bluetooth", value: "เวอร์ชัน 5.4" },
+    { label: "กันน้ำ / กันฝุ่น", value: "IP67" },
+    { label: "อายุแบตเตอรี่", value: "สูงสุด 20 ชั่วโมง" },
+    { label: "ขนาดลำโพง (กว้าง × สูง × ลึก)", value: "211.0 × 71.6 × 70.0 มม." },
+    { label: "น้ำหนักสุทธิ", value: "0.7 กก." },
+  ]),
+  BOUNCE: verifiedRecord("https://www.lg.com/th/speakers/xboom/bounce/", "BOUNCE", [
+    { label: "กำลังขับ", value: "30 W + 5 W × 2" },
+    { label: "จำนวนช่อง", value: "2.1 แชนแนล (Stereo)" },
+    { label: "Bluetooth", value: "เวอร์ชัน 5.4" },
+    { label: "กันน้ำ / กันฝุ่น", value: "IP67" },
+    { label: "อายุแบตเตอรี่", value: "สูงสุด 30 ชั่วโมง" },
+    { label: "ขนาดลำโพง (กว้าง × สูง × ลึก)", value: "272 × 103 × 88 มม." },
+    { label: "น้ำหนักสุทธิ", value: "1.42 กก." },
+  ]),
+  STAGE301: verifiedRecord("https://www.lg.com/th/speakers/party-speakers/stage301/", "STAGE301", [
+    { label: "กำลังขับ", value: "120 W" },
+    { label: "จำนวนช่อง", value: "2.1 แชนแนล (2Way)" },
+    { label: "Bluetooth", value: "เวอร์ชัน 5.3" },
+    { label: "กันน้ำ", value: "IPX4" },
+    { label: "อายุแบตเตอรี่", value: "สูงสุด 12 ชั่วโมง" },
+    { label: "ขนาดลำโพง (กว้าง × สูง × ลึก)", value: "312 × 311 × 282 มม." },
+    { label: "น้ำหนักสุทธิ", value: "6.5 กก." },
+  ]),
   "StandbyME 2": verifiedRecord("https://www.lg.com/th/lifestyle-screens/stanbyme/27lx6tdga/", "27LX6TDGA", [
     { label: "ขนาดหน้าจอ", value: "27 นิ้ว" },
     { label: "ความละเอียด", value: "QHD 2,560 × 1,440 พิกเซล" },
@@ -620,6 +647,10 @@ for (const [alias, catalogModel] of Object.entries({
   "WD110MN.ABGPLMT": "WD110MN",
   STANBYME2: "StandbyME 2",
   "STANBYME 2": "StandbyME 2",
+  "GRAB.ATHALBK": "GRAB",
+  "BOUNCE.ATHALBK": "BOUNCE",
+  "STAGE301.ATHALBK": "STAGE301",
+  "STAGE 301": "STAGE301",
 })) {
   productSpecificationModelLookup.set(normalizeModel(alias), catalogModel);
 }

@@ -22,7 +22,7 @@ describe("product knowledge extracted from the supplied library", () => {
     expect(knowledgeInventory.pdfCount).toBe(42);
     expect(knowledgeInventory.productPdfCount).toBe(41);
     expect(knowledgeInventory.pdfCount).toBe(countPdfFiles(join(process.cwd(), "knowledge")));
-    expect(knowledgeInventory.categoryCount).toBe(12);
+    expect(knowledgeInventory.categoryCount).toBe(13);
     expect(knowledgeInventory.modelCount).toBeGreaterThanOrEqual(45);
     expect(knowledgeSourceGroups.flatMap((group) => group.files)).toHaveLength(42);
   });
@@ -51,6 +51,11 @@ describe("product knowledge extracted from the supplied library", () => {
     expect(getProductKnowledgeGuide("เครื่องกรองน้ำ")?.models).toContain("WD516AN");
     expect(getProductKnowledgeGuide("เครื่องซักและอบผ้า")?.models).toContain("WT1410NHEG");
     expect(productKnowledgeGuides.find((guide) => guide.slug === "monitor")?.models).toContain("32GS95UV-B");
+    expect(productKnowledgeGuides.find((guide) => guide.slug === "speakers")?.models).toEqual([
+      "GRAB",
+      "BOUNCE",
+      "STAGE301",
+    ]);
   });
 
   it("keeps every source manifest entry unique", () => {

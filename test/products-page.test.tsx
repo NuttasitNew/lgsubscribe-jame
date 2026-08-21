@@ -49,8 +49,19 @@ describe("ProductsPage knowledge visibility", () => {
   });
 
   it("keeps every official product image inside the project", () => {
+    const sources = readFileSync(join(process.cwd(), "public/images/products/lg-catalog/SOURCES.md"), "utf8");
+
     for (const product of catalogProducts) {
+      expect(product.image).toMatch(/^\/images\/products\/lg-catalog\//);
+      expect(product.image).not.toMatch(/https?:\/\/www\.lg\.com\//);
       expect(product.imageSource).toMatch(/^https:\/\/www\.lg\.com\//);
+      expect(existsSync(join(process.cwd(), "public", product.image))).toBe(true);
+      expect(sources).toContain(`\`${product.image.split("/").at(-1)}\``);
+    }
+
+    for (const product of allProducts) {
+      expect(product.image.startsWith("/images/")).toBe(true);
+      expect(product.image).not.toMatch(/^https?:\/\//);
       expect(existsSync(join(process.cwd(), "public", product.image))).toBe(true);
     }
   });
@@ -125,5 +136,5 @@ describe("ProductsPage knowledge visibility", () => {
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
   });
 });
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";

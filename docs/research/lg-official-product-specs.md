@@ -2,16 +2,16 @@
 
 ตรวจสอบล่าสุด: 12 สิงหาคม 2569 (2026-08-12)
 
-เอกสารนี้เป็น research handoff สำหรับนำข้อมูลไปสร้าง `specifications` บนหน้ารายละเอียดสินค้า ไม่ใช่ข้อความโฆษณาสำเร็จรูป ขอบเขตคือ `allProducts` ปัจจุบันทั้งหมด 48 route: 47 model จาก `productKnowledgeGuides` และ featured model `FV1413S4M` ที่ถูก append เพิ่มเพราะ guide catalog มี `FV1413H4M` คนละรุ่น
+เอกสารนี้เป็น research handoff สำหรับนำข้อมูลไปสร้าง `specifications` บนหน้ารายละเอียดสินค้า ไม่ใช่ข้อความโฆษณาสำเร็จรูป ขอบเขตคือ `allProducts` ปัจจุบันทั้งหมด 51 route: 50 model จาก `productKnowledgeGuides` และ featured model `FV1413S4M` ที่ถูก append เพิ่มเพราะ guide catalog มี `FV1413H4M` คนละรุ่น
 
 ## ผลการยืนยัน model
 
-- `EXACT-TH` 34 รุ่น: รหัสในระบบเป็น model/base model ที่ LG Thailand ประกาศบน PDP โดยตรง
+- `EXACT-TH` 37 รุ่น: รหัสในระบบเป็น model/base model ที่ LG Thailand ประกาศบน PDP โดยตรง
 - `EXACT-LG-OTHER` 2 รุ่น: รหัสตรงรุ่น แต่หา public PDP ได้เฉพาะ LG ประเทศอื่น (`AS55GGSY0` จาก Hong Kong และ `RC90V9AV2W` จาก Portugal) ข้อมูลด้านไฟฟ้า/ฉลากพลังงานจึงห้ามตีความเป็นสเปกตลาดไทย
 - `MAPPED` 11 รุ่น: รหัสในระบบเป็น alias, รหัสที่ตัด prefix/suffix, หรือ typo แต่ระบุ official SKU ปลายทางได้แน่นอน
 - `UNRESOLVED` 1 รุ่น: `WD110AN` ไม่มี exact official public PDP; ห้ามนำสเปก `WD110MN` มาใช้แทน
 
-ดังนั้น 47/48 route ผูกกับ official LG PDP ของสินค้าที่ระบุได้ และ 1/48 route ยังต้องแก้รหัสหรือหาเอกสารยืนยันเพิ่ม
+ดังนั้น 50/51 route ผูกกับ official LG PDP ของสินค้าที่ระบุได้ และ 1/51 route ยังต้องแก้รหัสหรือหาเอกสารยืนยันเพิ่ม
 
 ### Mapping ที่ต้องเก็บไว้ใน data model
 
@@ -131,6 +131,11 @@ LG มีความไม่ตรงกันภายในหน้าเ�
 | `S95TR`       | `EXACT-TH`                            | 9.1.5 channels; 810 W; main bar 1,250 × 63 × 135 mm; rear 159 × 223 × 142 mm; subwoofer 201.7 × 407 × 403 mm; HDMI in/out 1/1; eARC; Wi-Fi; Dolby Atmos; DTS:X | [LG Thailand — S95TR](https://www.lg.com/th/speakers/home-theater-soundbar/s95tr/)       |
 | `S70TY`       | `EXACT-TH`                            | 3.1.1 channels; 400 W; main bar 950 × 63 × 115 mm; HDMI in/out 1/1; eARC; Dolby Atmos                                                                          | [LG Thailand — S70TY](https://www.lg.com/th/speakers/soundbars/s70ty/)                   |
 | `StandbyME 2` | `MAPPED` marketing name → `27LX6TDGA` | 27-inch QHD 2,560 × 1,440; 60 Hz; screen+stand 623 × 1,265 × 398 mm/15.2 kg; built-in battery up to 4 hours; HDMI 1; USB 3; Wi-Fi 5; Bluetooth 5.1; webOS 24   | [LG Thailand — 27LX6TDGA](https://www.lg.com/th/lifestyle-screens/stanbyme/27lx6tdga/)   |
+| `GRAB`        | `EXACT-TH`                            | 20 W + 10 W; 1.1ch 2Way; Bluetooth 5.4; IP67; battery up to 20 h; speaker 211.0 × 71.6 × 70.0 mm; net 0.7 kg                                                    | [LG Thailand — GRAB](https://www.lg.com/th/speakers/xboom/grab/)                         |
+| `BOUNCE`      | `EXACT-TH`                            | 30 W + 5 W × 2; 2.1ch Stereo; Bluetooth 5.4; IP67; battery up to 30 h; speaker 272 × 103 × 88 mm; net 1.42 kg                                                    | [LG Thailand — BOUNCE](https://www.lg.com/th/speakers/xboom/bounce/)                     |
+| `STAGE301`    | `EXACT-TH`                            | 120 W; 2.1ch 2Way; Bluetooth 5.3; IPX4; battery up to 12 h; speaker 312 × 311 × 282 mm; net 6.5 kg                                                               | [LG Thailand — STAGE301](https://www.lg.com/th/speakers/party-speakers/stage301/)        |
+
+ห้ามใช้ขนาดกล่อง `STAGE301` จากเรตราคา (352 × 415 × 385 มม.) เพราะตารางสเปก LG แยกชัดว่าลำโพงคือ 312 × 311 × 282 มม. และกล่องคือ 385 × 415 × 352 มม. ห้ามย่อกำลังขับ Bounce เป็น 30 W + 10 W เพราะหน้า LG ระบุ `30 W + 5 W x 2`
 
 ## เครื่องดูดฝุ่น
 

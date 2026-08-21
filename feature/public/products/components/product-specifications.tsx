@@ -1,26 +1,5 @@
 import type { ProductSpecificationRecord } from "@/lib/product-specifications";
 
-const thaiMonths = [
-  "ม.ค.",
-  "ก.พ.",
-  "มี.ค.",
-  "เม.ย.",
-  "พ.ค.",
-  "มิ.ย.",
-  "ก.ค.",
-  "ส.ค.",
-  "ก.ย.",
-  "ต.ค.",
-  "พ.ย.",
-  "ธ.ค.",
-] as const;
-
-function formatVerifiedAt(value: string) {
-  const [year, month, day] = value.split("-").map(Number);
-  if (!year || !month || !day || !thaiMonths[month - 1]) return value;
-  return `${day} ${thaiMonths[month - 1]} ${year + 543}`;
-}
-
 export function ProductSpecifications({
   model,
   record,
@@ -43,20 +22,6 @@ export function ProductSpecifications({
           <h2 id={headingId} className="mt-3 text-3xl font-bold leading-tight text-neutral-950 sm:text-4xl">
             ข้อมูลจำเพาะของรุ่นนี้
           </h2>
-          <p className="mt-5 max-w-xl leading-7 text-neutral-600">
-            คัดเฉพาะข้อมูลสำคัญสำหรับเปรียบเทียบการใช้งานและวางแผนพื้นที่จากหน้าสินค้าทางการของ LG
-          </p>
-
-          <dl className="mt-8 grid gap-2 border-l-2 border-red-700 pl-5 text-sm">
-            <div className="grid grid-cols-[7.25rem_1fr] gap-3">
-              <dt className="text-neutral-500">แหล่งข้อมูล</dt>
-              <dd className="font-semibold text-neutral-900">LG</dd>
-            </div>
-            <div className="grid grid-cols-[7.25rem_1fr] gap-3">
-              <dt className="text-neutral-500">ตรวจสอบเมื่อ</dt>
-              <dd className="font-semibold text-neutral-900">{formatVerifiedAt(record.verifiedAt)}</dd>
-            </div>
-          </dl>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

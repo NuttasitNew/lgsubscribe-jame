@@ -8,7 +8,7 @@ afterEach(cleanup);
 
 describe("official LG product specifications", () => {
   it("accounts for every static product detail route without borrowing another model's data", () => {
-    expect(allProducts).toHaveLength(48);
+    expect(allProducts).toHaveLength(51);
     expect(Object.keys(productSpecificationRecords)).toHaveLength(allProducts.length);
 
     for (const product of allProducts) {
@@ -37,6 +37,54 @@ describe("official LG product specifications", () => {
     expect(getProductSpecificationRecord("NU855B")?.sourceModel).toBe("55NU855BPSA");
     expect(getProductSpecificationRecord("StandbyME 2")?.sourceModel).toBe("27LX6TDGA");
     expect(getProductSpecificationRecord("32U889SA")?.sourceModel).toBe("32U889SA-W");
+    expect(getProductSpecificationRecord("GRAB.ATHALBK")?.sourceModel).toBe("GRAB");
+    expect(getProductSpecificationRecord("BOUNCE.ATHALBK")?.sourceModel).toBe("BOUNCE");
+    expect(getProductSpecificationRecord("STAGE301.ATHALBK")?.sourceModel).toBe("STAGE301");
+    expect(getProductSpecificationRecord("Stage 301")?.sourceModel).toBe("STAGE301");
+  });
+
+  it("publishes xboom specs from LG Thailand pages without mixing price-list carton or wattage shorthand", () => {
+    const grab = getProductSpecificationRecord("GRAB");
+    const bounce = getProductSpecificationRecord("BOUNCE");
+    const stage = getProductSpecificationRecord("STAGE301");
+    const grabProduct = allProducts.find((product) => product.model === "GRAB");
+    const bounceProduct = allProducts.find((product) => product.model === "BOUNCE");
+    const stageProduct = allProducts.find((product) => product.model === "STAGE301");
+
+    expect(grabProduct?.monthlyPrice).toBeNull();
+    expect(bounceProduct?.monthlyPrice).toBeNull();
+    expect(stageProduct?.monthlyPrice).toBeNull();
+    expect(grabProduct?.category).toBe("ลำโพง");
+    expect(bounceProduct?.category).toBe("ลำโพง");
+    expect(stageProduct?.category).toBe("ลำโพง");
+
+    expect(grab?.groups[0]?.items).toEqual(
+      expect.arrayContaining([
+        { label: "กำลังขับ", value: "20 W + 10 W" },
+        { label: "ขนาดลำโพง (กว้าง × สูง × ลึก)", value: "211.0 × 71.6 × 70.0 มม." },
+        { label: "กันน้ำ / กันฝุ่น", value: "IP67" },
+      ]),
+    );
+    expect(bounce?.groups[0]?.items).toEqual(
+      expect.arrayContaining([
+        { label: "กำลังขับ", value: "30 W + 5 W × 2" },
+        { label: "ขนาดลำโพง (กว้าง × สูง × ลึก)", value: "272 × 103 × 88 มม." },
+      ]),
+    );
+    expect(stage?.groups[0]?.items).toEqual(
+      expect.arrayContaining([
+        { label: "กำลังขับ", value: "120 W" },
+        { label: "ขนาดลำโพง (กว้าง × สูง × ลึก)", value: "312 × 311 × 282 มม." },
+        { label: "กันน้ำ", value: "IPX4" },
+      ]),
+    );
+
+    const bounceValues = bounce?.groups.flatMap((group) => group.items.map((item) => item.value)).join(" ") ?? "";
+    const stageValues = stage?.groups.flatMap((group) => group.items.map((item) => item.value)).join(" ") ?? "";
+    expect(bounceValues).not.toMatch(/10 W Tweeter|30 W \+ 10 W/);
+    expect(stageValues).not.toMatch(/352|415|385/);
+    expect(grabProduct?.description).not.toMatch(/Bounce/);
+    expect(stageProduct?.highlights.join(" ")).not.toMatch(/4K|webOS|HDMI 2\.1/);
   });
 
   it("does not present Portugal energy labels as Thailand specifications", () => {
@@ -80,6 +128,10 @@ describe("official LG product specifications", () => {
 
     expect(screen.getByRole("heading", { name: "ข้อมูลจำเพาะของรุ่นนี้", level: 2 })).toBeVisible();
     expect(screen.getByText(firstSpecification?.value ?? "__missing__")).toBeVisible();
+    expect(screen.queryByText(/คัดเฉพาะข้อมูลสำคัญ/)).not.toBeInTheDocument();
+    expect(screen.queryByText("แหล่งข้อมูล")).not.toBeInTheDocument();
+    expect(screen.queryByText("ตรวจสอบเมื่อ")).not.toBeInTheDocument();
+    expect(screen.queryByText(/ตรวจสอบข้อมูลเมื่อ/)).not.toBeInTheDocument();
 
     const structuredData = JSON.parse(
       document.querySelector('script[type="application/ld+json"]')?.textContent ?? "[]",
@@ -112,7 +164,7 @@ describe("official LG product specifications", () => {
 
     expect(screen.queryByText("LG Portugal")).not.toBeInTheDocument();
     expect(screen.queryByText("LG Hong Kong")).not.toBeInTheDocument();
-    expect(screen.getAllByText("LG").length).toBeGreaterThan(0);
+    expect(screen.queryByText("แหล่งข้อมูล")).not.toBeInTheDocument();
   });
 
   it("does not show LG data-conflict notes on the WashTower page", async () => {

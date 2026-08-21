@@ -180,10 +180,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                 ) : (
                   <p className="text-2xl font-bold text-red-700">สอบถามราคาและรุ่นที่ร่วมรายการล่าสุด</p>
                 )}
-                <p className="mt-2 text-xs leading-5 text-red-800/70">
-                  ตรวจสอบข้อมูลเมื่อ {siteConfig.offerReviewedAt} ราคา ระยะสัญญา
-                  และสิทธิจริงให้ยึดแบบฟอร์มคำสั่งซื้อ ณ วันที่สมัคร
-                </p>
               </div>
 
               <ul className="mt-8 grid gap-4">

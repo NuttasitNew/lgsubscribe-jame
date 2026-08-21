@@ -180,6 +180,27 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/s70ty.jpg",
     officialUrl: "https://www.lg.com/th/speakers/soundbars/s70ty/",
   },
+  GRAB: {
+    name: "ลำโพงพกพา LG xboom Grab tuned by will.i.am รุ่น Grab",
+    description:
+      "ลำโพงพกพา LG xboom Grab ปรับแต่งโดย will.i.am พร้อมโดมทวีตเตอร์จาก Peerless กันน้ำกันฝุ่นระดับ IP67 และเล่นต่อเนื่องสูงสุด 20 ชั่วโมง",
+    image: "/images/products/lg-catalog/grab.jpg",
+    officialUrl: "https://www.lg.com/th/speakers/xboom/grab/",
+  },
+  BOUNCE: {
+    name: "ลำโพงพกพา LG xboom Bounce by will.i.am รุ่น Bounce",
+    description:
+      "ลำโพงพกพา LG xboom Bounce ปรับแต่งโดย will.i.am พร้อมทวีตเตอร์โดมคู่ กันน้ำกันฝุ่นระดับ IP67 และเล่นต่อเนื่องสูงสุด 30 ชั่วโมง",
+    image: "/images/products/lg-catalog/bounce.jpg",
+    officialUrl: "https://www.lg.com/th/speakers/xboom/bounce/",
+  },
+  STAGE301: {
+    name: "LG xboom Stage 301 tuned by will.i.am",
+    description:
+      "ลำโพงปาร์ตี้ LG xboom Stage 301 ปรับแต่งโดย will.i.am กำลังขับ 120 วัตต์ กันน้ำระดับ IPX4 และเล่นต่อเนื่องสูงสุด 12 ชั่วโมง",
+    image: "/images/products/lg-catalog/stage301.jpg",
+    officialUrl: "https://www.lg.com/th/speakers/party-speakers/stage301/",
+  },
   "StandbyME 2": {
     name: "LG StanbyME2 รุ่น 27LX6TDGA | Super Portable Screen | Motion Art",
     description:
