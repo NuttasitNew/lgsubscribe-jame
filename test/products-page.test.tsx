@@ -1,10 +1,17 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ProductsPage from "@/feature/public/products/components/products-page";
 import { allProducts, catalogProducts } from "@/lib/catalog-products";
 import { knowledgeInventory, productKnowledgeGuides } from "@/lib/product-knowledge";
 
-afterEach(cleanup);
+beforeEach(() => {
+  vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+});
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 describe("ProductsPage knowledge visibility", () => {
   it("renders every extracted model as a visible catalog card", () => {
@@ -88,6 +95,34 @@ describe("ProductsPage knowledge visibility", () => {
     });
     expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(1);
     expect(screen.getByText("AS35GGW10")).toBeVisible();
+  });
+
+  it("does not show LG source-conflict notes on the catalog", () => {
+    render(<ProductsPage />);
+
+    expect(screen.queryByText(/หน้า LG มีข้อมูลขัดกัน/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/อยู่ระหว่างยืนยันรหัสรุ่นกับ LG/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/รอ LG ยืนยัน/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/รหัสสินค้าที่เกี่ยวข้อง/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/LG Hong Kong|LG Portugal/)).not.toBeInTheDocument();
+  });
+
+  it("scrolls back to the top after searching or changing category", () => {
+    render(<ProductsPage />);
+    expect(window.scrollTo).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), {
+      target: { value: "AS35GGW10" },
+    });
+    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
+
+    vi.mocked(window.scrollTo).mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "ล้างคำค้นหา" }));
+    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
+
+    vi.mocked(window.scrollTo).mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "เครื่องฟอกอากาศ 6 รุ่น" }));
+    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
   });
 });
 import { existsSync } from "node:fs";

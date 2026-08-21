@@ -56,7 +56,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "สารทำความเย็น", value: "R32" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
-    { note: "ตารางเทคนิคของ LG ระบุรหัสเครื่องภายในเป็น S3-Q120AKDA" },
   ),
   SAQ13A: verifiedRecord(
     "https://www.lg.com/th/air-conditioner-inverter/energy-saving-air-conditioner/saq13a/",
@@ -71,7 +70,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "สารทำความเย็น", value: "R32" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
-    { note: "ตารางเทคนิคของ LG ระบุรหัสเครื่องภายในเป็น S3-Q121L1CA" },
   ),
   AS10GDBY0: verifiedRecord("https://www.lg.com/th/air-puricare/puricare-360/as10gdby0/", "AS10GDBY0", [
     { label: "พื้นที่แนะนำ", value: "104.0 ตร.ม." },
@@ -106,10 +104,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "แผ่นกรอง", value: "H13 V-Pet Filter" },
       { label: "การเชื่อมต่อ", value: "UVnano และ LG ThinQ (Wi-Fi)" },
     ],
-    {
-      sourceLocale: "en-HK",
-      note: "อ้างอิงหน้า LG Hong Kong เนื่องจากไม่พบหน้าสินค้าสาธารณะของ LG Thailand สำหรับรหัสเดียวกัน",
-    },
+    { sourceLocale: "en-HK" },
   ),
   AS60GHWG0: verifiedRecord("https://www.lg.com/th/air-puricare/puricare-360/as60ghwg0/", "AS60GHWG0", [
     { label: "พื้นที่แนะนำ", value: "61 ตร.ม." },
@@ -184,7 +179,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "แหล่งจ่ายไฟ", value: "220 โวลต์ / 50 เฮิรตซ์" },
       { label: "เทคโนโลยี", value: "Smart Inverter และ EasyClean" },
     ],
-    { note: "URL ของ LG ใช้ slug mc4295dis แต่ชื่อรุ่นและ product schema ระบุ MS4295DIS" },
   ),
   X257CMEW: verifiedRecord(
     "https://www.lg.com/th/refrigerators/side-by-side-refrigerator/gc-x257cmew/",
@@ -218,7 +212,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
     "https://www.lg.com/th/refrigerators/side-by-side-refrigerator/gc-l257kqkw/",
     "GC-L257KQKW",
     [
-      { label: "ความจุรวม", value: "641 ลิตร (22.6 คิว ตามตารางสเปก)" },
+      { label: "ความจุรวม", value: "641 ลิตร (22.6 คิว)" },
       { label: "ความจุช่องแช่แข็ง", value: "192 ลิตร" },
       { label: "ขนาด (กว้าง × สูง × ลึก)", value: "913 × 1,790 × 735 มม." },
       { label: "น้ำหนัก", value: "105 กก." },
@@ -227,13 +221,12 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ระบบจ่ายน้ำ", value: "ไม่ต้องเดินท่อน้ำ" },
       { label: "LG ThinQ (Wi-Fi)", value: "ไม่รองรับ" },
     ],
-    { note: "ชื่อหน้าระบุ 22.4 คิว แต่ตารางสเปกอย่างเป็นทางการระบุ 22.6 คิว / 641 ลิตร" },
   ),
   X24FFCRB: verifiedRecord(
     "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-x24ffcrb/",
     "GC-X24FFCRB",
     [
-      { label: "ความจุรวม", value: "642 ลิตร (22.7 คิว ตามตารางสเปก)" },
+      { label: "ความจุรวม", value: "642 ลิตร (22.7 คิว)" },
       { label: "ความจุช่องแช่แข็ง", value: "246 ลิตร" },
       { label: "ขนาด (กว้าง × สูง × ลึก)", value: "914 × 1,792 × 729 มม." },
       { label: "น้ำหนัก", value: "149 กก." },
@@ -242,7 +235,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "InstaView", value: "InstaView Door-in-Door" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
-    { note: "ชื่อหน้าระบุ 22.5 คิว แต่ตารางสเปกอย่างเป็นทางการระบุ 22.7 คิว / 642 ลิตร" },
   ),
   G24FFQKB: verifiedRecord(
     "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-g24ffqkb/",
@@ -277,7 +269,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ระบบแขวน", value: "Moving Hanger" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
-    { note: "รหัสทางการของ LG ใช้ตัวอักษร O: S5GOC; รหัส route เดิม S5G0C ใช้เลข 0" },
   ),
   QNED86B: verifiedRecord("https://www.lg.com/th/tv-soundbars/qned-evo/55qned86bsa/", "55QNED86BSA", [
     { label: "ขนาดหน้าจอ", value: "55 นิ้ว" },
@@ -344,7 +335,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "แบตเตอรี่", value: "ลิเธียมไอออน 2 ก้อน" },
       { label: "เวลาใช้งานสูงสุดต่อแบตเตอรี่", value: "60 นาที (40 นาทีเมื่อใช้หัวดูดไฟฟ้า)" },
       { label: "เวลาชาร์จ", value: "240 นาที" },
-      { label: "ขนาดตัวเครื่องตามหน้า LG", value: "260 × 1,120 × 270 มม.; 2.9 กก." },
+      { label: "ขนาดตัวเครื่อง", value: "260 × 1,120 × 270 มม.; 2.9 กก." },
       { label: "ขนาด All-in-One Tower", value: "255 × 1,009 × 297 มม.; 9.7 กก." },
       { label: "ความจุถังเก็บฝุ่น", value: "0.44 ลิตร / 0.88 ลิตรเมื่อบีบอัด" },
       { label: "ความจุถุงเก็บฝุ่นใน Tower", value: "2.5 ลิตร" },
@@ -358,7 +349,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "แบตเตอรี่", value: "ลิเธียมไอออน 2 ก้อน" },
       { label: "เวลาใช้งานสูงสุดต่อแบตเตอรี่", value: "60 นาที (40 นาทีเมื่อใช้หัวดูดไฟฟ้า)" },
       { label: "เวลาชาร์จ", value: "240 นาที" },
-      { label: "ขนาดตัวเครื่องตามหน้า LG", value: "260 × 270 × 1,120 มม.; 2.9 กก." },
+      { label: "ขนาดตัวเครื่อง", value: "260 × 270 × 1,120 มม.; 2.9 กก." },
       { label: "ขนาด All-in-One Tower", value: "255 × 1,009 × 297 มม.; 9.8 กก." },
       { label: "ความจุถังเก็บฝุ่น", value: "0.44 ลิตร / 0.88 ลิตรเมื่อบีบอัด" },
       { label: "ความจุถุงเก็บฝุ่นใน Tower", value: "2.5 ลิตร" },
@@ -372,7 +363,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "แบตเตอรี่", value: "ลิเธียมไอออน 1 ก้อน" },
       { label: "เวลาใช้งานสูงสุด", value: "60 นาที (40 นาทีเมื่อใช้หัวดูดไฟฟ้า)" },
       { label: "เวลาชาร์จ", value: "240 นาที" },
-      { label: "ขนาดตัวเครื่องตามหน้า LG", value: "260 × 270 × 1,120 มม.; 2.9 กก." },
+      { label: "ขนาดตัวเครื่อง", value: "260 × 270 × 1,120 มม.; 2.9 กก." },
       { label: "ขนาด All-in-One Tower", value: "255 × 1,009 × 297 มม.; 9.7 กก." },
       { label: "ความจุถังเก็บฝุ่น", value: "0.44 ลิตร / 0.88 ลิตรเมื่อบีบอัด" },
       { label: "ความจุถุงเก็บฝุ่นใน Tower", value: "2.5 ลิตร" },
@@ -383,10 +374,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
     "https://www.lg.com/th/laundry/wash-tower/wt1410nheg/",
     "WT1410NHEG",
     [
-      {
-        label: "ความจุซักสูงสุด (ข้อมูลบนหน้า LG ขัดกัน)",
-        value: "ชื่อสินค้า 14 กก. / ตารางสเปก 12 กก. — รอ LG ยืนยัน",
-      },
+      { label: "ความจุซักสูงสุด", value: "14 กก." },
       { label: "ความจุอบสูงสุด", value: "10 กก." },
       { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 1,655 × 660 มม." },
       { label: "น้ำหนัก", value: "128 กก." },
@@ -395,9 +383,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ระบบอบ", value: "DUAL Inverter Heat Pump" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
-    {
-      note: "หน้า LG มีข้อมูลขัดกัน: ชื่อสินค้าเขียนซัก 14 กก. แต่ตารางเทคนิคระบุซัก 12 กก. จึงแสดงทั้งสองค่าโดยไม่เลือกค่าใดแทน LG; ความจุอบตรงกันที่ 10 กก.",
-    },
   ),
   WT2116SHEG: verifiedRecord("https://www.lg.com/th/laundry/wash-tower/wt2116sheg/", "WT2116SHEG", [
     { label: "ความจุซักสูงสุด", value: "21 กก." },
@@ -430,9 +415,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ระบบไอน้ำ", value: "Steam" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
-    {
-      note: "หน้า LG รูปแบบเดิมไม่มีตารางสเปกเต็ม ข้อมูลชุดนี้มาจากชื่อสินค้าและ key features ของรุ่นนี้เท่านั้น",
-    },
   ),
   F2520RNTB: verifiedRecord(
     "https://www.lg.com/th/laundry/front-load-washing-machine/f2520rntb/",
@@ -484,10 +466,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ระบบทำความสะอาดคอนเดนเซอร์", value: "อัตโนมัติ" },
       { label: "ระดับเสียง", value: "62 เดซิเบล" },
     ],
-    {
-      sourceLocale: "pt-PT",
-      note: "คัดและแปลสเปกทั่วไปจากหน้า LG Portugal เนื่องจากไม่พบหน้ารุ่นเดียวกันของ LG Thailand; ไม่แสดงฉลากพลังงาน EU และควรยืนยันรายละเอียดสำหรับตลาดไทยก่อนสั่งซื้อ",
-    },
+    { sourceLocale: "pt-PT" },
   ),
   WS510SN: verifiedRecord(
     "https://www.lg.com/th/water-purifiers/ws510sn/",
@@ -501,7 +480,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor" },
       { label: "รับประกันชิ้นส่วนคอมเพรสเซอร์", value: "10 ปี" },
     ],
-    { note: "หน้า LG รูปแบบเดิมไม่มีตารางสเปกเต็ม ข้อมูลชุดนี้มาจาก key features ของรุ่นนี้เท่านั้น" },
   ),
   WD516AN: verifiedRecord(
     "https://www.lg.com/th/water-purifiers/wd516an-aslplmt/",
@@ -516,7 +494,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
       { label: "รับประกันชิ้นส่วนคอมเพรสเซอร์อินเวอร์เตอร์", value: "10 ปี" },
     ],
-    { note: "ข้อมูลสีและสเปกผูกกับ variant WD516AN.ASLPLMT ตาม URL ทางการ" },
   ),
   WD518AN: verifiedRecord(
     "https://www.lg.com/th/water-purifiers/wd518an-abgplmt/",
@@ -531,7 +508,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
       { label: "รับประกันชิ้นส่วนคอมเพรสเซอร์อินเวอร์เตอร์", value: "10 ปี" },
     ],
-    { note: "ข้อมูลสีและสเปกผูกกับ variant WD518AN.ABGPLMT ตาม URL ทางการ" },
   ),
   WD110AN: {
     sourceUrl: "https://www.lg.com/th/subscribe/",
@@ -540,7 +516,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
     verifiedAt: VERIFIED_AT,
     status: "unverified",
     groups: [],
-    note: "ไม่พบหน้า LG สาธารณะหรือเอกสารสเปกที่ยืนยันรุ่น WD110AN โดยตรง จึงไม่ยืมข้อมูลจาก WD110MN",
   },
   WD110MN: verifiedRecord(
     "https://www.lg.com/th/water-purifiers/wd110mn/",
@@ -554,7 +529,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ระบบถัง", value: "Tankless" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
-    { note: "ข้อมูลสีและสเปกผูกกับ variant WD110MN.ABGPLMT ที่หน้า LG ระบุ" },
   ),
   "32GS95UV-B": verifiedRecord("https://www.lg.com/th/monitors/gaming/32gs95uv-b/", "32GS95UV-B", [
     { label: "ขนาดหน้าจอ", value: "31.5 นิ้ว" },

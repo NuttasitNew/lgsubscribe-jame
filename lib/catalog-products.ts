@@ -288,8 +288,7 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
   },
   WD110AN: {
     name: "เครื่องกรองน้ำ LG PuriCare รุ่น WD110AN",
-    description:
-      "เครื่องกรองน้ำ LG PuriCare รุ่น WD110AN ตามรายการผลิตภัณฑ์ LG Subscribe โดยรายละเอียดทางเทคนิคอยู่ระหว่างยืนยันรหัสรุ่นกับ LG",
+    description: "เครื่องกรองน้ำ LG PuriCare รุ่น WD110AN น้ำที่สะอาด ด้วยเครื่องกรองน้ำ LG",
     image: "/images/products/lg-catalog/wd110an.jpg",
     officialUrl: "https://www.lg.com/th/subscribe/",
   },
@@ -352,14 +351,12 @@ export const catalogProducts: Product[] = productKnowledgeGuides.flatMap((guide)
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "")}`;
-    const modelNote = source.officialModel ? ` รหัสสินค้าที่เกี่ยวข้อง ${source.officialModel}` : "";
-
     return {
       slug,
       name: source.name,
       model,
       category: guide.category,
-      description: `${source.description}${modelNote}`,
+      description: source.description,
       monthlyPrice: featuredProduct?.monthlyPrice ?? null,
       contractMonths: featuredProduct?.contractMonths ?? null,
       warrantyYears: featuredProduct?.warrantyYears ?? null,

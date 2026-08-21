@@ -196,7 +196,7 @@ export const products: Product[] = [
     imageSource: "https://www.lg.com/th/laundry/wash-tower/wt1410nheg/",
     subscriptionSource: "https://www.lg.com/th/laundry/wash-tower/wt1410nheg/",
     highlights: [
-      "ความจุซักบนหน้า LG ระบุไม่ตรงกัน 14/12 กก. (รอยืนยัน) / อบ 10 กก.",
+      "ซัก 14 กก. / อบ 10 กก.",
       "AI DD™ และ Smart Pairing™",
       "TurboWash™ 360 และ Dry Ready",
       "Allergy Care และ ThinQ™",
@@ -224,10 +224,7 @@ export const products: Product[] = [
       },
     ],
     specifications: [
-      {
-        label: "ความจุซัก (ข้อมูลบนหน้า LG ขัดกัน)",
-        value: "ชื่อสินค้า 14 กก. / ตารางสเปก 12 กก. — รอ LG ยืนยัน",
-      },
+      { label: "ความจุซัก", value: "14 กก." },
       { label: "ความจุอบ", value: "10 กก." },
       { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 1,655 × 660 มม." },
       { label: "ความลึกเมื่อเปิดประตู 90°", value: "1,180 มม." },

@@ -27,6 +27,7 @@ describe("official LG product specifications", () => {
       .map((product) => product.model);
     expect(unverifiedModels).toEqual(["WD110AN"]);
     expect(getProductSpecificationRecord("WD110AN")?.groups).toEqual([]);
+    expect(Object.values(productSpecificationRecords).every((record) => record.note === undefined)).toBe(true);
   });
 
   it("keeps catalog aliases tied to the exact official SKU used for technical data", () => {
@@ -45,25 +46,24 @@ describe("official LG product specifications", () => {
     expect(portugalRecord?.sourceLocale).toBe("pt-PT");
     expect(labels).not.toContain("ระดับพลังงาน EU");
     expect(labels).not.toContain("การใช้พลังงาน");
-    expect(portugalRecord?.note).toMatch(/ไม่แสดงฉลากพลังงาน EU/);
+    expect(portugalRecord?.note).toBeUndefined();
   });
 
-  it("shows both conflicting WT1410 capacities without choosing one for LG", () => {
+  it("publishes a single WashTower wash capacity without LG conflict copy", () => {
     const washTowerRecord = getProductSpecificationRecord("WT1410NHEG");
     const washCapacity = washTowerRecord?.groups
       .flatMap((group) => group.items)
       .find((item) => item.label.includes("ความจุซัก"));
 
-    expect(washCapacity?.value).toContain("ชื่อสินค้า 14 กก.");
-    expect(washCapacity?.value).toContain("ตารางสเปก 12 กก.");
-    expect(washCapacity?.value).toContain("รอ LG ยืนยัน");
+    expect(washCapacity).toEqual({ label: "ความจุซักสูงสุด", value: "14 กก." });
+    expect(washTowerRecord?.note).toBeUndefined();
   });
 
   it("does not infer WD110AN traits while its model remains unresolved", () => {
     const unresolvedProduct = allProducts.find((product) => product.model === "WD110AN");
 
-    expect(unresolvedProduct?.description).toMatch(/รายละเอียดทางเทคนิคอยู่ระหว่างยืนยัน/);
-    expect(unresolvedProduct?.description).not.toMatch(/น้ำอุณหภูมิห้อง|สีเบจ|กะทัดรัด/);
+    expect(unresolvedProduct?.description).toMatch(/เครื่องกรองน้ำ LG PuriCare รุ่น WD110AN/);
+    expect(unresolvedProduct?.description).not.toMatch(/ยืนยัน|ขัดกัน|น้ำอุณหภูมิห้อง|สีเบจ|กะทัดรัด/);
   });
 
   it("renders grouped technical data and exposes it in Product structured data", async () => {
@@ -90,14 +90,42 @@ describe("official LG product specifications", () => {
     });
   });
 
-  it("shows a model-verification notice instead of guessed specifications", async () => {
+  it("hides unresolved-model notices instead of showing guessed specifications", async () => {
     render(
       await ProductDetailPage({
         params: Promise.resolve({ slug: "lg-wd110an" }),
       }),
     );
 
-    expect(screen.getByRole("heading", { name: "กำลังตรวจสอบรหัสรุ่นนี้", level: 2 })).toBeVisible();
-    expect(screen.getByText(/ไม่นำสเปกของรุ่นใกล้เคียงมาแสดงแทน/)).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "กำลังตรวจสอบรหัสรุ่นนี้" })).not.toBeInTheDocument();
+    expect(screen.queryByText(/ไม่นำสเปกของรุ่นใกล้เคียงมาแสดงแทน/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/หน้า LG มีข้อมูลขัดกัน/)).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "ข้อมูลจำเพาะของรุ่นนี้" })).not.toBeInTheDocument();
+  });
+
+  it("does not name a foreign LG site as the specification source", async () => {
+    render(
+      await ProductDetailPage({
+        params: Promise.resolve({ slug: "lg-rc90v9av2w" }),
+      }),
+    );
+
+    expect(screen.queryByText("LG Portugal")).not.toBeInTheDocument();
+    expect(screen.queryByText("LG Hong Kong")).not.toBeInTheDocument();
+    expect(screen.getAllByText("LG").length).toBeGreaterThan(0);
+  });
+
+  it("does not show LG data-conflict notes on the WashTower page", async () => {
+    render(
+      await ProductDetailPage({
+        params: Promise.resolve({ slug: "lg-washtower-wt1410nheg" }),
+      }),
+    );
+
+    expect(screen.queryByText(/หน้า LG มีข้อมูลขัดกัน/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/รอ LG ยืนยัน/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/ตารางสเปก 12 กก/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/LG Hong Kong|LG Portugal|รหัสสเปก LG/)).not.toBeInTheDocument();
+    expect(screen.getByText("14 กก.")).toBeVisible();
   });
 });

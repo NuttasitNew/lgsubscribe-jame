@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { catalogProducts } from "@/lib/catalog-products";
@@ -11,12 +11,35 @@ function normalizeSearchValue(value: string) {
   return value.trim().toLocaleLowerCase("th-TH");
 }
 
+function prefersReducedMotion() {
+  return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function scrollWindowToTop() {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: prefersReducedMotion() ? "auto" : "smooth",
+  });
+}
+
 export function ProductCatalogBrowser() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  const previousFilter = useRef({ query: "", category: "all" });
 
   const normalizedQuery = normalizeSearchValue(query);
   const hasActiveFilter = activeCategory !== "all" || normalizedQuery.length > 0;
+
+  useLayoutEffect(() => {
+    const previous = previousFilter.current;
+    const filterChanged = previous.query !== normalizedQuery || previous.category !== activeCategory;
+    previousFilter.current = { query: normalizedQuery, category: activeCategory };
+
+    if (!filterChanged) return;
+
+    scrollWindowToTop();
+  }, [activeCategory, normalizedQuery]);
 
   const filteredProducts = useMemo(
     () =>
