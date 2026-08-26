@@ -42,6 +42,10 @@ describe("ProductCard", () => {
     expect(overlay).toHaveClass("right-3", "top-3");
     expect(overlay).not.toHaveClass("left-3");
     expect(screen.getByText(product.description)).toHaveClass("line-clamp-2");
+
+    const viewCount = screen.getByTestId("product-card-view-count");
+    expect(viewCount).toHaveClass("left-3", "top-3", "z-20");
+    expect(viewCount).not.toHaveClass("right-3");
     expect(screen.getByTestId("product-view-count")).toHaveTextContent("ผู้เข้าชม");
   });
 

@@ -55,8 +55,8 @@ describe("product detail spacing", () => {
 
     expect(overviewSection).toHaveClass("pt-6", "sm:pt-8", "lg:pt-10");
     expect(overviewSection).not.toHaveClass("section-space");
-    expect(screen.getAllByTestId("product-view-count").length).toBeGreaterThan(0);
-    expect(screen.getAllByTestId("product-view-count")[0]).toHaveTextContent("ผู้เข้าชม");
+    expect(screen.getByTestId("product-view-count")).toHaveTextContent("ผู้เข้าชม");
+    expect(screen.getByTestId("product-view-count").parentElement).toHaveClass("left-3", "top-3", "z-20");
   });
 
   it("pins the model name to the right of the all-products back link under the site header", async () => {

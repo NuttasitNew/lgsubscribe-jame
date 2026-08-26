@@ -3,15 +3,20 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { ProductViewCount } from "@/components/live-view-count";
 import type { ProductGalleryImage } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function ProductGallery({
   images,
   productName,
+  model,
+  countSession = false,
 }: {
   images: ProductGalleryImage[];
   productName: string;
+  model?: string;
+  countSession?: boolean;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const mainTrackRef = useRef<HTMLDivElement>(null);
@@ -122,6 +127,12 @@ export function ProductGallery({
               <ChevronRight className="size-5" aria-hidden="true" />
             </button>
           </>
+        ) : null}
+
+        {model ? (
+          <div className="pointer-events-none absolute left-3 top-3 z-20">
+            <ProductViewCount model={model} countSession={countSession} />
+          </div>
         ) : null}
 
         <span

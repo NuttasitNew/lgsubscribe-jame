@@ -18,7 +18,7 @@ afterEach(cleanup);
 
 describe("ProductGallery", () => {
   it("lets customers switch images without overlay labels on the photo", () => {
-    render(<ProductGallery images={images} productName="LG WashTower" />);
+    render(<ProductGallery images={images} productName="LG WashTower" model="WT1410NHEG" />);
 
     expect(screen.queryByText("ภาพโปรโมชัน")).not.toBeInTheDocument();
     expect(screen.queryByText("ภาพสินค้าทางการ")).not.toBeInTheDocument();
@@ -28,6 +28,7 @@ describe("ProductGallery", () => {
     expect(promoImage).toHaveClass("object-contain");
     expect(promoImage).not.toHaveClass("p-2");
     expect(promoImage.closest("[data-gallery-stage]")).toHaveClass("aspect-square");
+    expect(screen.getByTestId("product-view-count").parentElement).toHaveClass("left-3", "top-3", "z-20");
 
     fireEvent.click(screen.getByRole("button", { name: "ดูภาพหน้าตรง" }));
     expect(screen.getByRole("img", { name: "ภาพหน้าตรง" })).toHaveClass("object-contain");

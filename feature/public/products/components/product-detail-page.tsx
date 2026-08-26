@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContactCta } from "@/components/contact-cta";
-import { ProductViewCount } from "@/components/live-view-count";
 import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { ProductGallery } from "@/feature/public/products/components/product-gallery";
@@ -149,15 +148,9 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         <div className="container-page">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
             <div className="grid min-w-0 gap-4 lg:sticky lg:top-[132px] lg:self-start">
-              <ProductGallery images={gallery} productName={product.name} />
+              <ProductGallery images={gallery} productName={product.name} model={product.model} countSession />
               <div className="rounded-2xl border border-black/10 bg-neutral-950 p-7 text-white">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-400">Product overview</p>
-                <ProductViewCount
-                  model={product.model}
-                  variant="detail"
-                  countSession
-                  className="mt-4 text-white/70 [&_.view-count-value]:text-white [&_.view-count-label]:text-white/80"
-                />
                 <p className="mt-8 text-5xl font-bold tracking-[-0.06em] text-white/10">{product.model}</p>
                 <dl className="mt-10 divide-y divide-white/10 border-y border-white/10 text-sm">
                   <div className="flex justify-between gap-4 py-4">
@@ -186,7 +179,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                 {product.name}
               </h1>
               <p className="mt-6 text-lg leading-8 text-muted-foreground">{product.description}</p>
-              <ProductViewCount model={product.model} variant="detail" countSession />
 
               {product.monthlyPrice !== null ? (
                 <div className="mt-8 rounded-2xl border border-red-100 bg-red-50 p-6">

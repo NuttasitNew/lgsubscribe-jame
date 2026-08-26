@@ -99,7 +99,6 @@ describe("ProductsPage knowledge visibility", () => {
     expect(screen.queryByRole("link", { name: /ดูสินค้าทั้ง 47 รุ่น/ })).not.toBeInTheDocument();
     expect(screen.queryByText("พบ 47 รุ่น")).not.toBeInTheDocument();
 
-    expect(screen.getByTestId("site-view-count")).toHaveTextContent("ผู้เข้าชมเว็บไซต์");
     expect(screen.getByTestId("category-filter")).toHaveTextContent(
       `ทั้งหมด (${knowledgeInventory.modelCount})`,
     );

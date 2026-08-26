@@ -44,52 +44,88 @@ function useLiveNow() {
   return useSyncExternalStore(subscribeLiveClock, getLiveNow, getLiveNow);
 }
 
-const sessionBonusByKey = new Map<string, number>();
-const sessionBonusListeners = new Set<Listener>();
-const sessionBonusTimers = new Map<string, number>();
+export function productViewStorageKey(model: string) {
+  return `lg-views:product:${model}`;
+}
 
-function subscribeSessionBonus(listener: Listener) {
-  sessionBonusListeners.add(listener);
+export function resetVisitBonuses() {
+  visitBonusByKey.clear();
+  visitBonusTimers.forEach((timeout) => window.clearTimeout(timeout));
+  visitBonusTimers.clear();
+}
+
+const visitBonusByKey = new Map<string, number>();
+const visitBonusListeners = new Set<Listener>();
+const visitBonusTimers = new Map<string, number>();
+
+function subscribeVisitBonus(listener: Listener) {
+  visitBonusListeners.add(listener);
   return () => {
-    sessionBonusListeners.delete(listener);
+    visitBonusListeners.delete(listener);
   };
 }
 
-function getSessionBonus(storageKey: string | null) {
+function getVisitBonus(storageKey: string | null) {
   if (!storageKey) return 0;
-  return sessionBonusByKey.get(storageKey) ?? 0;
+  return visitBonusByKey.get(storageKey) ?? 0;
 }
 
-function useSessionBonus(storageKey: string | null) {
+function readStoredVisit(storageKey: string) {
+  try {
+    if (localStorage.getItem(storageKey) === "1") return true;
+    if (sessionStorage.getItem(storageKey) === "1") {
+      localStorage.setItem(storageKey, "1");
+      return true;
+    }
+  } catch {
+    return false;
+  }
+  return false;
+}
+
+function writeStoredVisit(storageKey: string) {
+  try {
+    localStorage.setItem(storageKey, "1");
+  } catch {
+    // Private mode or a full store should not break the page.
+  }
+}
+
+function notifyVisitBonus() {
+  visitBonusListeners.forEach((listener) => listener());
+}
+
+function applyVisitBonus(storageKey: string) {
+  visitBonusByKey.set(storageKey, 1);
+  visitBonusTimers.delete(storageKey);
+  notifyVisitBonus();
+}
+
+function useVisitBonus(storageKey: string | null, recordVisit: boolean) {
   const bonus = useSyncExternalStore(
-    subscribeSessionBonus,
-    () => getSessionBonus(storageKey),
+    subscribeVisitBonus,
+    () => getVisitBonus(storageKey),
     () => 0,
   );
 
   useEffect(() => {
     if (!storageKey) return;
-    if (sessionBonusTimers.has(storageKey) || sessionBonusByKey.get(storageKey) === 1) return;
+    if (visitBonusByKey.get(storageKey) === 1) return;
 
-    let alreadyCounted = false;
-    try {
-      alreadyCounted = sessionStorage.getItem(storageKey) === "1";
-      if (!alreadyCounted) sessionStorage.setItem(storageKey, "1");
-    } catch {
-      alreadyCounted = true;
+    if (readStoredVisit(storageKey)) {
+      const timeout = window.setTimeout(() => applyVisitBonus(storageKey), 0);
+      visitBonusTimers.set(storageKey, timeout);
+      return () => window.clearTimeout(timeout);
     }
 
-    sessionBonusByKey.set(storageKey, 0);
-    const timeout = window.setTimeout(
-      () => {
-        sessionBonusByKey.set(storageKey, 1);
-        sessionBonusTimers.delete(storageKey);
-        sessionBonusListeners.forEach((listener) => listener());
-      },
-      alreadyCounted ? 0 : SESSION_TICK_MS,
-    );
-    sessionBonusTimers.set(storageKey, timeout);
-  }, [storageKey]);
+    if (!recordVisit) return;
+    if (visitBonusTimers.has(storageKey)) return;
+
+    writeStoredVisit(storageKey);
+    const timeout = window.setTimeout(() => applyVisitBonus(storageKey), SESSION_TICK_MS);
+    visitBonusTimers.set(storageKey, timeout);
+    return () => window.clearTimeout(timeout);
+  }, [recordVisit, storageKey]);
 
   return bonus;
 }
@@ -117,85 +153,64 @@ function LiveDot({ className }: { className?: string }) {
 
 export function SiteViewStats({ className }: { className?: string }) {
   const now = useLiveNow();
-  const bonus = useSessionBonus("lg-views:site");
+  const bonus = useVisitBonus("lg-views:site", true);
   const snapshot: ViewSnapshot = getSiteViewSnapshot(now);
   const total = snapshot.total + bonus;
   const current = Math.max(snapshot.current, bonus);
 
   return (
-    <div
+    <p
       data-testid="site-view-count"
-      className={cn(
-        "flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-black/10 bg-white px-5 py-4",
-        className,
-      )}
+      aria-label={`ผู้เข้าชมเว็บไซต์ ${formatViewCount(total)} คน${current > 0 ? ` กำลังมีผู้เข้าชม ${formatViewCount(current)} คน` : ""}`}
+      className={cn("flex flex-wrap items-center gap-x-2 gap-y-1 text-xs", className)}
     >
-      <div className="flex min-w-0 items-center gap-3">
-        <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-red-50 text-red-700">
-          <Eye className="size-5" aria-hidden="true" />
-          <LiveDot className="absolute right-1 top-1" />
+      <span className="flex items-center gap-1.5">
+        <Eye className="size-3.5 shrink-0 text-red-400" aria-hidden="true" />
+        <span>ผู้เข้าชมเว็บไซต์</span>
+        <CountNumber value={total} className="font-semibold text-white" />
+        <span>คน</span>
+      </span>
+      {current > 0 ? (
+        <span className="flex items-center gap-1.5">
+          <span aria-hidden="true">·</span>
+          <LiveDot />
+          <span>กำลังมีผู้เข้าชม</span>
+          <CountNumber value={current} className="font-semibold text-white" />
+          <span>คน</span>
         </span>
-        <div className="min-w-0">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-red-700">ผู้เข้าชมเว็บไซต์</p>
-          <p className="mt-0.5 text-2xl font-black leading-none text-neutral-950">
-            <CountNumber value={total} />
-            <span className="ml-1.5 text-sm font-semibold text-neutral-500">คน</span>
-          </p>
-        </div>
-      </div>
-      <p className="flex items-center gap-2 text-sm font-medium text-neutral-500">
-        <LiveDot />
-        {current > 0 ? `กำลังมีผู้เข้าชม ${formatViewCount(current)} คน` : "กำลังอัปเดตยอดเข้าชม"}
-      </p>
-    </div>
+      ) : null}
+    </p>
   );
 }
 
 export function ProductViewCount({
   model,
   countSession = false,
-  variant = "compact",
   className,
 }: {
   model: string;
   countSession?: boolean;
-  variant?: "compact" | "detail";
   className?: string;
 }) {
   const now = useLiveNow();
-  const bonus = useSessionBonus(countSession ? `lg-views:product:${model}` : null);
+  const bonus = useVisitBonus(productViewStorageKey(model), countSession);
   const snapshot = getProductViewSnapshot(model, now);
   const total = snapshot.total + bonus;
   const current = snapshot.current + bonus;
 
-  if (variant === "detail") {
-    return (
-      <div
-        data-testid="product-view-count"
-        className={cn("mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-neutral-600", className)}
-      >
-        <p className="view-count-label flex items-center gap-2 font-semibold text-neutral-800">
-          <Eye className="size-4 text-red-700" aria-hidden="true" />
-          <CountNumber value={total} className="view-count-value text-base font-black text-neutral-950" />
-          <span>ผู้เข้าชม</span>
-        </p>
-        <p className="flex items-center gap-2 text-neutral-500">
-          <LiveDot />
-          {current > 0 ? "มีคนกำลังดูรุ่นนี้อยู่" : "ยอดเข้าชมอัปเดตตามเวลาจริง"}
-        </p>
-      </div>
-    );
-  }
-
   return (
     <p
       data-testid="product-view-count"
-      className={cn("flex items-center gap-1.5 pt-1 text-xs font-medium text-neutral-500", className)}
+      aria-label={`${formatViewCount(total)} ผู้เข้าชม`}
+      className={cn(
+        "pointer-events-none flex items-center gap-1.5 whitespace-nowrap rounded-full bg-neutral-950/80 px-2.5 py-1 text-[11px] font-bold text-white",
+        className,
+      )}
     >
-      <Eye className="size-3.5 text-neutral-400" aria-hidden="true" />
-      <CountNumber value={total} className="font-bold text-neutral-700" />
+      <Eye className="size-3.5 shrink-0" aria-hidden="true" />
+      <CountNumber value={total} />
       <span>ผู้เข้าชม</span>
-      {current > 0 ? <LiveDot className="ml-0.5" /> : null}
+      {current > 0 ? <LiveDot className="bg-emerald-400" /> : null}
     </p>
   );
 }

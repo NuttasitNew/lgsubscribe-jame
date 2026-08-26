@@ -3,7 +3,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
-import { SiteViewStats } from "@/components/live-view-count";
 import { ProductCard } from "@/components/product-card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { catalogProducts } from "@/lib/catalog-products";
@@ -132,7 +131,6 @@ export function ProductCatalogBrowser() {
       </div>
 
       <div className="container-page py-5">
-        <SiteViewStats className="mb-5 sm:mb-6" />
         {filteredProducts.length > 0 ? (
           <div className="grid gap-10 sm:gap-12">
             {visibleGroups.map((group, groupIndex) => (

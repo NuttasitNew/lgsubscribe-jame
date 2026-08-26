@@ -25,6 +25,9 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
           fit="contain"
           className="rounded-none border-0"
         />
+        <div data-testid="product-card-view-count" className="absolute left-3 top-3 z-20">
+          <ProductViewCount model={product.model} />
+        </div>
         <div data-testid="product-card-mobile-meta" className="absolute right-3 top-3 z-10 sm:hidden">
           <span className="rounded-full bg-neutral-950/80 px-2.5 py-1 text-[11px] font-bold tracking-[0.12em] text-white">
             {product.model}
@@ -61,7 +64,6 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
             {product.warrantyYears !== null ? `สูงสุด ${product.warrantyYears} ปี` : "ตามแพ็กเกจ"}
           </span>
         </div>
-        <ProductViewCount model={product.model} />
       </CardContent>
       <CardFooter className="p-6 pt-0">
         <Button asChild variant="outline" className="w-full border-neutral-300">
