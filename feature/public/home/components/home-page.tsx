@@ -122,7 +122,7 @@ export function HomePage() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="px-8">
-                <Link href="/price/">เช็กแพ็กเกจและราคา</Link>
+                <Link href="/products/">เช็กแพ็กเกจและราคา</Link>
               </Button>
             </div>
           </div>

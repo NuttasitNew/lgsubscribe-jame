@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site";
 const footerNavigation = [
   { href: "/", label: "หน้าแรก" },
   { href: "/contact/", label: "ติดต่อเรา" },
-  { href: "/price/", label: "ราคาและโปรโมชัน" },
+  { href: "/products/", label: "สินค้าทั้งหมด" },
   { href: "/payment-options/", label: "ช่องทางชำระเงิน" },
 ] as const;
 

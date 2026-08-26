@@ -22,6 +22,10 @@ describe("backoffice SEO boundary", () => {
     ).toBe(false);
   });
 
+  it("does not list the retired price page", () => {
+    expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/price"))).toBe(false);
+  });
+
   it("does not keep public website copy about contract cancellation", () => {
     const files = [
       ...listSourceFiles("app/(public)"),
@@ -33,6 +37,20 @@ describe("backoffice SEO boundary", () => {
 
     for (const file of files) {
       expect(readFileSync(file, "utf8"), file).not.toMatch(/ยกเลิก|cancel-contract/);
+    }
+  });
+
+  it("does not keep public website links to the retired price page", () => {
+    const files = [
+      ...listSourceFiles("app/(public)"),
+      ...listSourceFiles("feature/public"),
+      ...listSourceFiles("components"),
+      "lib/site.ts",
+      "lib/current-page-label.ts",
+    ].filter((file) => file.endsWith(".ts") || file.endsWith(".tsx"));
+
+    for (const file of files) {
+      expect(readFileSync(file, "utf8"), file).not.toMatch(/\/price\//);
     }
   });
 

@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         destination: "/faq/",
         permanent: true,
       },
+      {
+        source: "/price",
+        destination: "/products/",
+        permanent: true,
+      },
     ];
   },
 };
