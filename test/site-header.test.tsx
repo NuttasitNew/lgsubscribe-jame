@@ -46,4 +46,10 @@ describe("SiteHeader", () => {
     expect(screen.queryByRole("link", { name: "โปรโมชัน" })).not.toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "สินค้า" })[0]).toHaveAttribute("href", "/products");
   });
+
+  it("does not put the site visitor count in the header", () => {
+    render(<SiteHeader />);
+
+    expect(screen.queryByTestId("site-view-count")).not.toBeInTheDocument();
+  });
 });

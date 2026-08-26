@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Clock3, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { SiteViewStats } from "@/components/live-view-count";
 import { siteConfig } from "@/lib/site";
 
 const footerNavigation = [
@@ -84,7 +85,10 @@ export function SiteFooter() {
 
       <div className="border-t border-white/10">
         <div className="container-page flex flex-col gap-3 py-6 text-xs leading-6 text-white/45 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} LG Subscribe Thailand. All rights reserved.</p>
+          <div className="grid gap-2">
+            <p>© {new Date().getFullYear()} LG Subscribe Thailand. All rights reserved.</p>
+            <SiteViewStats />
+          </div>
           <p className="max-w-3xl md:text-right">
             ราคา โปรโมชัน และความคุ้มครองอาจเปลี่ยนแปลง
             โปรดอ่านรายละเอียดในสัญญาและตรวจสอบกับเจ้าหน้าที่ก่อนยืนยันทุกครั้ง

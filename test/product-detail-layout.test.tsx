@@ -90,5 +90,8 @@ describe("product detail spacing", () => {
 
     expect(screen.getByRole("main")).not.toHaveClass("pb-36");
     expect(screen.getByRole("contentinfo")).toHaveClass("pb-28", "lg:pb-0");
+    expect(within(screen.getByRole("contentinfo")).getByTestId("site-view-count")).toHaveTextContent(
+      "ผู้เข้าชมเว็บไซต์",
+    );
   });
 });
