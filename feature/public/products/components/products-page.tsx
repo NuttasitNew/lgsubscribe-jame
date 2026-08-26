@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ContactCta } from "@/components/contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { ProductCatalogBrowser } from "@/feature/public/products/components/product-catalog-browser";
@@ -30,7 +31,11 @@ export default function ProductsPage() {
       <JsonLd data={itemListSchema} />
       <h1 className="sr-only">สินค้าเครื่องใช้ไฟฟ้า LG แบบรายเดือน</h1>
 
-      <ProductCatalogBrowser />
+      <Suspense
+        fallback={<section className="min-h-[50vh] bg-[#f4f1ed]" aria-label="รายการสินค้าจากเอกสาร" />}
+      >
+        <ProductCatalogBrowser />
+      </Suspense>
       <ContactCta />
     </>
   );

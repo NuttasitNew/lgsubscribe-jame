@@ -3,9 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Search, X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { LineMark } from "@/components/line-mark";
+import { ProductSearchSheet } from "@/components/product-search-sheet";
 import { Button } from "@/components/ui/button";
+import { isProductsSection } from "@/lib/catalog-search";
 import { getCurrentPageLabel } from "@/lib/current-page-label";
 import {
   Sheet,
@@ -34,7 +36,7 @@ const navigationDescriptions: Record<string, string> = {
 export function MobileDock() {
   const pathname = usePathname();
   const currentPageLabel = getCurrentPageLabel(pathname);
-  const isProductsPage = pathname === "/products/";
+  const showProductSearch = isProductsSection(pathname);
 
   return (
     <div className="fixed inset-x-0 bottom-3 z-50 px-3 pb-[env(safe-area-inset-bottom)] lg:hidden">
@@ -135,26 +137,8 @@ export function MobileDock() {
           </SheetContent>
         </Sheet>
 
-        {isProductsPage ? (
-          <Link
-            href="#catalog-search"
-            className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[1.25rem] bg-primary px-4 text-left text-white transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-            aria-label="ไปยังช่องค้นหาสินค้า"
-          >
-            <span
-              aria-hidden="true"
-              className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/15"
-            >
-              <Search className="size-5" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-[10px] font-medium tracking-normal text-white/65">
-                ค้นหาได้ทันที
-              </span>
-              <span className="block truncate text-sm font-bold">ชื่อ หมวด หรือรหัสรุ่น</span>
-            </span>
-            <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
-          </Link>
+        {showProductSearch ? (
+          <ProductSearchSheet />
         ) : (
           <Sheet>
             <SheetTrigger asChild>

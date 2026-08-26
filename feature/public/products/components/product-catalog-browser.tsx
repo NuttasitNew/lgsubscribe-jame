@@ -1,18 +1,18 @@
 "use client";
 
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { catalogProducts } from "@/lib/catalog-products";
+import { filterCatalogProducts, normalizeSearchValue } from "@/lib/catalog-search";
 import { productKnowledgeGuides } from "@/lib/product-knowledge";
-import { cn } from "@/lib/utils";
-
-function normalizeSearchValue(value: string) {
-  return value.trim().toLocaleLowerCase("th-TH");
-}
 
 function prefersReducedMotion() {
-  return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 function scrollWindowToTop() {
@@ -24,9 +24,17 @@ function scrollWindowToTop() {
 }
 
 export function ProductCatalogBrowser() {
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const searchParams = useSearchParams();
+  const urlQuery = searchParams.get("q") ?? "";
+  const urlCategory = searchParams.get("category") ?? "all";
+  const [query, setQuery] = useState(urlQuery);
+  const [activeCategory, setActiveCategory] = useState(urlCategory);
   const previousFilter = useRef({ query: "", category: "all" });
+
+  useEffect(() => {
+    setQuery(urlQuery);
+    setActiveCategory(urlCategory);
+  }, [urlCategory, urlQuery]);
 
   const normalizedQuery = normalizeSearchValue(query);
   const hasActiveFilter = activeCategory !== "all" || normalizedQuery.length > 0;
@@ -42,18 +50,8 @@ export function ProductCatalogBrowser() {
   }, [activeCategory, normalizedQuery]);
 
   const filteredProducts = useMemo(
-    () =>
-      catalogProducts.filter((product) => {
-        const matchesCategory = activeCategory === "all" || product.category === activeCategory;
-        const searchableText = normalizeSearchValue(
-          [product.name, product.model, product.category, product.description, ...product.highlights].join(
-            " ",
-          ),
-        );
-
-        return matchesCategory && (!normalizedQuery || searchableText.includes(normalizedQuery));
-      }),
-    [activeCategory, normalizedQuery],
+    () => filterCatalogProducts(query, activeCategory),
+    [activeCategory, query],
   );
 
   const visibleGroups = hasActiveFilter
@@ -78,11 +76,11 @@ export function ProductCatalogBrowser() {
     >
       <div
         id="catalog-search"
-        className="sticky top-[76px] z-30 scroll-mt-[92px] border-b border-black/10 bg-white/95 py-4 shadow-[0_10px_24px_rgba(0,0,0,0.05)] backdrop-blur-xl sm:py-5"
+        className="sticky top-[76px] z-30 hidden scroll-mt-[92px] border-b border-black/10 bg-white/95 py-4 shadow-[0_10px_24px_rgba(0,0,0,0.05)] backdrop-blur-xl lg:block lg:py-5"
       >
         <div className="container-page">
-          <div>
-            <label className="relative block">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <label className="relative min-w-0 flex-1">
               <span className="sr-only">ค้นหาสินค้า LG</span>
               <Search
                 aria-hidden="true"
@@ -106,53 +104,33 @@ export function ProductCatalogBrowser() {
                 </button>
               ) : null}
             </label>
-          </div>
 
-          <nav aria-label="กรองตามหมวดสินค้า" className="mt-4">
-            <div
-              data-testid="category-filter-list"
-              className="scrollbar-none flex gap-2 overflow-x-auto pb-1"
-            >
-              <button
-                type="button"
-                aria-label={`สินค้าทั้งหมด ${catalogProducts.length} รุ่น`}
-                aria-pressed={activeCategory === "all"}
-                onClick={() => setActiveCategory("all")}
-                className={cn(
-                  "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700 focus-visible:ring-offset-2",
-                  activeCategory === "all"
-                    ? "border-neutral-950 bg-neutral-950 text-white"
-                    : "border-black/10 bg-[#f8f6f3] text-neutral-700 hover:border-red-200 hover:bg-red-50 hover:text-red-800",
-                )}
-              >
-                ทั้งหมด
-                <span className="text-xs tabular-nums opacity-65">{catalogProducts.length}</span>
-              </button>
-
-              {productKnowledgeGuides.map((guide) => (
-                <button
-                  key={guide.slug}
-                  type="button"
-                  aria-label={`${guide.category} ${guide.models.length} รุ่น`}
-                  aria-pressed={activeCategory === guide.category}
-                  onClick={() => setActiveCategory(guide.category)}
-                  className={cn(
-                    "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700 focus-visible:ring-offset-2",
-                    activeCategory === guide.category
-                      ? "border-red-700 bg-red-700 text-white"
-                      : "border-black/10 bg-[#f8f6f3] text-neutral-700 hover:border-red-200 hover:bg-red-50 hover:text-red-800",
-                  )}
+            <div className="w-[11.25rem] shrink-0 sm:w-60 lg:w-72">
+              <Select value={activeCategory} onValueChange={setActiveCategory}>
+                <SelectTrigger
+                  aria-label="กรองตามหมวดสินค้า"
+                  data-testid="category-filter"
+                  className="h-14 gap-2 rounded-2xl border-black/15 bg-[#faf9f7] px-4 text-sm font-bold text-neutral-950 shadow-none transition focus:border-red-700 focus:bg-white focus:ring-4 focus:ring-red-700/10 [&>span]:line-clamp-none [&>span]:block [&>span]:min-w-0 [&>span]:flex-1 [&>span]:truncate [&>span]:text-left [&>svg]:size-4 [&>svg]:shrink-0"
                 >
-                  {guide.category}
-                  <span className="text-xs tabular-nums opacity-65">{guide.models.length}</span>
-                </button>
-              ))}
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="z-[60] rounded-2xl border-black/10 bg-white">
+                  <SelectItem value="all" className="font-semibold">
+                    ทั้งหมด ({catalogProducts.length})
+                  </SelectItem>
+                  {productKnowledgeGuides.map((guide) => (
+                    <SelectItem key={guide.slug} value={guide.category} className="font-semibold">
+                      {guide.category} ({guide.models.length})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </nav>
+          </div>
         </div>
       </div>
 
-      <div className="container-page py-10 sm:py-16 lg:py-20">
+      <div className="container-page py-5">
         {filteredProducts.length > 0 ? (
           <div className="grid gap-10 sm:gap-12">
             {visibleGroups.map((group, groupIndex) => (
@@ -160,7 +138,7 @@ export function ProductCatalogBrowser() {
                 key={group.slug}
                 id={`catalog-${group.slug}`}
                 aria-labelledby={`catalog-${group.slug}-title`}
-                className="scroll-mt-[156px] lg:scroll-mt-[180px]"
+                className="scroll-mt-[92px] lg:scroll-mt-[180px]"
               >
                 <div className="flex items-end justify-between gap-3 border-b border-black/10 pb-4 sm:pb-5">
                   <div>
@@ -182,11 +160,7 @@ export function ProductCatalogBrowser() {
                 <div className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                   {group.products.map((product, index) => (
                     <div key={product.slug} data-testid="catalog-model-card">
-                      <ProductCard
-                        product={product}
-                        eager={groupIndex === 0 && index === 0}
-                        compactOnMobile
-                      />
+                      <ProductCard product={product} eager={groupIndex === 0 && index === 0} />
                     </div>
                   ))}
                 </div>

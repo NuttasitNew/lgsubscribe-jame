@@ -1,8 +1,21 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ProductsPage from "@/feature/public/products/components/products-page";
 import { allProducts, catalogProducts } from "@/lib/catalog-products";
 import { knowledgeInventory, productKnowledgeGuides } from "@/lib/product-knowledge";
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/products/",
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
+}));
+
+async function chooseCategory(optionName: string | RegExp) {
+  const user = userEvent.setup();
+  await user.click(screen.getByRole("combobox", { name: "กรองตามหมวดสินค้า" }));
+  await user.click(screen.getByRole("option", { name: optionName }));
+}
 
 beforeEach(() => {
   vi.spyOn(window, "scrollTo").mockImplementation(() => {});
@@ -37,14 +50,21 @@ describe("ProductsPage knowledge visibility", () => {
     const cards = screen.getAllByTestId("catalog-model-card");
     for (const [index, card] of cards.entries()) {
       const product = catalogProducts[index];
+      const cardImage = product.promotionImage ?? product.image;
       expect(decodeURIComponent(within(card).getByRole("img").getAttribute("src") ?? "")).toContain(
-        product.image,
+        cardImage,
       );
       expect(product.image).toMatch(/^\/images\/products\/lg-catalog\//);
+      if (product.promotionImage) {
+        expect(product.promotionImage).toMatch(/^\/images\/products\/promotions\//);
+      }
       expect(within(card).getByRole("link", { name: "ดูรายละเอียด" })).toHaveAttribute(
         "href",
         `/products/${product.slug}`,
       );
+      expect(within(card).getByRole("img")).toHaveClass("object-contain");
+      expect(within(card).getByRole("img").closest("[data-image-slot=image]")).toHaveClass("aspect-square");
+      expect(card.firstChild).not.toHaveClass("max-sm:grid");
     }
   });
 
@@ -70,7 +90,7 @@ describe("ProductsPage knowledge visibility", () => {
     expect(new Set(allProducts.map((product) => product.model)).size).toBe(allProducts.length);
   });
 
-  it("starts with a sticky finder while keeping a semantic page heading", () => {
+  it("keeps the desktop finder while the mobile dock owns search on small screens", () => {
     render(<ProductsPage />);
 
     expect(
@@ -79,9 +99,18 @@ describe("ProductsPage knowledge visibility", () => {
     expect(screen.queryByRole("link", { name: /ดูสินค้าทั้ง 47 รุ่น/ })).not.toBeInTheDocument();
     expect(screen.queryByText("พบ 47 รุ่น")).not.toBeInTheDocument();
 
+    expect(screen.getByTestId("category-filter")).toHaveTextContent(
+      `ทั้งหมด (${knowledgeInventory.modelCount})`,
+    );
+
     const catalogRegion = screen.getByRole("region", { name: "รายการสินค้าจากเอกสาร" });
     expect(catalogRegion).toHaveAttribute("id", "product-knowledge");
-    expect(document.querySelector("#catalog-search")).toHaveClass("sticky", "top-[76px]");
+    expect(document.querySelector("#catalog-search")).toHaveClass(
+      "hidden",
+      "lg:block",
+      "sticky",
+      "top-[76px]",
+    );
     expect(within(catalogRegion).getAllByTestId("catalog-model-card")).toHaveLength(
       knowledgeInventory.modelCount,
     );
@@ -89,14 +118,14 @@ describe("ProductsPage knowledge visibility", () => {
     expect(screen.queryByRole("button", { name: /ดูเพิ่มอีก/ })).not.toBeInTheDocument();
   });
 
-  it("filters the catalog by category and model code", () => {
+  it("filters the catalog by category and model code", async () => {
+    const user = userEvent.setup();
     render(<ProductsPage />);
 
-    const categoryNavigation = screen.getByRole("navigation", { name: "กรองตามหมวดสินค้า" });
-    const categoryButtons = within(categoryNavigation).getAllByRole("button");
-    expect(categoryButtons).toHaveLength(productKnowledgeGuides.length + 1);
+    await user.click(screen.getByRole("combobox", { name: "กรองตามหมวดสินค้า" }));
+    expect(screen.getAllByRole("option")).toHaveLength(productKnowledgeGuides.length + 1);
+    await user.click(screen.getByRole("option", { name: /เครื่องฟอกอากาศ/ }));
 
-    fireEvent.click(within(categoryNavigation).getByRole("button", { name: "เครื่องฟอกอากาศ 6 รุ่น" }));
     expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(6);
     expect(screen.getByRole("heading", { name: "เครื่องฟอกอากาศ", level: 2 })).toBeInTheDocument();
     expect(screen.queryByText("SEQ13A")).not.toBeInTheDocument();
@@ -105,7 +134,7 @@ describe("ProductsPage knowledge visibility", () => {
       target: { value: "AS35GGW10" },
     });
     expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(1);
-    expect(screen.getByText("AS35GGW10")).toBeVisible();
+    expect(screen.getAllByText("AS35GGW10")[0]).toBeVisible();
   });
 
   it("does not show LG source-conflict notes on the catalog", () => {
@@ -118,7 +147,7 @@ describe("ProductsPage knowledge visibility", () => {
     expect(screen.queryByText(/LG Hong Kong|LG Portugal/)).not.toBeInTheDocument();
   });
 
-  it("scrolls back to the top after searching or changing category", () => {
+  it("scrolls back to the top after searching or changing category", async () => {
     render(<ProductsPage />);
     expect(window.scrollTo).not.toHaveBeenCalled();
 
@@ -132,7 +161,7 @@ describe("ProductsPage knowledge visibility", () => {
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
 
     vi.mocked(window.scrollTo).mockClear();
-    fireEvent.click(screen.getByRole("button", { name: "เครื่องฟอกอากาศ 6 รุ่น" }));
+    await chooseCategory(/เครื่องฟอกอากาศ/);
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
   });
 });

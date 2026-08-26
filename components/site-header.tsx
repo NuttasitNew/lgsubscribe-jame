@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LineMark } from "@/components/line-mark";
+import { SiteHeaderActions } from "@/components/site-header-actions";
 import { siteConfig } from "@/lib/site";
 
 const headerNavigation = [
@@ -49,12 +50,7 @@ export function SiteHeader() {
           <LineMark className="size-5" /> สอบถามผ่าน LINE
         </a>
 
-        <Link
-          href="/products/"
-          className="rounded-[5px] border border-black/10 bg-white px-4 py-2 text-xs font-bold text-neutral-800 xl:hidden"
-        >
-          สินค้า
-        </Link>
+        <SiteHeaderActions />
       </div>
     </header>
   );
