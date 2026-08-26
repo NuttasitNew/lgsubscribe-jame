@@ -46,7 +46,7 @@ function useLiveNow() {
 
 const sessionBonusByKey = new Map<string, number>();
 const sessionBonusListeners = new Set<Listener>();
-const sessionBonusTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const sessionBonusTimers = new Map<string, number>();
 
 function subscribeSessionBonus(listener: Listener) {
   sessionBonusListeners.add(listener);
