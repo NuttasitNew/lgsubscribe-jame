@@ -1,5 +1,7 @@
+import { attachPromotionImage } from "@/lib/promotion-images";
 import { productKnowledgeGuides } from "@/lib/product-knowledge";
 import { products as featuredProducts, type Product } from "@/lib/site";
+import { getSubscriptionStartingPrice } from "@/lib/subscription-starting-prices";
 
 type CatalogProductSource = {
   name: string;
@@ -372,13 +374,14 @@ export const catalogProducts: Product[] = productKnowledgeGuides.flatMap((guide)
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "")}`;
-    return {
+    return attachPromotionImage({
       slug,
       name: source.name,
       model,
       category: guide.category,
       description: source.description,
-      monthlyPrice: featuredProduct?.monthlyPrice ?? null,
+      monthlyPrice:
+        getSubscriptionStartingPrice(model, guide.category) ?? featuredProduct?.monthlyPrice ?? null,
       contractMonths: featuredProduct?.contractMonths ?? null,
       warrantyYears: featuredProduct?.warrantyYears ?? null,
       image: source.image,
@@ -390,7 +393,7 @@ export const catalogProducts: Product[] = productKnowledgeGuides.flatMap((guide)
         : featuredProduct?.specifications,
       gallery: featuredProduct?.gallery,
       reviews: featuredProduct?.reviews,
-    };
+    });
   }),
 );
 
@@ -398,7 +401,14 @@ const catalogModelCodes = new Set(catalogProducts.map((product) => product.model
 
 export const allProducts = [
   ...catalogProducts,
-  ...featuredProducts.filter((product) => !catalogModelCodes.has(product.model)),
+  ...featuredProducts
+    .filter((product) => !catalogModelCodes.has(product.model))
+    .map((product) =>
+      attachPromotionImage({
+        ...product,
+        monthlyPrice: getSubscriptionStartingPrice(product.model, product.category) ?? product.monthlyPrice,
+      }),
+    ),
 ];
 
 export function getCatalogProduct(slug: string) {

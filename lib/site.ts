@@ -56,6 +56,8 @@ export type Product = {
   /** LG Subscribe source used together with the supplied catalog to verify sales context. */
   subscriptionSource: string;
   highlights: string[];
+  /** Public promotion still used as the catalog thumbnail when this model has a matched asset. */
+  promotionImage?: string;
   gallery?: ProductGalleryImage[];
   specifications?: { label: string; value: string }[];
   reviews?: ProductReview[];
@@ -64,7 +66,7 @@ export type Product = {
 export type ProductGalleryImage = {
   src: string;
   alt: string;
-  kind: "official" | "generated";
+  kind: "official" | "generated" | "promotion";
 };
 
 export type CustomerStory = {

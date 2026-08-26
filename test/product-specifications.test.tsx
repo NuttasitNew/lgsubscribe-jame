@@ -51,9 +51,9 @@ describe("official LG product specifications", () => {
     const bounceProduct = allProducts.find((product) => product.model === "BOUNCE");
     const stageProduct = allProducts.find((product) => product.model === "STAGE301");
 
-    expect(grabProduct?.monthlyPrice).toBeNull();
-    expect(bounceProduct?.monthlyPrice).toBeNull();
-    expect(stageProduct?.monthlyPrice).toBeNull();
+    expect(grabProduct?.monthlyPrice).toBe(109);
+    expect(bounceProduct?.monthlyPrice).toBe(139);
+    expect(stageProduct?.monthlyPrice).toBe(299);
     expect(grabProduct?.category).toBe("ลำโพง");
     expect(bounceProduct?.category).toBe("ลำโพง");
     expect(stageProduct?.category).toBe("ลำโพง");
