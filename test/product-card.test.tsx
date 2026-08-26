@@ -42,6 +42,7 @@ describe("ProductCard", () => {
     expect(overlay).toHaveClass("right-3", "top-3");
     expect(overlay).not.toHaveClass("left-3");
     expect(screen.getByText(product.description)).toHaveClass("line-clamp-2");
+    expect(screen.getByTestId("product-view-count")).toHaveTextContent("ผู้เข้าชม");
   });
 
   it("lets the promotion still fill the card instead of shrinking into a mobile thumbnail", () => {

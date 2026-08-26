@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ImageFallback } from "@/components/image-fallback";
+import { ProductViewCount } from "@/components/live-view-count";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -60,6 +61,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
             {product.warrantyYears !== null ? `สูงสุด ${product.warrantyYears} ปี` : "ตามแพ็กเกจ"}
           </span>
         </div>
+        <ProductViewCount model={product.model} />
       </CardContent>
       <CardFooter className="p-6 pt-0">
         <Button asChild variant="outline" className="w-full border-neutral-300">
