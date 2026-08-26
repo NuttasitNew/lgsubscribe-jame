@@ -12,7 +12,6 @@ const staticPages = [
   "/application-guide/",
   "/price/",
   "/payment-options/",
-  "/cancel-contract/",
   "/terms/",
   "/service-and-maintenance/",
   "/authorized/",

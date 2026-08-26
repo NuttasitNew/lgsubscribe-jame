@@ -16,7 +16,7 @@ export const metadata: Metadata = createPageMetadata({
 
 const questions = [
   { q: "LG Subscribe คืออะไร?", a: "บริการเช่าซื้อเครื่องใช้ไฟฟ้า LG แบบชำระรายเดือน โดยสิทธิรับประกันและบริการซ่อมบำรุงขึ้นอยู่กับสินค้า แพ็กเกจ และแบบฟอร์มคำสั่งซื้อ" },
-  { q: "LG Subscribe ดีไหม?", a: "เหมาะกับคนที่ต้องการกระจายค่าใช้จ่ายและให้ความสำคัญกับบริการดูแล แต่ควรเปรียบเทียบยอดชำระรวม ระยะสัญญา และค่าธรรมเนียมยกเลิกกับการซื้อรูปแบบอื่น" },
+  { q: "LG Subscribe ดีไหม?", a: "เหมาะกับคนที่ต้องการกระจายค่าใช้จ่ายและให้ความสำคัญกับบริการดูแล แต่ควรเปรียบเทียบยอดชำระรวมและระยะสัญญากับการซื้อรูปแบบอื่น" },
   { q: "LG Subscribe คุ้มไหม?", a: "ความคุ้มขึ้นอยู่กับราคาสินค้า ระยะสัญญา ความถี่ของบริการ และการใช้งานจริง ควรขอแบบฟอร์มคำสั่งซื้อเพื่อคำนวณยอดรวมก่อนตัดสินใจ" },
 ];
 
@@ -74,7 +74,7 @@ export default function WhatIsPage() {
                   <GeneratedIcon src="/images/generated/icon-document-v1.webp" alt="" className="size-12" />
                   <div>
                     <h2 className="text-xl font-bold text-amber-950">ข้อควรรู้ก่อนตัดสินใจ</h2>
-                    <p className="mt-3 leading-7 text-amber-900/80">สัญญามีระยะผูกพันและอาจมีค่าธรรมเนียมหากยกเลิกก่อนกำหนด บริษัทตรวจสอบเครดิตก่อนอนุมัติ และสิทธิบริการอาจหยุดเมื่อผิดนัดชำระ โปรดอ่านแบบฟอร์มคำสั่งซื้อและสัญญาฉบับเต็มก่อนลงนาม</p>
+                    <p className="mt-3 leading-7 text-amber-900/80">สัญญามีระยะผูกพัน บริษัทตรวจสอบเครดิตก่อนอนุมัติ และสิทธิบริการอาจหยุดเมื่อผิดนัดชำระ โปรดอ่านแบบฟอร์มคำสั่งซื้อและสัญญาฉบับเต็มก่อนลงนาม</p>
                   </div>
                 </div>
               </div>
@@ -89,7 +89,7 @@ export default function WhatIsPage() {
 
               <div className="mt-10 flex flex-wrap gap-3">
                 <Button asChild className="bg-red-600 hover:bg-red-700"><Link href="/application-guide/">ดูขั้นตอนสมัคร <span aria-hidden="true">→</span></Link></Button>
-                <Button asChild variant="outline"><Link href="/terms/">อ่านเรื่องสัญญาและการยกเลิก</Link></Button>
+                <Button asChild variant="outline"><Link href="/terms/">อ่านสรุปเงื่อนไขสัญญา</Link></Button>
               </div>
             </div>
           </div>

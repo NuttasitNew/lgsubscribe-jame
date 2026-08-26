@@ -1,10 +1,39 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 
+function listSourceFiles(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name);
+    return entry.isDirectory() ? listSourceFiles(path) : [path];
+  });
+}
+
 describe("backoffice SEO boundary", () => {
   it("never exposes an internal route through sitemap", () => {
     expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/backoffice"))).toBe(false);
+  });
+
+  it("does not list the retired cancel-contract page", () => {
+    expect(
+      sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/cancel-contract")),
+    ).toBe(false);
+  });
+
+  it("does not keep public website copy about contract cancellation", () => {
+    const files = [
+      ...listSourceFiles("app/(public)"),
+      ...listSourceFiles("feature/public"),
+      ...listSourceFiles("components"),
+      "lib/site.ts",
+      "lib/current-page-label.ts",
+    ].filter((file) => file.endsWith(".ts") || file.endsWith(".tsx"));
+
+    for (const file of files) {
+      expect(readFileSync(file, "utf8"), file).not.toMatch(/ยกเลิก|cancel-contract/);
+    }
   });
 
   it("blocks crawlers from the entire backoffice subtree", () => {

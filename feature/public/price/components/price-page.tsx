@@ -16,7 +16,7 @@ export const metadata: Metadata = createPageMetadata({
 
 const priceFaqs = [
   { q: "LG Subscribe ราคาเริ่มต้นเท่าไร?", a: "ราคาแตกต่างตามสินค้า รุ่น ระยะสัญญา แพ็กเกจบริการ และโปรโมชัน ตัวเลขในเว็บไซต์นี้ใช้เพื่ออ้างอิงเบื้องต้นและต้องยืนยันในแบบฟอร์มคำสั่งซื้อ" },
-  { q: "ควรดูเฉพาะยอดต่อเดือนหรือไม่?", a: "ไม่ควร ควรคูณยอดต่อเดือนด้วยจำนวนงวด แล้วตรวจค่าติดตั้งส่วนเกิน ค่าบริการที่อยู่นอกเงื่อนไข และค่าธรรมเนียมยกเลิกก่อนกำหนดด้วย" },
+  { q: "ควรดูเฉพาะยอดต่อเดือนหรือไม่?", a: "ไม่ควร ควรคูณยอดต่อเดือนด้วยจำนวนงวด แล้วตรวจค่าติดตั้งส่วนเกิน และค่าบริการที่อยู่นอกเงื่อนไขด้วย" },
   { q: "ราคาในรูปโฆษณาคือราคาตลอดสัญญาหรือไม่?", a: "อาจเป็นราคาโปรโมชันเฉพาะช่วงหรือมีเงื่อนไขเพิ่มเติม ให้ขอใบเสนอราคาที่ระบุยอดของทุกช่วง จำนวนงวด และยอดรวมก่อนลงนาม" },
 ];
 
@@ -52,15 +52,15 @@ export default function PricePage() {
             {[
               { icon: "/images/generated/icon-monthly-payment-v1.webp", title: "ยอดรวมตลอดสัญญา", text: "ยอดรายเดือน × จำนวนงวด และตรวจว่าราคาเปลี่ยนตามช่วงโปรโมชันหรือไม่" },
               { icon: "/images/generated/icon-document-v1.webp", title: "ค่าใช้จ่ายอื่น", text: "อุปกรณ์ติดตั้งส่วนเกิน การย้ายเครื่อง และกรณีซ่อมนอกขอบเขตอาจมีค่าใช้จ่าย" },
-              { icon: "/images/generated/icon-protection-v1.webp", title: "เงื่อนไขยกเลิก", text: "ขอตารางคำนวณค่าธรรมเนียมก่อนกำหนดสำหรับอายุสัญญาที่กำลังเลือก" },
+              { icon: "/images/generated/icon-protection-v1.webp", title: "ขอบเขตบริการ", text: "ตรวจว่ารายการติดตั้ง รอบบำรุงรักษา และงานที่อยู่นอกเงื่อนไขมีค่าใช้จ่ายเพิ่มหรือไม่" },
             ].map((item) => <Card key={item.title}><CardContent className="p-7"><GeneratedIcon src={item.icon} alt="" /><h2 className="mt-5 text-xl font-bold">{item.title}</h2><p className="mt-3 leading-7 text-muted-foreground">{item.text}</p></CardContent></Card>)}
           </div>
 
           <div className="mt-12 rounded-2xl bg-neutral-950 p-8 text-white">
             <GeneratedIcon src="/images/generated/icon-document-v1.webp" alt="" />
             <h2 className="mt-5 text-2xl font-bold">ก่อนสมัคร ขอเอกสารที่เห็นตัวเลขครบ</h2>
-            <p className="mt-3 max-w-3xl leading-8 text-white/65">ควรมีชื่อรุ่น ยอดต่อเดือนทุกช่วง จำนวนงวด ยอดรวม รายการติดตั้ง ขอบเขตบริการ และค่าธรรมเนียมยกเลิกในเอกสารเดียวกัน</p>
-            <div className="mt-6 flex flex-wrap gap-3"><Button asChild className="bg-red-600 hover:bg-red-700"><Link href="/contact/">ขอราคาล่าสุด</Link></Button><Button asChild variant="outline" className="border-white/25 bg-transparent text-white hover:bg-white/10 hover:text-white"><Link href="/cancel-contract/">อ่านเรื่องยกเลิกสัญญา</Link></Button></div>
+            <p className="mt-3 max-w-3xl leading-8 text-white/65">ควรมีชื่อรุ่น ยอดต่อเดือนทุกช่วง จำนวนงวด ยอดรวม รายการติดตั้ง และขอบเขตบริการในเอกสารเดียวกัน</p>
+            <div className="mt-6 flex flex-wrap gap-3"><Button asChild className="bg-red-600 hover:bg-red-700"><Link href="/contact/">ขอราคาล่าสุด</Link></Button></div>
           </div>
         </div>
       </section>

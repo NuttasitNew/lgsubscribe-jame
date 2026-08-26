@@ -61,7 +61,7 @@ export default function ApplicationGuidePage() {
           <div className="mt-12 rounded-2xl border border-red-100 bg-red-50 p-7">
             <h2 className="text-2xl font-bold text-red-950">เช็กลิสต์ก่อนลงนาม</h2>
             <ul className="mt-5 grid gap-3">
-              {["ยอดชำระรายเดือนและยอดรวมตลอดสัญญา", "ระยะสัญญาและวันที่เริ่มนับ", "ขอบเขตรับประกันและรอบบำรุงรักษา", "ค่าธรรมเนียมยกเลิกก่อนกำหนด", "เงื่อนไขย้ายสถานที่ติดตั้งหรือย้ายบ้าน"].map((item) => <li key={item} className="flex gap-3 text-red-950/80"><span aria-hidden="true">✓</span>{item}</li>)}
+              {["ยอดชำระรายเดือนและยอดรวมตลอดสัญญา", "ระยะสัญญาและวันที่เริ่มนับ", "ขอบเขตรับประกันและรอบบำรุงรักษา", "ช่องทางชำระเงินและเงื่อนไขผิดนัด", "เงื่อนไขย้ายสถานที่ติดตั้งหรือย้ายบ้าน"].map((item) => <li key={item} className="flex gap-3 text-red-950/80"><span aria-hidden="true">✓</span>{item}</li>)}
             </ul>
           </div>
 

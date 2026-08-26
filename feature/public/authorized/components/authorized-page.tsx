@@ -18,7 +18,7 @@ const trustChecks = [
   { icon: "/images/generated/icon-protection-v1.webp", title: "ตรวจสอบ HTTPS และโดเมน", text: "อ่านชื่อโดเมนทุกตัวอักษรและหลีกเลี่ยงลิงก์ที่เลียนแบบหรือสะกดใกล้เคียง" },
   { icon: "/images/generated/icon-document-v1.webp", title: "ตรวจข้อมูลนิติบุคคล", text: "ตรวจชื่อบริษัท เลขทะเบียน และข้อมูลผู้รับเงินให้ตรงกับเอกสารทางการ" },
   { icon: "/images/generated/icon-consultation-v1.webp", title: "ยืนยันกับเจ้าหน้าที่", text: "หากได้รับโปรโมชันจากโฆษณาหรือโซเชียล ควรยืนยันราคาและช่องทางชำระอีกครั้ง" },
-  { icon: "/images/generated/icon-protection-v1.webp", title: "อ่านสัญญาก่อนโอน", text: "ขอแบบฟอร์มคำสั่งซื้อ ตารางชำระ และเงื่อนไขยกเลิกเป็นลายลักษณ์อักษร" },
+  { icon: "/images/generated/icon-protection-v1.webp", title: "อ่านสัญญาก่อนโอน", text: "ขอแบบฟอร์มคำสั่งซื้อ ตารางชำระ และเงื่อนไขสัญญาเป็นลายลักษณ์อักษร" },
 ];
 
 export default function AuthorizedPage() {

@@ -28,7 +28,6 @@ export const siteConfig = {
     "บริการช่าง LG ถึงบ้าน",
     "LG Subscribe ดีไหม",
     "LG Subscribe ไม่มีบัตรเครดิต",
-    "LG Subscribe ยกเลิกสัญญา",
   ],
 } as const;
 

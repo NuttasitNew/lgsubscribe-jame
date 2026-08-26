@@ -7,7 +7,6 @@ const staticPageLabels: Record<string, string> = {
   "/terms": "เงื่อนไขการเช่าใช้",
   "/contact": "ติดต่อเรา",
   "/application-guide": "ขั้นตอนการสมัคร",
-  "/cancel-contract": "การยกเลิกสัญญา",
   "/faq": "คำถามที่พบบ่อย",
   "/payment-options": "ช่องทางชำระเงิน",
   "/price": "ราคาและโปรโมชัน",
