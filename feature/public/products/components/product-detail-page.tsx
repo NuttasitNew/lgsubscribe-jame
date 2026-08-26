@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContactCta } from "@/components/contact-cta";
+import { ProductOrderCount } from "@/components/live-view-count";
 import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { ProductGallery } from "@/feature/public/products/components/product-gallery";
@@ -183,12 +184,19 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               {product.monthlyPrice !== null ? (
                 <div className="mt-8 rounded-2xl border border-red-100 bg-red-50 p-6">
                   <p className="text-sm text-red-800">เริ่มต้น</p>
-                  <p className="mt-1 text-4xl font-bold text-red-700">
-                    ฿{product.monthlyPrice.toLocaleString("th-TH")}
-                    <span className="text-base font-medium">/เดือน</span>
-                  </p>
+                  <div className="mt-1 flex items-end justify-between gap-4">
+                    <p className="text-4xl font-bold leading-none text-red-700">
+                      ฿{product.monthlyPrice.toLocaleString("th-TH")}
+                      <span className="text-base font-medium">/เดือน</span>
+                    </p>
+                    <ProductOrderCount model={product.model} className="text-red-800/80 [&_span]:text-red-800" />
+                  </div>
                 </div>
-              ) : null}
+              ) : (
+                <div className="mt-8">
+                  <ProductOrderCount model={product.model} />
+                </div>
+              )}
 
               <ul className="mt-8 grid gap-4">
                 {product.highlights.map((highlight) => (

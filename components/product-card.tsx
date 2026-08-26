@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ImageFallback } from "@/components/image-fallback";
-import { ProductViewCount } from "@/components/live-view-count";
+import { ProductOrderCount, ProductViewCount } from "@/components/live-view-count";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -47,22 +47,21 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
         <p className="line-clamp-2 min-h-0 text-sm leading-6 text-muted-foreground sm:line-clamp-3">
           {product.description}
         </p>
-        <div className="flex items-end justify-between gap-3 pt-2">
-          <div>
-            {product.monthlyPrice !== null ? (
-              <>
-                <p className="text-xs text-muted-foreground">เริ่มต้น</p>
-                <p className="text-2xl font-black text-red-700">
+        <div className="pt-2">
+          {product.monthlyPrice !== null ? (
+            <>
+              <p className="text-xs text-muted-foreground">เริ่มต้น</p>
+              <div className="mt-0.5 flex items-end justify-between gap-3">
+                <p className="text-2xl font-black leading-none text-red-700">
                   ฿{product.monthlyPrice.toLocaleString("th-TH")}
                   <span className="text-sm font-medium text-muted-foreground">/เดือน</span>
                 </p>
-              </>
-            ) : null}
-          </div>
-          <span className="flex items-center gap-1 text-xs text-muted-foreground">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-red-600" />
-            {product.warrantyYears !== null ? `สูงสุด ${product.warrantyYears} ปี` : "ตามแพ็กเกจ"}
-          </span>
+                <ProductOrderCount model={product.model} />
+              </div>
+            </>
+          ) : (
+            <ProductOrderCount model={product.model} className="justify-end" />
+          )}
         </div>
       </CardContent>
       <CardFooter className="mt-auto p-6 pt-0">

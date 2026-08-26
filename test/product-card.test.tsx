@@ -30,6 +30,12 @@ describe("ProductCard", () => {
     expect(screen.getAllByText("เริ่มต้น")[0]).toBeInTheDocument();
     expect(screen.getByText(/฿149/)).toBeInTheDocument();
     expect(screen.queryByText("สอบถามราคาล่าสุด")).not.toBeInTheDocument();
+    const orderCount = screen.getByTestId("product-order-count");
+    expect(orderCount).toHaveTextContent("สั่งซื้อ");
+    expect(orderCount.parentElement).toHaveClass("items-end");
+    expect(orderCount).toHaveClass("items-center");
+    expect(screen.queryByText("ตามแพ็กเกจ")).not.toBeInTheDocument();
+    expect(screen.queryByText(/สูงสุด \d+ ปี/)).not.toBeInTheDocument();
   });
 
   it("keeps only the model code on the image for the mobile card", () => {

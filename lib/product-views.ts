@@ -3,6 +3,8 @@
 export const VIEW_EPOCH_MS = Date.parse("2026-08-01T00:00:00+07:00");
 export const SITE_DAILY_VIEWS = 3000;
 export const PRODUCT_PAGES_PER_SITE_VISIT = 1.32;
+/** Product orders stay well below page views so the two numbers read as different signals. */
+export const ORDERS_PER_PRODUCT_VIEW = 0.042;
 
 const BANGKOK_OFFSET_MS = 7 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -110,6 +112,10 @@ export function getProductViewsAt(model: string, nowMs: number) {
   return quantizeViews(expectedProductViewsAt(model, nowMs), modelSalt(model));
 }
 
+export function getProductOrdersAt(model: string, nowMs: number) {
+  return quantizeViews(expectedProductOrdersAt(model, nowMs), modelSalt(model) ^ 0x9e3779b9);
+}
+
 export function getSiteViewSnapshot(nowMs: number): ViewSnapshot {
   return {
     total: getSiteViewsAt(nowMs),
@@ -146,6 +152,10 @@ export function expectedSiteViewsAt(nowMs: number) {
 
 export function expectedProductViewsAt(model: string, nowMs: number) {
   return expectedSiteViewsAt(nowMs) * PRODUCT_PAGES_PER_SITE_VISIT * productShare(model);
+}
+
+export function expectedProductOrdersAt(model: string, nowMs: number) {
+  return expectedProductViewsAt(model, nowMs) * ORDERS_PER_PRODUCT_VIEW;
 }
 
 function productShare(model: string) {

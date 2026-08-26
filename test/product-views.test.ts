@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { catalogProducts } from "@/lib/catalog-products";
 import {
+  ORDERS_PER_PRODUCT_VIEW,
   PRODUCT_PAGES_PER_SITE_VISIT,
   SITE_DAILY_VIEWS,
   VIEW_EPOCH_MS,
+  expectedProductOrdersAt,
   expectedProductViewsAt,
   expectedSiteViewsAt,
   getProductDailyViews,
+  getProductOrdersAt,
   getProductViewSnapshot,
   getProductViewWeight,
   getProductViewsAt,
@@ -135,6 +138,25 @@ describe("product view counters", () => {
     expect(expectedSiteViewsAt(laterSameMorning)).toBeGreaterThan(expectedSiteViewsAt(morning));
     expect(expectedProductViewsAt("S70TY", laterSameMorning)).toBeGreaterThan(
       expectedProductViewsAt("S70TY", morning),
+    );
+    expect(expectedProductOrdersAt("S70TY", laterSameMorning)).toBeGreaterThan(
+      expectedProductOrdersAt("S70TY", morning),
+    );
+  });
+
+  it("keeps product orders well below views and in the same popularity order", () => {
+    const now = VIEW_EPOCH_MS + 20 * DAY + 16 * HOUR;
+    const waterViews = getProductViewsAt("WD516AN", now);
+    const waterOrders = getProductOrdersAt("WD516AN", now);
+    const monitorOrders = getProductOrdersAt("27GX790A-B", now);
+
+    expect(getProductOrdersAt("WD516AN", VIEW_EPOCH_MS)).toBe(0);
+    expect(waterOrders).toBeGreaterThan(0);
+    expect(waterOrders).toBeLessThan(waterViews);
+    expect(waterOrders).toBeGreaterThan(monitorOrders);
+    expect(expectedProductOrdersAt("WD516AN", now)).toBeCloseTo(
+      expectedProductViewsAt("WD516AN", now) * ORDERS_PER_PRODUCT_VIEW,
+      6,
     );
   });
 });

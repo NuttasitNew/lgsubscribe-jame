@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
-import { Eye } from "lucide-react";
+import { Eye, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   formatViewCount,
+  getProductOrdersAt,
   getProductViewSnapshot,
   getSiteViewSnapshot,
   type ViewSnapshot,
@@ -211,6 +212,23 @@ export function ProductViewCount({
       <CountNumber value={total} />
       <span>ผู้เข้าชม</span>
       {current > 0 ? <LiveDot className="bg-emerald-400" /> : null}
+    </p>
+  );
+}
+
+export function ProductOrderCount({ model, className }: { model: string; className?: string }) {
+  const now = useLiveNow();
+  const total = getProductOrdersAt(model, now);
+
+  return (
+    <p
+      data-testid="product-order-count"
+      aria-label={`สั่งซื้อแล้ว ${formatViewCount(total)} ราย`}
+      className={cn("inline-flex items-center gap-1 text-xs leading-none text-muted-foreground", className)}
+    >
+      <ShoppingBag className="size-3.5 shrink-0" aria-hidden="true" />
+      <CountNumber value={total} className="font-semibold leading-none text-neutral-700" />
+      <span className="leading-none">สั่งซื้อ</span>
     </p>
   );
 }
