@@ -40,3 +40,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated promotion sources — website serves copies from public/
+.gen/
+
+# local scratch: screenshots, render drafts, nested tool installs
+/tmp/
+
+# marketing drafts not used by the website
+/output/promo-batch-01/
+/output/promo-draft/
