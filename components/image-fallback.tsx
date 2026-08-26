@@ -49,10 +49,11 @@ export function ImageFallback({
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
           loading={loading}
-          className={cn(
-            "transition duration-500 group-hover:scale-[1.025]",
-            fit === "contain" ? "object-contain p-2 sm:p-3" : "object-cover",
-          )}
+          className={
+            fit === "contain"
+              ? "object-contain"
+              : "object-cover transition duration-500 group-hover:scale-[1.025]"
+          }
         />
       </div>
     );
@@ -85,12 +86,16 @@ export function ImageFallback({
           <span
             className={cn(
               "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em]",
-              isDark ? "border-white/15 bg-black/10 text-white/65" : "border-black/10 bg-white/55 text-neutral-500",
+              isDark
+                ? "border-white/15 bg-black/10 text-white/65"
+                : "border-black/10 bg-white/55 text-neutral-500",
             )}
           >
             LG visual slot
           </span>
-          <span aria-hidden="true" className={cn("text-lg", isDark ? "text-white/30" : "text-neutral-400")}>◇</span>
+          <span aria-hidden="true" className={cn("text-lg", isDark ? "text-white/30" : "text-neutral-400")}>
+            ◇
+          </span>
         </div>
 
         <div>

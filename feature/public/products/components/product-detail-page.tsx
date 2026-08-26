@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { allProducts } from "@/lib/catalog-products";
 import { getProductKnowledgeGuide } from "@/lib/product-knowledge";
 import { getProductSpecificationRecord } from "@/lib/product-specifications";
+import { buildProductGallery } from "@/lib/promotion-images";
 import { createPageMetadata, siteConfig } from "@/lib/site";
 
 type ProductPageProps = { params: Promise<{ slug: string }> };
@@ -53,6 +54,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         )
       : [];
 
+  const gallery = buildProductGallery(product);
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -60,7 +63,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     model: specificationRecord?.sourceModel ?? product.model,
     mpn: specificationRecord?.sourceModel ?? product.model,
     category: product.category,
-    image: (product.gallery ?? [{ src: product.image }]).map((item) => `${siteConfig.url}${item.src}`),
+    image: gallery.map((item) => `${siteConfig.url}${item.src}`),
     description: product.description,
     brand: { "@type": "Brand", name: "LG" },
     ...(structuredSpecifications.length ? { additionalProperty: structuredSpecifications } : {}),
@@ -102,9 +105,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       : {}),
   };
 
-  const gallery = product.gallery ?? [
-    { src: product.image, alt: `ภาพสินค้า ${product.name}`, kind: "official" as const },
-  ];
   const knowledgeGuide = getProductKnowledgeGuide(product.category);
 
   const breadcrumbSchema = {
@@ -168,19 +168,15 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               </h1>
               <p className="mt-6 text-lg leading-8 text-muted-foreground">{product.description}</p>
 
-              <div className="mt-8 rounded-2xl border border-red-100 bg-red-50 p-6">
-                {product.monthlyPrice !== null ? (
-                  <>
-                    <p className="text-sm text-red-800">ราคาโปรโมชันที่ปรากฏในภาพอ้างอิง</p>
-                    <p className="mt-1 text-4xl font-bold text-red-700">
-                      ฿{product.monthlyPrice.toLocaleString("th-TH")}
-                      <span className="text-base font-medium">/เดือน</span>
-                    </p>
-                  </>
-                ) : (
-                  <p className="text-2xl font-bold text-red-700">สอบถามราคาและรุ่นที่ร่วมรายการล่าสุด</p>
-                )}
-              </div>
+              {product.monthlyPrice !== null ? (
+                <div className="mt-8 rounded-2xl border border-red-100 bg-red-50 p-6">
+                  <p className="text-sm text-red-800">เริ่มต้น</p>
+                  <p className="mt-1 text-4xl font-bold text-red-700">
+                    ฿{product.monthlyPrice.toLocaleString("th-TH")}
+                    <span className="text-base font-medium">/เดือน</span>
+                  </p>
+                </div>
+              ) : null}
 
               <ul className="mt-8 grid gap-4">
                 {product.highlights.map((highlight) => (

@@ -1,7 +1,10 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import { ProductCard } from "@/components/product-card";
+import { catalogProducts } from "@/lib/catalog-products";
 import { products } from "@/lib/site";
+
+afterEach(cleanup);
 
 describe("ProductCard", () => {
   it("shows the verified official product packshot with accessible product content", () => {
@@ -16,5 +19,41 @@ describe("ProductCard", () => {
     expect(decodeURIComponent(image.getAttribute("src") ?? "")).toContain(
       "/images/products/official/puricare-wd516an-aslplmt.jpg",
     );
+    expect(image.closest("[data-image-slot=image]")).toHaveClass("aspect-square", "rounded-none", "border-0");
+  });
+
+  it("shows the cheapest starting monthly price from the August price list", () => {
+    const product = catalogProducts.find((item) => item.model === "WD516AN");
+    expect(product?.monthlyPrice).toBe(149);
+
+    render(<ProductCard product={product!} />);
+    expect(screen.getAllByText("เริ่มต้น")[0]).toBeInTheDocument();
+    expect(screen.getByText(/฿149/)).toBeInTheDocument();
+    expect(screen.queryByText("สอบถามราคาล่าสุด")).not.toBeInTheDocument();
+  });
+
+  it("keeps only the model code on the image for the mobile card", () => {
+    const product = catalogProducts.find((item) => item.model === "SEQ13A") ?? catalogProducts[0];
+    render(<ProductCard product={product} />);
+    const overlay = screen.getByTestId("product-card-mobile-meta");
+
+    expect(overlay).toHaveTextContent(product.model);
+    expect(overlay).not.toHaveTextContent(product.category);
+    expect(overlay).toHaveClass("right-3", "top-3");
+    expect(overlay).not.toHaveClass("left-3");
+    expect(screen.getByText(product.description)).toHaveClass("line-clamp-2");
+  });
+
+  it("lets the promotion still fill the card instead of shrinking into a mobile thumbnail", () => {
+    const product = catalogProducts.find((item) => item.promotionImage);
+    expect(product?.promotionImage).toBeTruthy();
+
+    const { container } = render(<ProductCard product={product!} />);
+    const image = screen.getByRole("img", { name: `ภาพโปรโมชัน ${product!.name}` });
+
+    expect(container.firstChild).not.toHaveClass("max-sm:grid");
+    expect(image).toHaveClass("object-contain");
+    expect(image).not.toHaveClass("p-2");
+    expect(image.closest("[data-image-slot=image]")).toHaveClass("aspect-square", "rounded-none", "border-0");
   });
 });
