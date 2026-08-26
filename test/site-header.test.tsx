@@ -39,4 +39,11 @@ describe("SiteHeader", () => {
     expect(screen.getAllByRole("link", { name: "สินค้า" })[0]).toHaveAttribute("href", "/products");
     expect(screen.queryByRole("button", { name: "ค้นหาสินค้า" })).not.toBeInTheDocument();
   });
+
+  it("does not show a โปรโมชัน item that would send people to /price/", () => {
+    render(<SiteHeader />);
+
+    expect(screen.queryByRole("link", { name: "โปรโมชัน" })).not.toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "สินค้า" })[0]).toHaveAttribute("href", "/products");
+  });
 });

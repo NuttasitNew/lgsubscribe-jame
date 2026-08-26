@@ -7,7 +7,6 @@ import { siteConfig } from "@/lib/site";
 const headerNavigation = [
   ["/", "หน้าแรก"],
   ["/products/", "สินค้า"],
-  ["/price/", "โปรโมชัน"],
   ["/#reviews", "คำถามลูกค้า"],
   ["/what-is-lg-subscribe/", "LG Subscribe คืออะไร"],
   ["/authorized/", "เกี่ยวกับเรา"],
