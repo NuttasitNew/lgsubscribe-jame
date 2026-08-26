@@ -61,4 +61,17 @@ describe("ProductCard", () => {
     expect(image).not.toHaveClass("p-2");
     expect(image.closest("[data-image-slot=image]")).toHaveClass("aspect-square", "rounded-none", "border-0");
   });
+
+  it("pins the details button to the bottom of the card so a row of cards lines up", () => {
+    render(<ProductCard product={products[0]} />);
+
+    expect(screen.getByRole("link", { name: /^ดูรายละเอียด$/ }).closest("[data-slot=card-footer]")).toHaveClass(
+      "mt-auto",
+    );
+    expect(screen.getByRole("link", { name: /^ดูรายละเอียด$/ }).closest("[data-slot=card]")).toHaveClass(
+      "h-full",
+      "flex",
+      "flex-col",
+    );
+  });
 });

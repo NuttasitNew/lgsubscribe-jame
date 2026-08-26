@@ -159,7 +159,7 @@ export function ProductCatalogBrowser() {
 
                 <div className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                   {group.products.map((product, index) => (
-                    <div key={product.slug} data-testid="catalog-model-card">
+                    <div key={product.slug} data-testid="catalog-model-card" className="h-full">
                       <ProductCard product={product} eager={groupIndex === 0 && index === 0} />
                     </div>
                   ))}

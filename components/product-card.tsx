@@ -38,7 +38,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
         <Badge variant="secondary">{product.category}</Badge>
         <span className="text-xs font-bold tracking-[0.18em] text-neutral-400">{product.model}</span>
       </div>
-      <CardContent className="grid gap-3 p-6">
+      <CardContent className="grid flex-1 gap-3 p-6">
         <h3 className="line-clamp-2 min-h-0 text-xl font-bold leading-8 text-neutral-950 sm:min-h-14">
           <Link href={`/products/${product.slug}/`} className="hover:text-red-700">
             {product.name}
@@ -65,7 +65,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
           </span>
         </div>
       </CardContent>
-      <CardFooter className="p-6 pt-0">
+      <CardFooter className="mt-auto p-6 pt-0">
         <Button asChild variant="outline" className="w-full border-neutral-300">
           <Link href={`/products/${product.slug}/`}>
             ดูรายละเอียด

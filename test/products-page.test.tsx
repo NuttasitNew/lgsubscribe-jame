@@ -64,6 +64,7 @@ describe("ProductsPage knowledge visibility", () => {
       );
       expect(within(card).getByRole("img")).toHaveClass("object-contain");
       expect(within(card).getByRole("img").closest("[data-image-slot=image]")).toHaveClass("aspect-square");
+      expect(card).toHaveClass("h-full");
       expect(card.firstChild).not.toHaveClass("max-sm:grid");
     }
   });
