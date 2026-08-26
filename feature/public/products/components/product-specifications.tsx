@@ -16,7 +16,7 @@ export function ProductSpecifications({
   return (
     <section className="section-space border-y border-black/10 bg-[#e7ebe5]" aria-labelledby={headingId}>
       <div className="container-page grid gap-10 lg:grid-cols-[0.68fr_1.32fr] lg:gap-16">
-        <div className="lg:sticky lg:top-28 lg:self-start">
+        <div className="lg:sticky lg:top-[132px] lg:self-start">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#315247]">Technical profile</p>
           <p className="mt-7 font-mono text-sm font-bold tracking-[0.14em] text-red-700">{model}</p>
           <h2 id={headingId} className="mt-3 text-3xl font-bold leading-tight text-neutral-950 sm:text-4xl">

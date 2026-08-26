@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import PublicLayout from "@/app/(public)/layout";
 import ProductDetailPage from "@/feature/public/products/components/product-detail-page";
@@ -55,6 +55,28 @@ describe("product detail spacing", () => {
 
     expect(overviewSection).toHaveClass("pt-6", "sm:pt-8", "lg:pt-10");
     expect(overviewSection).not.toHaveClass("section-space");
+  });
+
+  it("pins the model name to the right of the all-products back link under the site header", async () => {
+    render(
+      await ProductDetailPage({
+        params: Promise.resolve({ slug: "lg-as10gdby0" }),
+      }),
+    );
+
+    const backLink = screen.getByRole("link", { name: /สินค้าทั้งหมด/ });
+    const productBar = backLink.closest("nav");
+    const modelName = within(productBar!).getByText(
+      "เครื่องฟอกอากาศ LG PuriCare 360 รุ่น AS10GDBY0 พร้อมฟังก์ชันสัตว์เลี้ยง",
+    );
+
+    expect(productBar).toHaveClass("sticky", "top-[76px]", "z-30");
+    expect(productBar?.firstElementChild).toHaveClass("justify-between");
+    expect(modelName).toHaveClass("truncate", "text-right");
+    expect(backLink.compareDocumentPosition(modelName)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+
+    const galleryColumn = screen.getByText("Product overview").parentElement?.parentElement;
+    expect(galleryColumn).toHaveClass("lg:sticky", "lg:top-[132px]");
   });
 
   it("keeps mobile dock clearance inside the footer instead of a white gap after main", () => {

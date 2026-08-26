@@ -125,17 +125,29 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   return (
     <>
       <JsonLd data={[productSchema, breadcrumbSchema]} />
-      <section className="bg-white pb-16 pt-6 sm:pb-20 sm:pt-8 lg:pb-24 lg:pt-10">
-        <div className="container-page">
-          <Button asChild variant="ghost" className="mb-8 -ml-3 text-muted-foreground">
+      <nav
+        aria-label="สินค้าที่กำลังดู"
+        className="sticky top-[76px] z-30 border-b border-black/[0.07] bg-white/95 backdrop-blur-xl"
+      >
+        <div className="container-page flex h-14 items-center justify-between gap-3 sm:gap-4">
+          <Button asChild variant="ghost" className="-ml-3 shrink-0 text-muted-foreground">
             <Link href="/products/">
               <span aria-hidden="true">←</span>
               สินค้าทั้งหมด
             </Link>
           </Button>
-
-          <div className="grid gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
-            <div className="grid gap-4 lg:sticky lg:top-28 lg:self-start">
+          <p
+            title={product.name}
+            className="min-w-0 truncate text-right text-sm font-semibold text-neutral-950 sm:text-base"
+          >
+            {product.name}
+          </p>
+        </div>
+      </nav>
+      <section className="bg-white pb-16 pt-6 sm:pb-20 sm:pt-8 lg:pb-24 lg:pt-10">
+        <div className="container-page">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
+            <div className="grid min-w-0 gap-4 lg:sticky lg:top-[132px] lg:self-start">
               <ProductGallery images={gallery} productName={product.name} />
               <div className="rounded-2xl border border-black/10 bg-neutral-950 p-7 text-white">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-400">Product overview</p>
