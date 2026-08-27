@@ -96,6 +96,13 @@ describe("product reviews", () => {
     expect(titles.some((title) => /ไม่ต้องตากผ้า|ซักแล้วอบ|แผงปุ่มอยู่ตรงกลาง/.test(title))).toBe(true);
     expect(titles).not.toContain("ซักและอบจบ ไม่ต้องคอยดูฟ้าฝน");
   });
+
+  it("keeps review summaries as spoken anecdotes, not one-line slogans", () => {
+    for (const product of allProducts) {
+      const reviews = getProductReviews(product, NOW);
+      expect(reviews.every((review) => review.summary.length >= 50)).toBe(true);
+    }
+  });
 });
 
 function reviewText(product: (typeof allProducts)[number]) {
