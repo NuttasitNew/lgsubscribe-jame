@@ -83,10 +83,10 @@ describe("product reviews", () => {
       expect(average.toFixed(1)).toMatch(/^4\.[89]$/);
     }
 
-    const scores = new Set(allProducts.map((product) => getProductReviewAverage(product.model)));
-    expect(scores.has(4.8)).toBe(true);
-    expect(scores.has(4.9)).toBe(true);
-    expect(scores.has(5)).toBe(false);
+    const scores = allProducts.map((product) => getProductReviewAverage(product.model));
+    expect(scores).toContain(4.8);
+    expect(scores).toContain(4.9);
+    expect(scores.every((score) => score < 5)).toBe(true);
   });
 
   it("uses real WashTower owner language instead of brochure copy", () => {
