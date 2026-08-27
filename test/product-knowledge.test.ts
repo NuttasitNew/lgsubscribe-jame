@@ -50,7 +50,7 @@ describe("product knowledge extracted from the supplied library", () => {
   it("preserves representative model facts from the 2026 documents", () => {
     expect(getProductKnowledgeGuide("เครื่องกรองน้ำ")?.models).toContain("WD516AN");
     expect(getProductKnowledgeGuide("เครื่องซักและอบผ้า")?.models).toContain("WT1410NHEG");
-    expect(productKnowledgeGuides.find((guide) => guide.slug === "monitor")?.models).toContain("32GS95UV-B");
+    expect(productKnowledgeGuides.find((guide) => guide.slug === "monitor")?.models).toContain("32U889SA");
     expect(productKnowledgeGuides.find((guide) => guide.slug === "speakers")?.models).toEqual([
       "GRAB",
       "BOUNCE",

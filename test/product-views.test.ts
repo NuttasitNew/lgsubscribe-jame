@@ -71,7 +71,7 @@ describe("product view counters", () => {
   it("lets popular entry models collect more traffic than niche models, with overlap across products", () => {
     const now = VIEW_EPOCH_MS + 10 * DAY + 15 * HOUR;
     const water = getProductViewsAt("WD516AN", now);
-    const monitor = getProductViewsAt("27GX790A-B", now);
+    const monitor = getProductViewsAt("STAGE301", now);
     const site = getSiteViewsAt(now);
     const catalogTotal = catalogProducts.reduce(
       (total, product) => total + getProductViewsAt(product.model, now),
@@ -82,7 +82,7 @@ describe("product view counters", () => {
     expect(water).toBeGreaterThan(0);
     expect(site).toBeGreaterThan(water);
     expect(catalogTotal).toBeGreaterThan(site);
-    expect(getProductViewWeight("WD516AN")).toBeGreaterThan(getProductViewWeight("27GX790A-B"));
+    expect(getProductViewWeight("WD516AN")).toBeGreaterThan(getProductViewWeight("STAGE301"));
   });
 
   it("keeps the same timestamp deterministic and never counts backwards", () => {
@@ -148,7 +148,7 @@ describe("product view counters", () => {
     const now = VIEW_EPOCH_MS + 20 * DAY + 16 * HOUR;
     const waterViews = getProductViewsAt("WD516AN", now);
     const waterOrders = getProductOrdersAt("WD516AN", now);
-    const monitorOrders = getProductOrdersAt("27GX790A-B", now);
+    const monitorOrders = getProductOrdersAt("STAGE301", now);
 
     expect(getProductOrdersAt("WD516AN", VIEW_EPOCH_MS)).toBe(0);
     expect(waterOrders).toBeGreaterThan(0);

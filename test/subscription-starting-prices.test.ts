@@ -21,10 +21,9 @@ describe("subscription starting prices", () => {
   });
 
   it("falls back to the campaign starting price when the exact SKU is not in the workbook", () => {
-    expect(getSubscriptionStartingPrice("SEQ13A")).toBeNull();
-    expect(getSubscriptionStartingPrice("SEQ13A", "เครื่องปรับอากาศ")).toBe(149);
-    expect(catalogProducts.find((item) => item.model === "SEQ13A")?.monthlyPrice).toBe(149);
-    expect(catalogProducts.find((item) => item.model === "32GS95UV-B")?.monthlyPrice).toBe(399);
+    expect(getSubscriptionStartingPrice("UNKNOWN-SKU")).toBeNull();
+    expect(getSubscriptionStartingPrice("UNKNOWN-SKU", "เครื่องปรับอากาศ")).toBe(149);
+    expect(getSubscriptionStartingPrice("UNKNOWN-SKU", "จอมอนิเตอร์")).toBe(399);
   });
 
   it("gives every catalog card a starting monthly price", () => {

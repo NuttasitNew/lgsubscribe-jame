@@ -37,24 +37,41 @@ const catalogModelsWithPromotion = [
   "A9T-CORE",
   "A9T-LITE",
   "A9T-ULTRA",
+  "ART13A",
+  "ART18A",
   "AS10GDBY0",
   "AS25GCBY0",
   "AS60GHWG0",
   "AS65GDBY0",
+  "B48FPGAM",
   "DFC335HM",
   "F2520RNTB",
   "FV1413H4M",
+  "FV1413S4M",
   "G24FFQKB",
+  "GN-F452PQAK",
+  "GN-V389FQEF",
+  "GV-V25FFGRB",
+  "J257SQZW",
+  "L257SFZW",
   "MS3032JAS",
+  "RV10VHP2B",
   "S3MFC",
+  "SAQ11A",
   "SAQ13A",
+  "SAQ18B",
+  "SAQ24B",
+  "TX2315DT5G",
   "TX2723ST5J",
+  "V22FFQMB",
   "WD110MN",
   "WD516AN",
   "WD518AN",
   "WT1410NHEG",
+  "WT1410NHEN",
   "WT2116SHEG",
   "WT2520NHEG",
+  "WT2520NHEN",
   "X257CMEW",
   "X257CMHW",
 ] as const;
@@ -148,14 +165,14 @@ describe("synced catalog promotion stills", () => {
     const matched = catalogProducts.filter((product) => product.promotionImage);
     expect(matched.map((product) => product.model).sort()).toEqual([...catalogModelsWithPromotion]);
 
-    const airWithoutStill = catalogProducts.find((product) => product.model === "SEQ13A");
+    const airWithoutStill = catalogProducts.find((product) => product.model === "SIQ11B");
     const dehumidifier = catalogProducts.find((product) => product.model === "DD23GMWE1");
-    const monitor = catalogProducts.find((product) => product.model === "24U421A-B");
+    const speaker = catalogProducts.find((product) => product.model === "STAGE301");
 
     expect(airWithoutStill?.promotionImage).toBeUndefined();
     expect(dehumidifier?.promotionImage).toBeUndefined();
-    expect(monitor?.promotionImage).toBeUndefined();
-    expect(airWithoutStill?.image).toBe("/images/products/lg-catalog/seq13a.jpg");
+    expect(speaker?.promotionImage).toBeUndefined();
+    expect(airWithoutStill?.image).toBe("/images/products/lg-catalog/siq11b.jpg");
   });
 
   it("keeps promotion stills on public paths that exist on disk", () => {

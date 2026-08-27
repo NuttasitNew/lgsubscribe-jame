@@ -8,7 +8,7 @@ afterEach(cleanup);
 
 describe("official LG product specifications", () => {
   it("accounts for every static product detail route without borrowing another model's data", () => {
-    expect(allProducts).toHaveLength(46);
+    expect(allProducts).toHaveLength(83);
     expect(Object.keys(productSpecificationRecords)).toHaveLength(allProducts.length);
 
     for (const product of allProducts) {
@@ -25,8 +25,7 @@ describe("official LG product specifications", () => {
     const unverifiedModels = allProducts
       .filter((product) => getProductSpecificationRecord(product.model)?.status === "unverified")
       .map((product) => product.model);
-    expect(unverifiedModels).toEqual(["WD110AN"]);
-    expect(getProductSpecificationRecord("WD110AN")?.groups).toEqual([]);
+    expect(unverifiedModels).toEqual([]);
     expect(Object.values(productSpecificationRecords).every((record) => record.note === undefined)).toBe(true);
   });
 
@@ -107,22 +106,15 @@ describe("official LG product specifications", () => {
     expect(washTowerRecord?.note).toBeUndefined();
   });
 
-  it("does not infer WD110AN traits while its model remains unresolved", () => {
-    const unresolvedProduct = allProducts.find((product) => product.model === "WD110AN");
-
-    expect(unresolvedProduct?.description).toMatch(/เครื่องกรองน้ำ LG PuriCare รุ่น WD110AN/);
-    expect(unresolvedProduct?.description).not.toMatch(/ยืนยัน|ขัดกัน|น้ำอุณหภูมิห้อง|สีเบจ|กะทัดรัด/);
-  });
-
   it("renders grouped technical data and exposes it in Product structured data", async () => {
-    const record = getProductSpecificationRecord("34WR50QK-B");
+    const record = getProductSpecificationRecord("SAQ13A");
     expect(record?.status).toBe("verified");
     const firstSpecification = record?.groups[0]?.items[0];
     expect(firstSpecification).toBeDefined();
 
     render(
       await ProductDetailPage({
-        params: Promise.resolve({ slug: "lg-34wr50qk-b" }),
+        params: Promise.resolve({ slug: "lg-saq13a" }),
       }),
     );
 
@@ -142,23 +134,10 @@ describe("official LG product specifications", () => {
     });
   });
 
-  it("hides unresolved-model notices instead of showing guessed specifications", async () => {
-    render(
-      await ProductDetailPage({
-        params: Promise.resolve({ slug: "lg-wd110an" }),
-      }),
-    );
-
-    expect(screen.queryByRole("heading", { name: "กำลังตรวจสอบรหัสรุ่นนี้" })).not.toBeInTheDocument();
-    expect(screen.queryByText(/ไม่นำสเปกของรุ่นใกล้เคียงมาแสดงแทน/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/หน้า LG มีข้อมูลขัดกัน/)).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "ข้อมูลจำเพาะของรุ่นนี้" })).not.toBeInTheDocument();
-  });
-
   it("does not name a foreign LG site as the specification source", async () => {
     render(
       await ProductDetailPage({
-        params: Promise.resolve({ slug: "lg-seq13a" }),
+        params: Promise.resolve({ slug: "lg-saq13a" }),
       }),
     );
 

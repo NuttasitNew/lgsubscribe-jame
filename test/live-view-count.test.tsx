@@ -6,7 +6,7 @@ import {
   resetVisitBonuses,
 } from "@/components/live-view-count";
 
-const model = "SEQ13A";
+const model = "SAQ13A";
 
 function visibleCount() {
   return Number(screen.getByTestId("product-view-count").textContent?.replace(/[^\d]/g, ""));

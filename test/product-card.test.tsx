@@ -39,7 +39,7 @@ describe("ProductCard", () => {
   });
 
   it("keeps only the model code on the image for the mobile card", () => {
-    const product = catalogProducts.find((item) => item.model === "SEQ13A") ?? catalogProducts[0];
+    const product = catalogProducts.find((item) => item.model === "SAQ13A") ?? catalogProducts[0];
     render(<ProductCard product={product} />);
     const overlay = screen.getByTestId("product-card-mobile-meta");
 

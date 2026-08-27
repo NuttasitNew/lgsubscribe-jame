@@ -37,7 +37,7 @@ describe("ProductsPage knowledge visibility", () => {
 
     expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(knowledgeInventory.modelCount);
     expect(screen.getAllByText("AS10GDBY0")[0]).toBeVisible();
-    expect(screen.getAllByText("32GS95UV-B")[0]).toBeVisible();
+    expect(screen.getAllByText("32U889SA")[0]).toBeVisible();
 
     const itemListJson = document.querySelector('script[type="application/ld+json"]')?.textContent;
     expect(itemListJson).toBeTruthy();
@@ -136,7 +136,7 @@ describe("ProductsPage knowledge visibility", () => {
     expect(screen.getByRole("heading", { name: "เครื่องฟอกอากาศ", level: 2 })).toBeInTheDocument();
     expect(screen.getByText("หมวด 02")).toBeVisible();
     expect(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" })).toHaveAttribute("href", "/products");
-    expect(screen.queryByText("SEQ13A")).not.toBeInTheDocument();
+    expect(screen.queryByText("SAQ13A")).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), {
       target: { value: "AS60GHWG0" },
