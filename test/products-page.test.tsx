@@ -5,10 +5,14 @@ import ProductsPage from "@/feature/public/products/components/products-page";
 import { allProducts, catalogProducts } from "@/lib/catalog-products";
 import { knowledgeInventory, productKnowledgeGuides } from "@/lib/product-knowledge";
 
+const navigation = vi.hoisted(() => ({
+  searchParams: new URLSearchParams(),
+}));
+
 vi.mock("next/navigation", () => ({
   usePathname: () => "/products/",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => navigation.searchParams,
 }));
 
 async function chooseCategory(optionName: string | RegExp) {
@@ -18,6 +22,7 @@ async function chooseCategory(optionName: string | RegExp) {
 }
 
 beforeEach(() => {
+  navigation.searchParams = new URLSearchParams();
   vi.spyOn(window, "scrollTo").mockImplementation(() => {});
 });
 
@@ -39,7 +44,7 @@ describe("ProductsPage knowledge visibility", () => {
     expect(JSON.parse(itemListJson ?? "{}").itemListElement).toHaveLength(knowledgeInventory.modelCount);
   });
 
-  it("renders the 47 models as real product cards with local artwork and detail links", () => {
+  it("renders the catalog models as real product cards with local artwork and detail links", () => {
     render(<ProductsPage />);
 
     expect(catalogProducts).toHaveLength(knowledgeInventory.modelCount);
@@ -129,6 +134,8 @@ describe("ProductsPage knowledge visibility", () => {
 
     expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(4);
     expect(screen.getByRole("heading", { name: "เครื่องฟอกอากาศ", level: 2 })).toBeInTheDocument();
+    expect(screen.getByText("หมวด 02")).toBeVisible();
+    expect(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" })).toHaveAttribute("href", "/products");
     expect(screen.queryByText("SEQ13A")).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), {
@@ -164,6 +171,42 @@ describe("ProductsPage knowledge visibility", () => {
     vi.mocked(window.scrollTo).mockClear();
     await chooseCategory(/เครื่องฟอกอากาศ/);
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
+  });
+
+  it("keeps category headings sticky while browsing the catalog", () => {
+    render(<ProductsPage />);
+
+    const heading = screen.getByRole("heading", { name: "เครื่องปรับอากาศ", level: 2 });
+    const header = heading.closest("[data-testid=catalog-category-header]");
+    expect(header).toHaveClass("sticky", "top-[76px]", "lg:top-[calc(76px+6rem)]");
+    expect(header?.querySelector(".container-page")).not.toBeNull();
+    expect(header?.parentElement?.closest(".container-page")).toBeNull();
+    expect(screen.queryByRole("link", { name: "ดูสินค้าทั้งหมด →" })).not.toBeInTheDocument();
+  });
+
+  it("opens a category from the URL as a filtered catalog", () => {
+    navigation.searchParams = new URLSearchParams("category=เครื่องฟอกอากาศ");
+    render(<ProductsPage />);
+
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(4);
+    expect(screen.getByRole("heading", { name: "เครื่องฟอกอากาศ", level: 2 })).toBeVisible();
+    expect(screen.getByText("หมวด 02")).toBeVisible();
+    expect(screen.getByText("4 รุ่น")).toBeVisible();
+    expect(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" })).toHaveAttribute("href", "/products");
+    expect(screen.queryByRole("heading", { name: "ตู้เย็น", level: 2 })).not.toBeInTheDocument();
+  });
+
+  it("returns to the full catalog from the category heading", async () => {
+    const user = userEvent.setup();
+    render(<ProductsPage />);
+    await chooseCategory(/เครื่องฟอกอากาศ/);
+
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(4);
+
+    await user.click(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" }));
+
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(knowledgeInventory.modelCount);
+    expect(screen.queryByRole("link", { name: "ดูสินค้าทั้งหมด →" })).not.toBeInTheDocument();
   });
 });
 import { existsSync, readFileSync } from "node:fs";

@@ -13,50 +13,51 @@ import {
 } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
+import { buildProductsSearchHref } from "@/lib/catalog-search";
 import { customerStories, faqs, products } from "@/lib/site";
 
 const categoryCards = [
   {
     label: "ตู้เย็น",
+    category: "ตู้เย็น",
     model: "GN-F392PQAK",
     image: "/images/products/official/refrigerator-gn-f392pqak.jpg",
-    href: "/products/",
   },
   {
     label: "เครื่องซักผ้า",
+    category: "เครื่องซักผ้าและอบผ้า",
     model: "F2520RNTB",
     image: "/images/products/official/washer-f2520rntb.jpg",
-    href: "/products/",
   },
   {
     label: "เครื่องปรับอากาศ",
+    category: "เครื่องปรับอากาศ",
     model: "IXY18A",
     image: "/images/products/official/air-conditioner-ixy18a.jpg",
-    href: "/products/",
   },
   {
     label: "เครื่องกรองน้ำ",
+    category: "เครื่องกรองน้ำ",
     model: "WD518AN",
     image: "/images/products/official/water-purifier-wd518an.jpg",
-    href: "/products/",
   },
   {
     label: "เครื่องดูดฝุ่น",
+    category: "เครื่องดูดฝุ่น",
     model: "A9T-ULTRA",
     image: products[2].image,
-    href: `/products/${products[2].slug}/`,
   },
   {
     label: "ทีวีและความบันเทิง",
+    category: "ทีวีและเครื่องเสียง",
     model: "OLED55C6PSA",
     image: "/images/products/official/tv-oled55c6psa.jpg",
-    href: "/products/",
   },
   {
     label: "เครื่องฟอกอากาศ",
+    category: "เครื่องฟอกอากาศ",
     model: "AS60GHWG0",
     image: "/images/products/lg-catalog/as60ghwg0.jpg",
-    href: "/products/",
   },
 ] as const;
 
@@ -168,7 +169,7 @@ export function HomePage() {
             {categoryCards.map((item) => (
               <Link
                 key={item.label}
-                href={item.href}
+                href={buildProductsSearchHref("", item.category)}
                 className="group rounded-2xl border border-black/[0.07] bg-white p-3 text-center shadow-[0_5px_22px_rgba(0,0,0,0.06)] transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg"
               >
                 <span className="relative block aspect-[1.35/1] overflow-hidden rounded-[6px] bg-white">

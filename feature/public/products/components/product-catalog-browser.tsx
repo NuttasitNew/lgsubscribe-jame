@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
@@ -54,19 +55,28 @@ export function ProductCatalogBrowser() {
     [activeCategory, query],
   );
 
+  const selectedGuide = productKnowledgeGuides.find((guide) => guide.category === activeCategory);
+
   const visibleGroups = hasActiveFilter
     ? [
         {
-          slug: "search-results",
-          category: activeCategory === "all" ? "ผลการค้นหา" : activeCategory,
+          slug: selectedGuide?.slug ?? "search-results",
+          category: selectedGuide?.category ?? (activeCategory === "all" ? "ผลการค้นหา" : activeCategory),
+          categoryIndex: selectedGuide ? productKnowledgeGuides.indexOf(selectedGuide) : null,
           products: filteredProducts,
         },
       ]
-    : productKnowledgeGuides.map((guide) => ({
+    : productKnowledgeGuides.map((guide, index) => ({
         slug: guide.slug,
         category: guide.category,
+        categoryIndex: index,
         products: catalogProducts.filter((product) => product.category === guide.category),
       }));
+
+  function clearCatalogFilters() {
+    setQuery("");
+    setActiveCategory("all");
+  }
 
   return (
     <section
@@ -130,44 +140,60 @@ export function ProductCatalogBrowser() {
         </div>
       </div>
 
-      <div className="container-page py-5">
-        {filteredProducts.length > 0 ? (
-          <div className="grid gap-10 sm:gap-12">
-            {visibleGroups.map((group, groupIndex) => (
-              <section
-                key={group.slug}
-                id={`catalog-${group.slug}`}
-                aria-labelledby={`catalog-${group.slug}-title`}
-                className="scroll-mt-[92px] lg:scroll-mt-[180px]"
-              >
-                <div className="flex items-end justify-between gap-3 border-b border-black/10 pb-4 sm:pb-5">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-700">
-                      {hasActiveFilter ? "เลือกสินค้า LG" : `หมวด ${String(groupIndex + 1).padStart(2, "0")}`}
-                    </p>
-                    <h2
-                      id={`catalog-${group.slug}-title`}
-                      className="mt-2 text-2xl font-bold text-neutral-950 sm:text-3xl"
-                    >
-                      {group.category}
-                    </h2>
-                  </div>
-                  <p className="shrink-0 text-sm font-semibold text-neutral-500">
-                    {group.products.length} รุ่น
+      {filteredProducts.length > 0 ? (
+        visibleGroups.map((group, groupIndex) => (
+          <section
+            key={group.slug}
+            id={`catalog-${group.slug}`}
+            aria-labelledby={`catalog-${group.slug}-title`}
+            className="scroll-mt-[92px] lg:scroll-mt-[180px]"
+          >
+            <div
+              data-testid="catalog-category-header"
+              className="sticky top-[76px] z-20 border-b border-black/10 bg-[#f4f1ed] shadow-[0_10px_24px_rgba(0,0,0,0.05)] lg:top-[calc(76px+6rem)]"
+            >
+              <div className="container-page flex items-end justify-between gap-3 pb-4 pt-5 sm:pb-5">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-700">
+                    {group.categoryIndex != null
+                      ? `หมวด ${String(group.categoryIndex + 1).padStart(2, "0")}`
+                      : "เลือกสินค้า LG"}
                   </p>
+                  <h2
+                    id={`catalog-${group.slug}-title`}
+                    className="mt-2 text-2xl font-bold text-neutral-950 sm:text-3xl"
+                  >
+                    {group.category}
+                  </h2>
                 </div>
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  {hasActiveFilter ? (
+                    <Link
+                      href="/products/"
+                      onClick={clearCatalogFilters}
+                      className="text-sm font-bold text-primary hover:underline"
+                    >
+                      ดูสินค้าทั้งหมด →
+                    </Link>
+                  ) : null}
+                  <p className="text-sm font-semibold text-neutral-500">{group.products.length} รุ่น</p>
+                </div>
+              </div>
+            </div>
 
-                <div className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-                  {group.products.map((product, index) => (
-                    <div key={product.slug} data-testid="catalog-model-card" className="h-full">
-                      <ProductCard product={product} eager={groupIndex === 0 && index === 0} />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        ) : (
+            <div className="container-page pb-10 pt-4 sm:pb-12 sm:pt-6">
+              <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+                {group.products.map((product, index) => (
+                  <div key={product.slug} data-testid="catalog-model-card" className="h-full">
+                    <ProductCard product={product} eager={groupIndex === 0 && index === 0} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))
+      ) : (
+        <div className="container-page py-5">
           <div className="rounded-3xl border border-dashed border-black/15 bg-white px-6 py-14 text-center">
             <p className="text-xl font-bold text-neutral-950">ยังไม่พบสินค้าที่ตรงกับคำค้นหา</p>
             <p className="mt-2 text-sm leading-6 text-neutral-500">
@@ -175,17 +201,14 @@ export function ProductCatalogBrowser() {
             </p>
             <button
               type="button"
-              onClick={() => {
-                setQuery("");
-                setActiveCategory("all");
-              }}
+              onClick={clearCatalogFilters}
               className="mt-6 h-11 rounded-xl bg-red-700 px-5 text-sm font-bold text-white transition hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700 focus-visible:ring-offset-2"
             >
               ดูสินค้าทั้งหมด
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
