@@ -87,13 +87,13 @@ function writeSourcesMarkdown(filePath, sourceDirname, campaign, assets, canonic
   const rows = assets
     .map(
       (asset) =>
-        `| \`${path.basename(asset.publicPath)}\` | \`${asset.sourceFolder}\` | \`.gen/${sourceDirname}/${asset.sourceFolder}/${asset.sourceFolder}${canonicalSuffix}\` |`,
+        `| \`${path.basename(asset.publicPath)}\` | \`${asset.sourceFolder}\` | \`.gen/${sourceDirname}/used/${asset.sourceFolder}/${asset.sourceFolder}${canonicalSuffix}\` |`,
     )
     .join("\n");
 
   const contents = `# Product promotion stills (${campaign})
 
-Copied from the canonical generated set in \`.gen/${sourceDirname}\`.
+Copied from the canonical generated set in \`.gen/${sourceDirname}/used\`.
 The website serves only these public files. Do not point pages at \`.gen\`, rejected layouts, pre-hanging-tag backups, or \`tmp\`.
 
 | Public file | Source folder | Canonical original |
@@ -109,6 +109,8 @@ const sourceRoot = path.join(root, ".gen", source);
 const destDir = path.join(root, "public", "images", "products", "promotions", campaign);
 const assetModulePath = path.join(root, "lib", "promotion-image-assets.ts");
 const expectedFileSuffix = `__${source.replaceAll(" ", "-")}.png`;
+const usedRoot = path.join(sourceRoot, "used");
+const unusedRoot = path.join(sourceRoot, "unused");
 
 assertAllowedSource(sourceRoot);
 
@@ -117,28 +119,33 @@ if (!fs.existsSync(sourceRoot)) {
 }
 
 fs.mkdirSync(destDir, { recursive: true });
+fs.mkdirSync(usedRoot, { recursive: true });
+fs.mkdirSync(unusedRoot, { recursive: true });
 
 const assets = [];
 
-for (const entry of fs.readdirSync(sourceRoot, { withFileTypes: true })) {
-  if (!entry.isDirectory()) continue;
+for (const statusRoot of [usedRoot, unusedRoot]) {
+  for (const entry of fs.readdirSync(statusRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
 
-  const sourceFolder = entry.name;
-  const canonicalName = `${sourceFolder}${expectedFileSuffix}`;
-  const sourceFile = path.join(sourceRoot, sourceFolder, canonicalName);
-  if (!fs.existsSync(sourceFile)) {
-    console.warn(`skip ${sourceFolder}: missing ${canonicalName}`);
-    continue;
+    const sourceFolder = entry.name;
+    const canonicalName = `${sourceFolder}${expectedFileSuffix}`;
+    const sourceFile = path.join(statusRoot, sourceFolder, canonicalName);
+    if (!fs.existsSync(sourceFile)) {
+      console.warn(`skip ${sourceFolder}: missing ${canonicalName}`);
+      continue;
+    }
+
+    const fileName = publicFileName(sourceFolder, campaign);
+    const destFile = path.join(destDir, fileName);
+    fs.copyFileSync(sourceFile, destFile);
+
+    assets.push({
+      sourceFolder,
+      publicPath: `/images/products/promotions/${campaign}/${fileName}`,
+      sourceStatusRoot: statusRoot,
+    });
   }
-
-  const fileName = publicFileName(sourceFolder, campaign);
-  const destFile = path.join(destDir, fileName);
-  fs.copyFileSync(sourceFile, destFile);
-
-  assets.push({
-    sourceFolder,
-    publicPath: `/images/products/promotions/${campaign}/${fileName}`,
-  });
 }
 
 assets.sort((left, right) => left.sourceFolder.localeCompare(right.sourceFolder));
@@ -146,4 +153,12 @@ assets.sort((left, right) => left.sourceFolder.localeCompare(right.sourceFolder)
 writeAssetModule(assetModulePath, assets);
 writeSourcesMarkdown(path.join(destDir, "SOURCES.md"), source, campaign, assets, expectedFileSuffix);
 
-console.log(`Copied ${assets.length} canonical promotion stills to ${path.relative(root, destDir)}`);
+for (const asset of assets) {
+  if (asset.sourceStatusRoot !== unusedRoot) continue;
+  fs.renameSync(
+    path.join(unusedRoot, asset.sourceFolder),
+    path.join(usedRoot, asset.sourceFolder),
+  );
+}
+
+console.log(`Copied ${assets.length} canonical promotion stills to ${path.relative(root, destDir)} and marked them used`);
