@@ -51,7 +51,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     eyebrow: "เลือกจากพื้นที่และมลพิษที่ต้องจัดการ",
     summary:
       "กลุ่ม LG PuriCare™ มีทั้งทรง 360 องศา รุ่นส่งลมด้วย Clean Booster และรุ่นสำหรับบ้านที่มีสัตว์เลี้ยง โดยพื้นที่ครอบคลุม เซ็นเซอร์ และชนิดไส้กรองแตกต่างกัน",
-    models: ["AS10GDBY0", "AS65GDBY0", "AS55GGSY0", "AS60GHWG0", "AS25GCBY0", "AS35GGW10"],
+    models: ["AS10GDBY0", "AS65GDBY0", "AS60GHWG0", "AS25GCBY0"],
     highlights: [
       "ระบบฟอกอากาศ 360°",
       "H13 HEPA และ Pet Filter ตามรุ่น",
@@ -158,7 +158,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     eyebrow: "ดูแลเสื้อผ้าที่ไม่ควรซักบ่อย",
     summary:
       "LG Styler ใช้ไอน้ำและไม้แขวนเคลื่อนไหวเพื่อช่วยรีเฟรชเสื้อผ้า ลดกลิ่น ฝุ่น และรอยยับ เหมาะกับสูท ชุดทำงาน เสื้อโค้ต และผ้าที่ต้องการดูแลอย่างอ่อนโยน",
-    models: ["S3MFC", "S5G0C"],
+    models: ["S3MFC"],
     highlights: ["TrueSteam™", "Moving Hanger", "Pants Crease Care", "Heat Pump Drying"],
     selectionCriteria: [
       "ดูจำนวนไม้แขวนและพื้นที่ดูแลกางเกง",
@@ -177,7 +177,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     eyebrow: "ภาพ เสียง และการเล่นเกม",
     summary:
       "ไลน์อัปปี 2026 ครอบคลุม OLED, QNED MiniLED, NanoCell และชุด Soundbar ควรเลือกระดับภาพ ขนาดจอ รีเฟรชเรต และช่องเชื่อมต่อให้เหมาะกับคอนเทนต์",
-    models: ["QNED86B", "QNED80B", "NU855B", "S95TR", "S70TY", "StandbyME 2"],
+    models: ["QNED80B", "NU855B", "S95TR", "S70TY", "StandbyME 2"],
     highlights: [
       "4K UHD และ webOS",
       "Dolby Vision/Atmos ตามรุ่น",

@@ -54,8 +54,8 @@ const categoryCards = [
   },
   {
     label: "เครื่องฟอกอากาศ",
-    model: "AS35GGW10",
-    image: "/images/products/official/air-purifier-as35ggw10.jpg",
+    model: "AS60GHWG0",
+    image: "/images/products/lg-catalog/as60ghwg0.jpg",
     href: "/products/",
   },
 ] as const;

@@ -40,13 +40,6 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/as65gdby0.jpg",
     officialUrl: "https://www.lg.com/th/air-puricare/puricare-360/as65gdby0/",
   },
-  AS55GGSY0: {
-    name: "เครื่องฟอกอากาศ LG PuriCare™ AeroBooster รุ่นสัตว์เลี้ยง",
-    description:
-      "เครื่องฟอกอากาศ LG PuriCare™ AeroBooster รุ่นสัตว์เลี้ยง พร้อมระบบฟอกอากาศและการควบคุมผ่าน LG ThinQ™",
-    image: "/images/products/lg-catalog/as55ggsy0.jpg",
-    officialUrl: "https://www.lg.com/hk_en/puricare-air-care/air-purifier/as55ggsy0/",
-  },
   AS60GHWG0: {
     name: "เครื่องฟอกอากาศ LG PuriCare 360 Hit รุ่น AS60GHWG0",
     description:
@@ -59,13 +52,6 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     description: "เครื่องฟอกอากาศ LG PuriCare AeroCat Tower รุ่น AS25GCBY0 ฟอกอากาศสะอาด แถมใส่ใจเจ้าเหมียว",
     image: "/images/products/lg-catalog/as25gcby0.jpg",
     officialUrl: "https://www.lg.com/th/air-puricare/puricare-aerotower/as25gcby0/",
-  },
-  AS35GGW10: {
-    name: "เครื่องฟอกอากาศ LG PuriCare AeroHit รุ่น AS35GGW10",
-    description:
-      "สำรวจ LG AS35GGW10. คลิกเพื่อดูรูปภาพ รีวิว และสเปคทางเทคนิคสำหรับ LG เครื่องฟอกอากาศ LG PuriCare AeroHit รุ่น AS35GGW10.",
-    image: "/images/products/lg-catalog/as35ggw10.jpg",
-    officialUrl: "https://www.lg.com/th/air-puricare/puricare-360/as35ggw10/",
   },
   DD23GMWE1: {
     name: "เครื่องลดความชื้น LG PuriCare Dehumidifier 23 รุ่น DD23GMWE1 40 ลิตร",
@@ -136,22 +122,6 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
       "สำรวจ LG S3MFC. คลิกเพื่อดูรูปภาพ รีวิว และสเปคทางเทคนิคสำหรับ LG LG Styler ตู้ถนอมผ้า รุ่น S3MFC.",
     image: "/images/products/lg-catalog/s3mfc.jpg",
     officialUrl: "https://www.lg.com/th/laundry/styler/s3mfc/",
-  },
-  S5G0C: {
-    name: "ตู้ถนอมผ้า LG Styler รุ่น S5GOC ความจุ 5 เซต ขจัดเชื้อโรค ลดรอยยับและกลิ่นอับ ควบคุมผ่านมือถือด้วย ThinQ ครบวงจรเรื่องการดูแลเสื้อผ้า",
-    description:
-      "ตู้ถนอมผ้า LG Styler ดีไซน์สวยงาม อบผ้าแห้งสะอาด ลดรอยยับ ฆ่าเชื้อบนเนื้อผ้า ถนอมเนื้อผ้าลดกลิ่น โดยไม่ต้องซัก ซื้อสินค้าและดูรายละเอียดเพิ่มเติมที่นี่",
-    image: "/images/products/lg-catalog/s5g0c.jpg",
-    officialUrl: "https://www.lg.com/th/laundry/styler/s5goc/",
-    officialModel: "S5GOC",
-  },
-  QNED86B: {
-    name: 'ทีวี 55" LG QNED evo AI Mini LED QNED86 4K Smart TV 2026 รุ่น 55QNED86BSA',
-    description:
-      "ทีวี AI อัจฉริยะรุ่นใหม่ล่าสุดจาก LG รุ่น 55QNED86BS เพื่อประสบการณ์การรับชมที่ดีที่สุดที่ปรับแต่งให้เหมาะกับคุณผ่านคุณสมบัติ AI อัจฉริยะของแพลตฟอร์ม webOS คลิกเพื่อดูรูปภาพ รีวิว และข้อมูลจำเพาะทางเทคนิคของ LG QNED evo AI QNED86 Mini LED 4K Smart TV ขนาด 55 นิ้ว",
-    image: "/images/products/lg-catalog/qned86b.jpg",
-    officialUrl: "https://www.lg.com/th/tv-soundbars/qned-evo/55qned86bsa/",
-    officialModel: "55QNED86BSA",
   },
   QNED80B: {
     name: 'ทีวี 55" LG QNED evo AI Mini LED QNED80 4K Smart TV 2026 รุ่น 55QNED80BSA',

@@ -33,11 +33,11 @@ describe("MobileDock product search", () => {
     expect(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" })).toBeVisible();
     expect(screen.getByRole("combobox", { name: "กรองตามหมวดสินค้า" })).toBeVisible();
 
-    await user.type(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), "AS35GGW10");
+    await user.type(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), "AS60GHWG0");
     const results = screen.getAllByTestId("product-search-result");
     expect(results).toHaveLength(1);
-    expect(within(results[0]).getByText("AS35GGW10")).toBeVisible();
-    expect(results[0]).toHaveAttribute("href", "/products/lg-as35ggw10");
+    expect(within(results[0]).getByText("AS60GHWG0")).toBeVisible();
+    expect(results[0]).toHaveAttribute("href", "/products/lg-as60ghwg0");
   });
 
   it("lets a product detail page search the catalog from the same dock", async () => {

@@ -127,15 +127,15 @@ describe("ProductsPage knowledge visibility", () => {
     expect(screen.getAllByRole("option")).toHaveLength(productKnowledgeGuides.length + 1);
     await user.click(screen.getByRole("option", { name: /เครื่องฟอกอากาศ/ }));
 
-    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(6);
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(4);
     expect(screen.getByRole("heading", { name: "เครื่องฟอกอากาศ", level: 2 })).toBeInTheDocument();
     expect(screen.queryByText("SEQ13A")).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), {
-      target: { value: "AS35GGW10" },
+      target: { value: "AS60GHWG0" },
     });
     expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(1);
-    expect(screen.getAllByText("AS35GGW10")[0]).toBeVisible();
+    expect(screen.getAllByText("AS60GHWG0")[0]).toBeVisible();
   });
 
   it("does not show LG source-conflict notes on the catalog", () => {
@@ -153,7 +153,7 @@ describe("ProductsPage knowledge visibility", () => {
     expect(window.scrollTo).not.toHaveBeenCalled();
 
     fireEvent.change(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), {
-      target: { value: "AS35GGW10" },
+      target: { value: "AS60GHWG0" },
     });
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
 

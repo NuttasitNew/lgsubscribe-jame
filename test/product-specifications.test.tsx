@@ -8,7 +8,7 @@ afterEach(cleanup);
 
 describe("official LG product specifications", () => {
   it("accounts for every static product detail route without borrowing another model's data", () => {
-    expect(allProducts).toHaveLength(51);
+    expect(allProducts).toHaveLength(47);
     expect(Object.keys(productSpecificationRecords)).toHaveLength(allProducts.length);
 
     for (const product of allProducts) {
@@ -31,8 +31,6 @@ describe("official LG product specifications", () => {
   });
 
   it("keeps catalog aliases tied to the exact official SKU used for technical data", () => {
-    expect(getProductSpecificationRecord("S5G0C")?.sourceModel).toBe("S5GOC");
-    expect(getProductSpecificationRecord("QNED86B")?.sourceModel).toBe("55QNED86BSA");
     expect(getProductSpecificationRecord("QNED80B")?.sourceModel).toBe("55QNED80BSA");
     expect(getProductSpecificationRecord("NU855B")?.sourceModel).toBe("55NU855BPSA");
     expect(getProductSpecificationRecord("StandbyME 2")?.sourceModel).toBe("27LX6TDGA");
