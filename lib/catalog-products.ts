@@ -258,20 +258,6 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/tx2723st5j.jpg",
     officialUrl: "https://www.lg.com/th/laundry/top-load-washing-machine/tx2723st5j/",
   },
-  RC90V9AV2W: {
-    name: "เครื่องอบผ้า LG 9 กก. DUAL Inverter Heat Pump™ รุ่น RC90V9AV2W",
-    description:
-      "เครื่องอบผ้าความจุ 9 กก. พร้อม DUAL Inverter Heat Pump™, EcoHybrid™, ระบบทำความสะอาดคอนเดนเซอร์อัตโนมัติ และ LG ThinQ™",
-    image: "/images/products/lg-catalog/rc90v9av2w.jpg",
-    officialUrl: "https://www.lg.com/pt/tratamento-roupa/maquinas-de-secar-roupa/rc90v9av2w/",
-  },
-  WS510SN: {
-    name: "เครื่องกรองน้ำแบบตั้งพื้น รุ่น WS510SN สีขาว",
-    description:
-      "เครื่องกรองน้ำ LG PuriCare แบบตั้งพื้น รุ่น WS510SN ระบบ Smart Inverter ถังเก็บน้ำเย็นขนาดใหญ่ ดื่มน้ำได้อย่างสะอาด ด้วยตัวกรอง 4 ขั้นตอน",
-    image: "/images/products/lg-catalog/ws510sn.jpg",
-    officialUrl: "https://www.lg.com/th/water-purifiers/ws510sn/",
-  },
   WD516AN: {
     name: "เครื่องกรองน้ำ LG PuriCare รุ่น WD516AN.ASLPLMT สีเงิน (Silver)",
     description:

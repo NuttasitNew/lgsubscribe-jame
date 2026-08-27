@@ -243,7 +243,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     category: "เครื่องซักผ้าและอบผ้า",
     eyebrow: "เลือกจากปริมาณผ้าและพื้นที่ติดตั้ง",
     summary:
-      "มีทั้งเครื่องฝาหน้า เครื่องซักอบในตัว เครื่องฝาบน เครื่องอบแยก และ WashTower™ ตั้งแต่ขนาดกะทัดรัดถึงครอบครัวใหญ่ โดยความจุซักกับอบต้องพิจารณาแยกกัน",
+      "มีทั้งเครื่องฝาหน้า เครื่องซักอบในตัว เครื่องฝาบน และ WashTower™ ตั้งแต่ขนาดกะทัดรัดถึงครอบครัวใหญ่ โดยความจุซักกับอบต้องพิจารณาแยกกัน",
     models: [
       "WT1410NHEG",
       "WT2116SHEG",
@@ -252,7 +252,6 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
       "F2520RNTB",
       "TX2725AT9G",
       "TX2723ST5J",
-      "RC90V9AV2W",
     ],
     highlights: [
       "AI DD™ และ 6 Motion™",
@@ -276,8 +275,8 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     category: "เครื่องกรองน้ำ",
     eyebrow: "เลือกระบบน้ำและรูปแบบดูแล",
     summary:
-      "LG PuriCare™ มีทั้งรุ่น Tankless แบบตั้งโต๊ะ รุ่นน้ำอุณหภูมิปกติ และรุ่นตั้งพื้นสำหรับการใช้น้ำมาก ฟังก์ชันน้ำร้อน น้ำเย็น และการฆ่าเชื้อแตกต่างกันตามรุ่น",
-    models: ["WS510SN", "WD516AN", "WD518AN", "WD110AN", "WD110MN"],
+      "LG PuriCare™ มีทั้งรุ่น Tankless แบบตั้งโต๊ะและรุ่นน้ำอุณหภูมิปกติ ฟังก์ชันน้ำร้อน น้ำเย็น และการฆ่าเชื้อแตกต่างกันตามรุ่น",
+    models: ["WD516AN", "WD518AN", "WD110AN", "WD110MN"],
     highlights: [
       "ระบบกรอง 4 ขั้นตอนตามรุ่น",
       "Tankless และท่อน้ำสแตนเลสตามรุ่น",

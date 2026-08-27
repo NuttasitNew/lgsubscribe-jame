@@ -8,7 +8,7 @@ afterEach(cleanup);
 
 describe("official LG product specifications", () => {
   it("accounts for every static product detail route without borrowing another model's data", () => {
-    expect(allProducts).toHaveLength(48);
+    expect(allProducts).toHaveLength(46);
     expect(Object.keys(productSpecificationRecords)).toHaveLength(allProducts.length);
 
     for (const product of allProducts) {
@@ -88,13 +88,13 @@ describe("official LG product specifications", () => {
   });
 
   it("does not present Portugal energy labels as Thailand specifications", () => {
-    const portugalRecord = getProductSpecificationRecord("RC90V9AV2W");
-    const labels = portugalRecord?.groups.flatMap((group) => group.items.map((item) => item.label)) ?? [];
+    for (const product of allProducts) {
+      const record = getProductSpecificationRecord(product.model);
+      const labels = record?.groups.flatMap((group) => group.items.map((item) => item.label)) ?? [];
 
-    expect(portugalRecord?.sourceLocale).toBe("pt-PT");
-    expect(labels).not.toContain("ระดับพลังงาน EU");
-    expect(labels).not.toContain("การใช้พลังงาน");
-    expect(portugalRecord?.note).toBeUndefined();
+      expect(record?.sourceLocale, product.model).not.toBe("pt-PT");
+      expect(labels, product.model).not.toContain("ระดับพลังงาน EU");
+    }
   });
 
   it("publishes a single WashTower wash capacity without LG conflict copy", () => {
@@ -158,7 +158,7 @@ describe("official LG product specifications", () => {
   it("does not name a foreign LG site as the specification source", async () => {
     render(
       await ProductDetailPage({
-        params: Promise.resolve({ slug: "lg-rc90v9av2w" }),
+        params: Promise.resolve({ slug: "lg-seq13a" }),
       }),
     );
 

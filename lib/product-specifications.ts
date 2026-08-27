@@ -453,32 +453,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
   ),
-  RC90V9AV2W: verifiedRecord(
-    "https://www.lg.com/pt/tratamento-roupa/maquinas-de-secar-roupa/rc90v9av2w/",
-    "RC90V9AV2W",
-    [
-      { label: "ความจุอบสูงสุด", value: "9 กก." },
-      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "600 × 850 × 660 มม." },
-      { label: "น้ำหนัก", value: "57 กก." },
-      { label: "ระบบอบ", value: "DUAL Inverter Heat Pump" },
-      { label: "ระบบทำความสะอาดคอนเดนเซอร์", value: "อัตโนมัติ" },
-      { label: "ระดับเสียง", value: "62 เดซิเบล" },
-    ],
-    { sourceLocale: "pt-PT" },
-  ),
-  WS510SN: verifiedRecord(
-    "https://www.lg.com/th/water-purifiers/ws510sn/",
-    "WS510SN",
-    [
-      { label: "รูปแบบติดตั้ง", value: "แบบตั้งพื้น" },
-      { label: "ความจุถังน้ำเย็น", value: "7.5 ลิตร" },
-      { label: "ระบบกรอง", value: "4 ขั้นตอน" },
-      { label: "ระยะช่องจ่ายน้ำ", value: "270 มม." },
-      { label: "ความจุถาดรองน้ำ", value: "1.9 ลิตร" },
-      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor" },
-      { label: "รับประกันชิ้นส่วนคอมเพรสเซอร์", value: "10 ปี" },
-    ],
-  ),
   WD516AN: verifiedRecord(
     "https://www.lg.com/th/water-purifiers/wd516an-aslplmt/",
     "WD516AN.ASLPLMT",
