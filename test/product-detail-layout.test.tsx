@@ -4,7 +4,7 @@ import PublicLayout from "@/app/(public)/layout";
 import ProductDetailPage from "@/feature/public/products/components/product-detail-page";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/products/lg-24u421a-b/",
+  usePathname: () => "/products/lg-siq11b/",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),
 }));
@@ -32,7 +32,7 @@ describe("product detail spacing", () => {
   it("keeps the official packshot only when the model has no promotion still", async () => {
     render(
       await ProductDetailPage({
-        params: Promise.resolve({ slug: "lg-24u421a-b" }),
+        params: Promise.resolve({ slug: "lg-siq11b" }),
       }),
     );
 
@@ -45,12 +45,12 @@ describe("product detail spacing", () => {
   it("keeps the product overview close to the site header", async () => {
     render(
       await ProductDetailPage({
-        params: Promise.resolve({ slug: "lg-24u421a-b" }),
+        params: Promise.resolve({ slug: "lg-siq11b" }),
       }),
     );
 
     const overviewSection = screen
-      .getByRole("heading", { name: /จอมอนิเตอร์ FHD Curved ขนาด 24 นิ้ว พร้อม USB-C/, level: 1 })
+      .getByRole("heading", { name: /แอร์อินเวอร์เตอร์ 9,212 BTU LG DUALCOOL AI Air รุ่น SIQ11B/, level: 1 })
       .closest("section");
 
     expect(overviewSection).toHaveClass("pt-6", "sm:pt-8", "lg:pt-10");
@@ -79,6 +79,43 @@ describe("product detail spacing", () => {
 
     const galleryColumn = screen.getByText("Product overview").parentElement?.parentElement;
     expect(galleryColumn).toHaveClass("lg:sticky", "lg:top-[132px]");
+  });
+
+  it("places customer reviews after the product overview and before specifications", async () => {
+    render(
+      await ProductDetailPage({
+        params: Promise.resolve({ slug: "lg-as10gdby0" }),
+      }),
+    );
+
+    const overview = screen.getByRole("heading", {
+      name: /เครื่องฟอกอากาศ LG PuriCare 360 รุ่น AS10GDBY0/,
+      level: 1,
+    });
+    const reviews = screen.getByRole("heading", { name: "รีวิวจากคนใช้รุ่นนี้", level: 2 });
+    const specifications = screen.getByRole("heading", { name: "ข้อมูลจำเพาะของรุ่นนี้", level: 2 });
+
+    expect(overview.compareDocumentPosition(reviews)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(reviews.compareDocumentPosition(specifications)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(within(reviews.closest("section")!).getAllByRole("article").length).toBeGreaterThanOrEqual(3);
+    expect(screen.queryByText("ความคิดเห็นจากลูกค้าที่เลือกใช้ WashTower™ กับเราในชีวิตประจำวัน")).not.toBeInTheDocument();
+  });
+
+  it("lets a popular model reveal the rest of its reviews", async () => {
+    render(
+      await ProductDetailPage({
+        params: Promise.resolve({ slug: "lg-puricare-wd516" }),
+      }),
+    );
+
+    const reviewSection = screen.getByRole("heading", { name: "รีวิวจากคนใช้รุ่นนี้", level: 2 }).closest("section")!;
+    const previewCount = within(reviewSection).getAllByRole("article").length;
+    const expand = screen.getByRole("button", { name: /ดูรีวิวเพิ่มอีก/ });
+
+    fireEvent.click(expand);
+
+    expect(within(reviewSection).getAllByRole("article").length).toBeGreaterThan(previewCount);
+    expect(screen.queryByRole("button", { name: /ดูรีวิวเพิ่มอีก/ })).not.toBeInTheDocument();
   });
 
   it("keeps mobile dock clearance inside the footer instead of a white gap after main", () => {

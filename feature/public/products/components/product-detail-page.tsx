@@ -6,12 +6,14 @@ import { ProductOrderCount } from "@/components/live-view-count";
 import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { ProductGallery } from "@/feature/public/products/components/product-gallery";
+import { ProductReviews } from "@/feature/public/products/components/product-reviews";
 import { ProductSpecifications } from "@/feature/public/products/components/product-specifications";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { allProducts } from "@/lib/catalog-products";
 import { getProductKnowledgeGuide } from "@/lib/product-knowledge";
+import { getProductReviewAverage, getProductReviews } from "@/lib/product-reviews";
 import { getProductSpecificationRecord } from "@/lib/product-specifications";
 import { buildProductGallery } from "@/lib/promotion-images";
 import { createPageMetadata, siteConfig } from "@/lib/site";
@@ -44,6 +46,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const product = allProducts.find((item) => item.slug === slug);
   if (!product) notFound();
   const specificationRecord = getProductSpecificationRecord(product.model);
+  const reviews = getProductReviews(product);
+  const reviewAverage = getProductReviewAverage(product.model);
   const structuredSpecifications =
     specificationRecord?.status === "verified"
       ? specificationRecord.groups.flatMap((group) =>
@@ -68,17 +72,15 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     description: product.description,
     brand: { "@type": "Brand", name: "LG" },
     ...(structuredSpecifications.length ? { additionalProperty: structuredSpecifications } : {}),
-    ...(product.reviews?.length
+    ...(reviews.length
       ? {
           aggregateRating: {
             "@type": "AggregateRating",
-            ratingValue: (
-              product.reviews.reduce((total, review) => total + review.rating, 0) / product.reviews.length
-            ).toFixed(1),
-            reviewCount: product.reviews.length,
+            ratingValue: reviewAverage.toFixed(1),
+            reviewCount: reviews.length,
             bestRating: 5,
           },
-          review: product.reviews.map((review) => ({
+          review: reviews.map((review) => ({
             "@type": "Review",
             author: { "@type": "Person", name: review.reviewer },
             name: review.title,
@@ -221,6 +223,15 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         </div>
       </section>
 
+      {reviews.length ? (
+        <ProductReviews
+          productName={product.name}
+          category={product.category}
+          reviews={reviews}
+          average={reviewAverage}
+        />
+      ) : null}
+
       {specificationRecord ? (
         <ProductSpecifications model={product.model} record={specificationRecord} />
       ) : null}
@@ -284,61 +295,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                   </p>
                 </article>
               </div>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      {product.reviews?.length ? (
-        <section className="section-space bg-white" aria-labelledby="customer-reviews-title">
-          <div className="container-page">
-            <div className="flex flex-col justify-between gap-6 border-b border-black/10 pb-8 md:flex-row md:items-end">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-700">
-                  Verified customer voices
-                </p>
-                <h2
-                  id="customer-reviews-title"
-                  className="mt-3 text-3xl font-bold text-neutral-950 sm:text-4xl"
-                >
-                  รีวิวจากผู้ใช้งานจริง
-                </h2>
-                <p className="mt-4 max-w-2xl text-sm leading-6 text-neutral-500">
-                  ความคิดเห็นจากลูกค้าที่เลือกใช้ WashTower™ กับเราในชีวิตประจำวัน
-                </p>
-              </div>
-              <div className="rounded-2xl bg-neutral-950 px-6 py-5 text-white">
-                <p className="text-3xl font-black">
-                  {(
-                    product.reviews.reduce((total, review) => total + review.rating, 0) /
-                    product.reviews.length
-                  ).toFixed(1)}
-                  <span className="ml-2 text-lg tracking-[0.08em] text-amber-300">★★★★★</span>
-                </p>
-                <p className="mt-1 text-xs text-white/55">จาก {product.reviews.length} รีวิวของลูกค้า</p>
-              </div>
-            </div>
-
-            <div className="mt-8 grid gap-5 lg:grid-cols-3">
-              {product.reviews.map((review) => (
-                <article
-                  key={`${review.reviewer}-${review.title}`}
-                  className="flex flex-col rounded-2xl border border-black/10 bg-[#faf9f7] p-7"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <p className="font-bold text-neutral-950">{review.reviewer}</p>
-                    <p className="tracking-[0.12em] text-amber-500" aria-label={`${review.rating} จาก 5 ดาว`}>
-                      {"★".repeat(review.rating)}
-                      <span className="text-neutral-300">{"★".repeat(5 - review.rating)}</span>
-                    </p>
-                  </div>
-                  <h3 className="mt-6 text-xl font-bold leading-7 text-neutral-950">{review.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-neutral-600">“{review.summary}”</p>
-                  <p className="mt-auto border-t border-black/10 pt-5 text-xs font-medium text-neutral-400">
-                    {review.context}
-                  </p>
-                </article>
-              ))}
             </div>
           </div>
         </section>
