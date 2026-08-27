@@ -114,9 +114,9 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     category: "ไมโครเวฟ",
     eyebrow: "อุ่นและปรุงอาหารได้สม่ำเสมอ",
     summary:
-      "LG NeoChef™ รุ่น MS4295DIS ความจุ 42 ลิตร ใช้ Smart Inverter เพื่อควบคุมกำลังความร้อน และมี EasyClean™ ช่วยให้เช็ดทำความสะอาดภายในได้ง่ายขึ้น",
-    models: ["MS4295DIS"],
-    highlights: ["Smart Inverter", "ความจุ 42 ลิตร", "EasyClean™", "ไฟ LED ภายใน"],
+      "LG NeoChef™ รุ่น MS3032JAS ความจุ 30 ลิตร เคลือบ EasyClean™ ช่วยให้เช็ดทำความสะอาดภายในได้ง่ายขึ้น และมีไฟ LED ส่องอาหารภายใน",
+    models: ["MS3032JAS"],
+    highlights: ["EasyClean™", "ความจุ 30 ลิตร", "ดีไซน์บางกะทัดรัด", "ไฟ LED ภายใน"],
     selectionCriteria: [
       "เทียบความจุกับขนาดภาชนะที่ใช้จริง",
       "ตรวจโหมดอุ่น ละลายน้ำแข็ง และปรุงอาหารที่ต้องการ",
@@ -177,7 +177,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     eyebrow: "ภาพ เสียง และการเล่นเกม",
     summary:
       "ไลน์อัปปี 2026 ครอบคลุม OLED, QNED MiniLED, NanoCell และชุด Soundbar ควรเลือกระดับภาพ ขนาดจอ รีเฟรชเรต และช่องเชื่อมต่อให้เหมาะกับคอนเทนต์",
-    models: ["QNED80B", "NU855B", "S95TR", "S70TY", "StandbyME 2"],
+    models: ["QNED80B", "65NU855BPSA", "75NU855BPSA", "S95TR", "S70TY", "StandbyME 2"],
     highlights: [
       "4K UHD และ webOS",
       "Dolby Vision/Atmos ตามรุ่น",

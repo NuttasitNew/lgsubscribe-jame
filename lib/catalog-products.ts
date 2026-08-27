@@ -74,12 +74,13 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/dfc335hm.jpg",
     officialUrl: "https://www.lg.com/th/dishwasher/dfc335hm/",
   },
-  MS4295DIS: {
-    name: "ไมโครเวฟระบบอุ่นอาหาร รุ่น MS4295DIS ขนาด 42 ลิตร สีดำ",
+  MS3032JAS: {
+    name: "ไมโครเวฟอุ่นอาหาร ขนาด 30 ลิตร สีดำ รุ่น MS3032JAS",
     description:
-      "ไมโครเวฟระบบอุ่นอาหาร ขนาด 42 ลิตร สีดำ รุ่น MS4295DIS ดีไซน์กระจกบานเดียวไร้ขอบ ทำความสะอาดง่าย มีไฟส่องอาหาร เทคโนโลยี Smart Inverter ทำงานสม่ำเสมอ",
-    image: "/images/products/lg-catalog/ms4295dis.jpg",
-    officialUrl: "https://www.lg.com/th/microwave-ovens/solo-microwave/mc4295dis/",
+      "ไมโครเวฟอุ่นอาหาร ขนาด 30 ลิตร สีดำ รุ่น MS3032JAS เคลือบ EasyClean™ ทำความสะอาดง่าย ดีไซน์บางกะทัดรัด และมีไฟ LED ส่องภายใน",
+    image: "/images/products/lg-catalog/ms3032jas.jpg",
+    officialUrl: "https://www.lg.com/th/microwave-ovens/solo-microwave/ms3032jas/",
+    officialModel: "MS3032JAS.BBKPETH",
   },
   X257CMEW: {
     name: "ตู้เย็น Instaview Side by Side 22.4 คิว GC-X257CMEW Smart Inverter Compressor™",
@@ -131,13 +132,19 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     officialUrl: "https://www.lg.com/th/tv-soundbars/qned-evo/55qned80bsa/",
     officialModel: "55QNED80BSA",
   },
-  NU855B: {
-    name: 'ทีวี 55" LG NANO 4K UHD AI NU85 4K Smart TV 2026 รุ่น 55NU855BPSA',
+  "65NU855BPSA": {
+    name: 'ทีวี 65" LG NANO 4K UHD AI NU85 4K Smart TV 2026 รุ่น 65NU855BPSA',
     description:
-      "ทีวี AI อัจฉริยะรุ่นใหม่ล่าสุดจาก LG รุ่น 55NU855BPSA เพื่อประสบการณ์การรับชมที่ดีที่สุดที่ปรับแต่งให้เหมาะกับคุณผ่านคุณสมบัติ AI อัจฉริยะของแพลตฟอร์ม webOS คลิกเพื่อดูภาพ รีวิว และข้อมูลจำเพาะทางเทคนิคของ LG NANO 4K UHD AI NU85 ทีวี Smart TV 4K ขนาด 55 นิ้ว",
-    image: "/images/products/lg-catalog/nu855b.jpg",
-    officialUrl: "https://www.lg.com/th/tv-soundbars/nano-4k-uhd/55nu855bpsa/",
-    officialModel: "55NU855BPSA",
+      "ทีวี AI อัจฉริยะรุ่นใหม่ล่าสุดจาก LG รุ่น 65NU855BPSA เพื่อประสบการณ์การรับชมที่ดีที่สุดที่ปรับแต่งให้เหมาะกับคุณผ่านคุณสมบัติ AI อัจฉริยะของแพลตฟอร์ม webOS คลิกเพื่อดูภาพ รีวิว และข้อมูลจำเพาะทางเทคนิคของ LG NANO 4K UHD AI NU85 ทีวี Smart TV 4K ขนาด 65 นิ้ว",
+    image: "/images/products/lg-catalog/65nu855bpsa.jpg",
+    officialUrl: "https://www.lg.com/th/tv-soundbars/nano-4k-uhd/65nu855bpsa/",
+  },
+  "75NU855BPSA": {
+    name: 'ทีวี 75" LG NANO 4K UHD AI NU85 4K Smart TV 2026 รุ่น 75NU855BPSA',
+    description:
+      "ทีวี AI อัจฉริยะรุ่นใหม่ล่าสุดจาก LG รุ่น 75NU855BPSA เพื่อประสบการณ์การรับชมที่ดีที่สุดที่ปรับแต่งให้เหมาะกับคุณผ่านคุณสมบัติ AI อัจฉริยะของแพลตฟอร์ม webOS คลิกเพื่อดูภาพ รีวิว และข้อมูลจำเพาะทางเทคนิคของ LG NANO 4K UHD AI NU85 ทีวี Smart TV 4K ขนาด 75 นิ้ว",
+    image: "/images/products/lg-catalog/75nu855bpsa.jpg",
+    officialUrl: "https://www.lg.com/th/tv-soundbars/nano-4k-uhd/75nu855bpsa/",
   },
   S95TR: {
     name: "LG ซาวด์บาร์ สำหรับ TV with Dolby Atmos 9.1.5 channel รุ่น S95TR",

@@ -45,6 +45,7 @@ const catalogModelsWithPromotion = [
   "F2520RNTB",
   "FV1413H4M",
   "G24FFQKB",
+  "MS3032JAS",
   "S3MFC",
   "SAQ13A",
   "TX2723ST5J",
