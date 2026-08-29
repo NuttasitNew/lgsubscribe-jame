@@ -1,4 +1,5 @@
 import { FloatingLineContact } from "@/components/floating-line-contact";
+import { FloatingSubscribeDay } from "@/components/floating-subscribe-day";
 import { JsonLd } from "@/components/json-ld";
 import { MobileDock } from "@/components/mobile-dock";
 import { SiteFooter } from "@/components/site-footer";
@@ -37,6 +38,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
       <SiteHeader />
       <main id="main-content">{children}</main>
       <SiteFooter />
+      <FloatingSubscribeDay />
       <FloatingLineContact />
       <MobileDock />
     </>
