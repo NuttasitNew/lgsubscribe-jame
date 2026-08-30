@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import WhatIsPage from "@/feature/public/what-is-lg-subscribe/components/what-is-lg-subscribe-page";
 
@@ -28,6 +28,16 @@ describe("WhatIsPage comparison", () => {
     expect(screen.getByText("มีประกันฯ")).toBeInTheDocument();
     expect(screen.getByText("ไม่ล็อควงเงิน")).toBeInTheDocument();
     expect(screen.getByText("อุ่นใจตลอดสัญญา")).toBeInTheDocument();
+
+    const costRow = screen.getByRole("article", { name: "ค่าใช้จ่ายเริ่มต้น" });
+    expect(within(costRow).getByText("จ่ายก้อนใหญ่ครั้งเดียว")).toBeInTheDocument();
+    expect(within(costRow).getByText("เริ่มต้นจ่ายสบาย ๆ เป็นรายเดือน")).toBeInTheDocument();
+    expect(within(costRow).getByText("ซื้อสด")).toBeInTheDocument();
+    expect(within(costRow).getByText("Subscribe")).toBeInTheDocument();
+
+    const careRow = screen.getByRole("article", { name: "บริการดูแล / ซ่อมบำรุง" });
+    expect(within(careRow).getByText("อาจมีค่าใช้จ่ายเพิ่มเติมภายหลัง")).toBeInTheDocument();
+    expect(within(careRow).getByText("มีบริการดูแล พร้อมประกันตลอดอายุสัญญา")).toBeInTheDocument();
 
     expect(
       screen.getByText("LG Subscribe เหมาะสำหรับคนที่อยากใช้สินค้าคุณภาพ"),

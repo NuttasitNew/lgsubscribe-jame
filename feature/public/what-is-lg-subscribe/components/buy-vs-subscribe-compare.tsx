@@ -1,55 +1,78 @@
 import {
-  Calendar,
-  CalendarDays,
-  ChartColumn,
   CircleDollarSign,
-  FileCheck,
   Headset,
   Heart,
   House,
   Pointer,
   ShieldCheck,
   Wallet,
-  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type CompareItem = {
-  icon: LucideIcon;
-  title: string;
+type CompareSide = {
+  title?: string;
   text?: string;
   badge?: string;
 };
 
-const buyOutrightItems: CompareItem[] = [
-  { icon: CircleDollarSign, title: "ค่าใช้จ่ายเริ่มต้น", text: "จ่ายก้อนใหญ่ครั้งเดียว" },
-  { icon: House, title: "การเป็นเจ้าของ", text: "เป็นเจ้าของทันที" },
-  { icon: Wrench, title: "บริการดูแล / ซ่อมบำรุง", text: "อาจมีค่าใช้จ่ายเพิ่มเติมภายหลัง" },
-  { icon: CalendarDays, title: "ความยืดหยุ่น", text: "จ่ายครั้งเดียว ตัดสินใจครั้งเดียว" },
-  { icon: Wallet, title: "ความสะดวกในการเริ่มใช้", text: "ต้องเตรียมงบมากกว่า" },
-];
+type CompareRow = {
+  id: string;
+  icon: LucideIcon;
+  title: string;
+  buy: CompareSide | null;
+  subscribe: CompareSide;
+};
 
-const subscribeItems: CompareItem[] = [
-  { icon: Calendar, title: "ค่าใช้จ่ายเริ่มต้น", text: "เริ่มต้นจ่ายสบาย ๆ เป็นรายเดือน" },
-  { icon: FileCheck, title: "การเป็นเจ้าของ", text: "ใช้งานสินค้าได้โดยไม่ต้องจ่ายเต็มก้อน" },
+const compareRows: CompareRow[] = [
   {
+    id: "upfront-cost",
+    icon: CircleDollarSign,
+    title: "ค่าใช้จ่ายเริ่มต้น",
+    buy: { text: "จ่ายก้อนใหญ่ครั้งเดียว" },
+    subscribe: { text: "เริ่มต้นจ่ายสบาย ๆ เป็นรายเดือน" },
+  },
+  {
+    id: "ownership",
+    icon: House,
+    title: "การเป็นเจ้าของ",
+    buy: { text: "เป็นเจ้าของทันที" },
+    subscribe: { text: "ใช้งานสินค้าได้โดยไม่ต้องจ่ายเต็มก้อน" },
+  },
+  {
+    id: "care",
     icon: Headset,
     title: "บริการดูแล / ซ่อมบำรุง",
-    badge: "มีประกันฯ",
-    text: "มีบริการดูแล พร้อมประกันตลอดอายุสัญญา",
+    buy: { text: "อาจมีค่าใช้จ่ายเพิ่มเติมภายหลัง" },
+    subscribe: {
+      badge: "มีประกันฯ",
+      text: "มีบริการดูแล พร้อมประกันตลอดอายุสัญญา",
+    },
   },
-  { icon: ChartColumn, title: "ความยืดหยุ่น", text: "บริหารค่าใช้จ่ายได้ง่ายกว่า" },
   {
+    id: "flexibility",
+    icon: Wallet,
+    title: "ความยืดหยุ่น",
+    buy: { text: "จ่ายครั้งเดียว ตัดสินใจครั้งเดียว" },
+    subscribe: { text: "บริหารค่าใช้จ่ายได้ง่ายกว่า" },
+  },
+  {
+    id: "convenience",
     icon: Pointer,
-    title: "ความสะดวกในการชำระเงิน",
-    badge: "ไม่ล็อควงเงิน",
-    text: "ชำระผ่านบัตรเครดิต ไม่ล็อควงเงินบัตร",
+    title: "ความสะดวก",
+    buy: { title: "ความสะดวกในการเริ่มใช้", text: "ต้องเตรียมงบมากกว่า" },
+    subscribe: {
+      title: "ความสะดวกในการชำระเงิน",
+      badge: "ไม่ล็อควงเงิน",
+      text: "ชำระผ่านบัตรเครดิต ไม่ล็อควงเงินบัตร",
+    },
   },
   {
+    id: "warranty",
     icon: ShieldCheck,
     title: "มีประกันตลอดอายุสัญญา",
-    badge: "อุ่นใจตลอดสัญญา",
+    buy: null,
+    subscribe: { badge: "อุ่นใจตลอดสัญญา" },
   },
 ];
 
@@ -83,14 +106,51 @@ export function BuyVsSubscribeCompare() {
         </p>
       </div>
 
-      <div className="mt-10 grid gap-5 lg:grid-cols-2 lg:items-stretch">
-        <CompareColumn title="ซื้อสด" headerClassName="bg-[#7a1528]" items={buyOutrightItems} />
-        <CompareColumn
-          title="Subscribe"
-          headerClassName="bg-primary"
-          items={subscribeItems}
-          emphasized
-        />
+      <div className="mt-10 lg:overflow-hidden lg:rounded-2xl lg:border lg:border-black/[0.07] lg:shadow-[0_8px_24px_rgba(139,21,48,0.08)]">
+        <div className="hidden lg:grid lg:grid-cols-[minmax(15.5rem,0.8fr)_1fr_1fr]">
+          <div className="bg-white" />
+          <h3 className="bg-[#7a1528] px-6 py-4 text-center text-2xl font-bold text-white">ซื้อสด</h3>
+          <h3 className="bg-primary px-6 py-4 text-center text-2xl font-bold text-white">
+            Subscribe
+          </h3>
+        </div>
+
+        <ul className="grid gap-4 lg:gap-0 lg:divide-y lg:divide-black/[0.06]">
+          {compareRows.map((row) => (
+            <li key={row.id}>
+              <article
+                aria-labelledby={`compare-${row.id}`}
+                className={cn(
+                  "overflow-hidden rounded-2xl border border-black/[0.07] bg-[#fff8f8] shadow-[0_8px_24px_rgba(139,21,48,0.06)]",
+                  "lg:grid lg:grid-cols-[minmax(15.5rem,0.8fr)_1fr_1fr] lg:rounded-none lg:border-0 lg:bg-white lg:shadow-none",
+                )}
+              >
+                <div className="flex items-center gap-3 px-4 py-3.5 lg:items-start lg:gap-4 lg:px-6 lg:py-5">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-full border-[1.5px] border-primary bg-white text-primary">
+                    <row.icon className="size-5" strokeWidth={1.8} aria-hidden="true" />
+                  </span>
+                  <p
+                    id={`compare-${row.id}`}
+                    className="text-base font-bold leading-6 text-neutral-950 lg:pt-2.5"
+                  >
+                    {row.title}
+                  </p>
+                </div>
+
+                <div
+                  className={cn(
+                    "grid gap-2 px-3 pb-3",
+                    row.buy ? "grid-cols-1 min-[420px]:grid-cols-2" : "grid-cols-1",
+                    "lg:contents",
+                  )}
+                >
+                  <ComparePanel side="buy" item={row.buy} rowTitle={row.title} />
+                  <ComparePanel side="subscribe" item={row.subscribe} rowTitle={row.title} />
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="mt-8 overflow-hidden rounded-2xl bg-gradient-to-r from-[#8b1530] via-[#d4b072] to-[#8b1530] p-[2px] shadow-[0_10px_28px_rgba(139,21,48,0.18)]">
@@ -115,49 +175,71 @@ export function BuyVsSubscribeCompare() {
   );
 }
 
-function CompareColumn({
-  title,
-  headerClassName,
-  items,
-  emphasized = false,
+function ComparePanel({
+  side,
+  item,
+  rowTitle,
 }: {
-  title: string;
-  headerClassName: string;
-  items: CompareItem[];
-  emphasized?: boolean;
+  side: "buy" | "subscribe";
+  item: CompareSide | null;
+  rowTitle: string;
 }) {
+  const isSubscribe = side === "subscribe";
+  const label = isSubscribe ? "Subscribe" : "ซื้อสด";
+
+  if (!item) {
+    return (
+      <div className="hidden lg:flex lg:items-center lg:px-6 lg:py-5">
+        <span className="text-neutral-300" aria-hidden="true">
+          —
+        </span>
+      </div>
+    );
+  }
+
+  const showTitle = Boolean(item.title && item.title !== rowTitle);
+
   return (
-    <article
+    <div
       className={cn(
-        "flex h-full flex-col overflow-hidden rounded-2xl border bg-[#fff8f8] shadow-[0_8px_24px_rgba(139,21,48,0.08)]",
-        emphasized ? "border-primary/25" : "border-black/[0.07]",
+        "rounded-xl px-3.5 py-3",
+        isSubscribe
+          ? "bg-primary/[0.07] ring-1 ring-primary/15"
+          : "bg-white ring-1 ring-black/[0.06]",
+        "lg:flex lg:flex-col lg:justify-center lg:rounded-none lg:px-6 lg:py-5 lg:ring-0",
+        isSubscribe ? "lg:bg-[#fff5f6]" : "lg:bg-white",
       )}
     >
-      <h3 className={cn("px-6 py-4 text-center text-2xl font-bold text-white", headerClassName)}>
-        {title}
-      </h3>
-      <ul className="grid flex-1 content-start gap-1 px-5 py-4 sm:px-6">
-        {items.map((item) => (
-          <li key={`${title}-${item.title}`} className="flex items-start gap-3 py-3.5 sm:gap-4">
-            <span className="mt-0.5 grid size-11 shrink-0 place-items-center rounded-full border-[1.5px] border-primary bg-white text-primary">
-              <item.icon className="size-5" strokeWidth={1.8} aria-hidden="true" />
+      <p
+        className={cn(
+          "text-[11px] font-bold tracking-wide lg:hidden",
+          isSubscribe ? "text-primary" : "text-[#7a1528]",
+        )}
+      >
+        {label}
+      </p>
+      {showTitle || item.badge ? (
+        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 lg:mt-0">
+          {showTitle ? (
+            <p className="text-sm font-bold leading-5 text-neutral-950">{item.title}</p>
+          ) : null}
+          {item.badge ? (
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-bold text-primary">
+              {item.badge}
             </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <p className="font-bold leading-6 text-neutral-950">{item.title}</p>
-                {item.badge ? (
-                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-bold text-primary">
-                    {item.badge}
-                  </span>
-                ) : null}
-              </div>
-              {item.text ? (
-                <p className="mt-1 text-sm leading-6 text-neutral-600">{item.text}</p>
-              ) : null}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </article>
+          ) : null}
+        </div>
+      ) : null}
+      {item.text ? (
+        <p
+          className={cn(
+            "text-sm leading-6 text-neutral-600",
+            showTitle || item.badge ? "mt-1" : "mt-0.5 lg:mt-0",
+          )}
+        >
+          {item.text}
+        </p>
+      ) : null}
+    </div>
   );
 }
