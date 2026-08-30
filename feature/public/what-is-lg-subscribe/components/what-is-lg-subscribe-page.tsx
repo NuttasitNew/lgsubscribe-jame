@@ -6,11 +6,13 @@ import { HeroProductShowcase } from "@/components/hero-product-showcase";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { BuyVsSubscribeCompare } from "@/feature/public/what-is-lg-subscribe/components/buy-vs-subscribe-compare";
 import { createPageMetadata, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createPageMetadata({
   title: "LG Subscribe คืออะไร ดีไหม คุ้มไหม และเหมาะกับใคร",
-  description: "ทำความเข้าใจ LG Subscribe รูปแบบเช่าซื้อรายเดือน ข้อดี ข้อควรรู้ ค่าใช้จ่าย บริการซ่อม และสิ่งที่ต้องอ่านก่อนทำสัญญา",
+  description:
+    "เปรียบเทียบซื้อสดกับ LG Subscribe แบบชัด ๆ พร้อมสรุปรูปแบบเช่าซื้อรายเดือน ข้อดี ข้อควรรู้ ค่าใช้จ่าย บริการซ่อม และสิ่งที่ต้องอ่านก่อนทำสัญญา",
   path: "/what-is-lg-subscribe/",
 });
 
@@ -59,6 +61,8 @@ export default function WhatIsPage() {
                 { icon: "/images/generated/icon-protection-v1.webp", title: "ระยะคุ้มครอง", text: "ยึดระยะที่ระบุในแบบฟอร์มคำสั่งซื้อ" },
               ].map((item) => <Card key={item.title}><CardContent className="p-6"><GeneratedIcon src={item.icon} alt="" /><h2 className="mt-4 text-lg font-bold">{item.title}</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">{item.text}</p></CardContent></Card>)}
             </div>
+
+            <BuyVsSubscribeCompare />
 
             <div className="prose prose-neutral mt-14 max-w-none">
               <h2 className="text-3xl font-bold">รูปแบบบริการทำงานอย่างไร</h2>
