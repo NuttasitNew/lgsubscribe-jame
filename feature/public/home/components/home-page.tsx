@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
+import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
 import { customerStories, faqs, products } from "@/lib/site";
 
@@ -215,7 +216,6 @@ export function HomePage() {
         </div>
       </section>
 
-
       <section id="reviews" className="bg-white py-12 sm:py-16">
         <div className="container-page">
           <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
@@ -282,6 +282,24 @@ export function HomePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section id="faq" className="bg-white py-12 sm:py-16">
+        <div className="container-page">
+          <div className="mb-8 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold text-primary">FAQ LG Subscribe</p>
+              <h2 className="mt-1 text-2xl font-bold text-neutral-950 sm:text-3xl">คำถามที่พบบ่อย</h2>
+            </div>
+            <Link href="/faq/" className="hidden shrink-0 text-sm font-bold text-primary hover:underline sm:block">
+              ดูทั้งหมด →
+            </Link>
+          </div>
+          <FaqAccordion />
+          <Link href="/faq/" className="mt-6 block text-sm font-bold text-primary hover:underline sm:hidden">
+            ดูคำถามทั้งหมด →
+          </Link>
         </div>
       </section>
     </>

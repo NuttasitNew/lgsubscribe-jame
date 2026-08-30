@@ -2,6 +2,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { HomePage } from "@/feature/public/home/components/home-page";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
+import { faqs } from "@/lib/site";
 
 afterEach(() => {
   cleanup();
@@ -44,5 +45,29 @@ describe("HomePage popular categories", () => {
       catalogHref("เครื่องฟอกอากาศ"),
     );
     expect(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" })).toHaveAttribute("href", "/products");
+  });
+});
+
+describe("HomePage FAQ", () => {
+  it("shows the shared FAQ questions and links to the FAQ page", () => {
+    render(<HomePage />);
+
+    expect(screen.getByRole("heading", { name: "คำถามที่พบบ่อย" })).toBeInTheDocument();
+    expect(screen.getByText("FAQ LG Subscribe")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "ดูทั้งหมด →" })).toHaveAttribute("href", "/faq");
+
+    for (const faq of faqs) {
+      expect(screen.getByRole("button", { name: faq.question })).toBeInTheDocument();
+    }
+  });
+
+  it("uses the same page width as the reviews section", () => {
+    const { container } = render(<HomePage />);
+    const faqContainer = container.querySelector("#faq > div");
+    const reviewsContainer = container.querySelector("#reviews > div");
+
+    expect(faqContainer).toHaveClass("container-page");
+    expect(faqContainer).not.toHaveClass("max-w-4xl");
+    expect(reviewsContainer).toHaveClass("container-page");
   });
 });
