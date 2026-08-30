@@ -29,7 +29,6 @@ const navigationDescriptions: Record<string, string> = {
   "/": "ภาพรวมบริการและสินค้าที่น่าสนใจ",
   "/products/": "เลือกดูรุ่นที่อยู่ใน LG Subscription",
   "/faq/": "คำถามที่พบบ่อยเกี่ยวกับ LG Subscribe",
-  "/terms/": "อ่านสัญญา ค่าใช้จ่าย และข้อควรรู้ก่อนสมัคร",
   "/contact/": "คุยกับเจ้าหน้าที่เพื่อเช็กแพ็กเกจล่าสุด",
 };
 

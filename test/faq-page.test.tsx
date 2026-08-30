@@ -17,5 +17,7 @@ describe("FaqPage", () => {
     for (const faq of faqs) {
       expect(screen.getByRole("button", { name: faq.question })).toBeInTheDocument();
     }
+
+    expect(screen.queryByRole("link", { name: "อ่านฉบับสรุป" })).not.toBeInTheDocument();
   });
 });

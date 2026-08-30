@@ -5,7 +5,7 @@ describe("getCurrentPageLabel", () => {
   it("maps static routes with or without a trailing slash", () => {
     expect(getCurrentPageLabel("/")).toBe("หน้าแรก");
     expect(getCurrentPageLabel("/products/")).toBe("สินค้าทั้งหมด");
-    expect(getCurrentPageLabel("/terms")).toBe("เงื่อนไขการเช่าใช้");
+    expect(getCurrentPageLabel("/faq/")).toBe("คำถามที่พบบ่อย");
   });
 
   it("uses the product name on a product detail route", () => {

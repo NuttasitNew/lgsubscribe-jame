@@ -89,7 +89,6 @@ export default function WhatIsPage() {
 
               <div className="mt-10 flex flex-wrap gap-3">
                 <Button asChild className="bg-red-600 hover:bg-red-700"><Link href="/application-guide/">ดูขั้นตอนสมัคร <span aria-hidden="true">→</span></Link></Button>
-                <Button asChild variant="outline"><Link href="/terms/">อ่านสรุปเงื่อนไขสัญญา</Link></Button>
               </div>
             </div>
           </div>

@@ -3,7 +3,6 @@ import { allProducts } from "@/lib/catalog-products";
 const staticPageLabels: Record<string, string> = {
   "/": "หน้าแรก",
   "/products": "สินค้าทั้งหมด",
-  "/terms": "เงื่อนไขการเช่าใช้",
   "/contact": "ติดต่อเรา",
   "/application-guide": "ขั้นตอนการสมัคร",
   "/faq": "คำถามที่พบบ่อย",

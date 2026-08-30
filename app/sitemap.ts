@@ -10,7 +10,6 @@ const staticPages = [
   "/products/",
   "/what-is-lg-subscribe/",
   "/application-guide/",
-  "/terms/",
   "/service-and-maintenance/",
   "/faq/",
   "/contact/",

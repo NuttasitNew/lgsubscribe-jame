@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ContactCta } from "@/components/contact-cta";
 import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
-import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
 import { createPageMetadata, faqs } from "@/lib/site";
 
@@ -42,18 +40,6 @@ export default function FaqPage() {
       <section className="section-space">
         <div className="container-page">
           <FaqAccordion />
-
-          <div className="mt-10 rounded-2xl border border-red-100 bg-red-50 p-7">
-            <h2 className="text-2xl font-bold text-red-950">ต้องการอ่านสรุปเงื่อนไข?</h2>
-            <p className="mt-3 leading-7 text-red-950/75">
-              คำตอบในหน้านี้เป็นสรุปเพื่อการตัดสินใจ ให้ยึดเอกสารที่บริษัทออกให้และเงื่อนไขในสัญญาฉบับเต็มเป็นหลัก
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Button asChild variant="link" className="text-red-800">
-                <Link href="/terms/">อ่านฉบับสรุป</Link>
-              </Button>
-            </div>
-          </div>
         </div>
       </section>
       <ContactCta />
