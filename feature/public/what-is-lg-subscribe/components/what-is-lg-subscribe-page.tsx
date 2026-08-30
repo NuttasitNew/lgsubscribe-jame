@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BuyVsSubscribeCompare } from "@/feature/public/what-is-lg-subscribe/components/buy-vs-subscribe-compare";
+import { WhoIsSubscribeFor } from "@/feature/public/what-is-lg-subscribe/components/who-is-subscribe-for";
 import { createPageMetadata, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createPageMetadata({
@@ -63,6 +64,7 @@ export default function WhatIsPage() {
             </div>
 
             <BuyVsSubscribeCompare />
+            <WhoIsSubscribeFor />
 
             <div className="prose prose-neutral mt-14 max-w-none">
               <h2 className="text-3xl font-bold">รูปแบบบริการทำงานอย่างไร</h2>
@@ -82,9 +84,6 @@ export default function WhatIsPage() {
                   </div>
                 </div>
               </div>
-
-              <h2 className="mt-12 text-3xl font-bold">เหมาะกับใคร</h2>
-              <p className="mt-5 leading-8 text-neutral-700">เหมาะกับผู้ที่ต้องการใช้เครื่องใช้ไฟฟ้าพรีเมียม วางแผนค่าใช้จ่ายเป็นรายเดือน และให้คุณค่ากับบริการดูแลระยะยาว หากคุณตั้งใจใช้งานระยะสั้นหรืออาจย้ายที่อยู่บ่อย ควรสอบถามข้อจำกัดและค่าใช้จ่ายล่วงหน้าเป็นพิเศษ</p>
 
               <h2 className="mt-12 text-3xl font-bold">คำตอบสั้นจากคำค้นยอดนิยม</h2>
               <div className="mt-6 grid gap-5">

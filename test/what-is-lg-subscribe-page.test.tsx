@@ -36,3 +36,32 @@ describe("WhatIsPage comparison", () => {
     expect(screen.getByText("*รายละเอียดและเงื่อนไขเป็นไปตามที่บริษัทกำหนด")).toBeInTheDocument();
   });
 });
+
+describe("WhatIsPage who it is for", () => {
+  it("shows the four audience groups from the campaign infographic", () => {
+    render(<WhatIsPage />);
+
+    expect(
+      screen.getByRole("heading", { level: 2, name: "LG Subscribe เหมาะกับใคร?" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "คนกำลังแต่งบ้าน" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "คนที่ต้องการบริหาร Cash Flow" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "ครอบครัว" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "คนที่ต้องการความสะดวกและอุ่นใจ" }),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("ต้องการเครื่องใช้ไฟฟ้าใหม่หลายชิ้น แต่ต้องการบริหารค่าใช้จ่ายเป็นรายเดือน"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "แทนที่จะจ่ายค่าเครื่องเป็นก้อน สามารถเลือกแผนค่าบริการรายเดือนตามเงื่อนไขที่กำหนด",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText("จ่ายรายเดือน")).toBeInTheDocument();
+    expect(screen.getByText("บริการจัดส่ง")).toBeInTheDocument();
+    expect(screen.getByText("ชีวิตที่ดีกว่า เริ่มต้นง่าย ๆ ด้วย LG Subscribe")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "เหมาะกับใคร" })).not.toBeInTheDocument();
+  });
+});
