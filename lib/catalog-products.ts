@@ -678,3 +678,17 @@ export const allProducts = [
 export function getCatalogProduct(slug: string) {
   return catalogProducts.find((product) => product.slug === slug);
 }
+
+export const bestSellerSlugs = [
+  "lg-washtower-wt1410nheg",
+  "lg-x257cmew",
+  "lg-saq11a",
+] as const;
+
+export const bestSellerProducts = bestSellerSlugs.map((slug) => {
+  const product = catalogProducts.find((item) => item.slug === slug);
+  if (!product) {
+    throw new Error(`Missing best-seller catalog product: ${slug}`);
+  }
+  return product;
+});

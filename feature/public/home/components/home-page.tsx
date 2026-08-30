@@ -12,8 +12,10 @@ import {
   Truck,
 } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
+import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
+import { bestSellerProducts } from "@/lib/catalog-products";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
 import { customerStories, faqs, products } from "@/lib/site";
 
@@ -212,6 +214,28 @@ export function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="best-sellers" className="bg-[#f4f1ed] py-12 sm:py-16">
+        <div className="container-page">
+          <div className="mb-8 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold text-primary">เลือกจากรุ่นที่คนสมัครบ่อย</p>
+              <h2 className="mt-1 text-2xl font-bold text-neutral-950 sm:text-3xl">สินค้าขายดี</h2>
+            </div>
+            <Link
+              href="/products/"
+              className="hidden shrink-0 text-sm font-bold text-primary hover:underline sm:block"
+            >
+              ดูสินค้าทั้งหมด →
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+            {bestSellerProducts.map((product, index) => (
+              <ProductCard key={product.slug} product={product} eager={index === 0} />
+            ))}
           </div>
         </div>
       </section>

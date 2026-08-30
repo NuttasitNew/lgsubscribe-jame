@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { HomePage } from "@/feature/public/home/components/home-page";
+import { bestSellerProducts } from "@/lib/catalog-products";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
 import { faqs } from "@/lib/site";
 
@@ -44,7 +45,31 @@ describe("HomePage popular categories", () => {
       "href",
       catalogHref("เครื่องฟอกอากาศ"),
     );
-    expect(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" })).toHaveAttribute("href", "/products");
+    expect(screen.getAllByRole("link", { name: "ดูสินค้าทั้งหมด →" })[0]).toHaveAttribute(
+      "href",
+      "/products",
+    );
+  });
+});
+
+describe("HomePage best sellers", () => {
+  it("shows the three featured subscription models with product detail links", () => {
+    render(<HomePage />);
+
+    expect(screen.getByRole("heading", { name: "สินค้าขายดี" })).toBeInTheDocument();
+    expect(bestSellerProducts.map((product) => product.slug)).toEqual([
+      "lg-washtower-wt1410nheg",
+      "lg-x257cmew",
+      "lg-saq11a",
+    ]);
+
+    for (const product of bestSellerProducts) {
+      expect(screen.getByRole("heading", { name: product.name })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: `ดูรายละเอียด ${product.name}` })).toHaveAttribute(
+        "href",
+        `/products/${product.slug}`,
+      );
+    }
   });
 });
 
