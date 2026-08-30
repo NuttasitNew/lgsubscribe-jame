@@ -34,7 +34,7 @@ export const siteConfig = {
 export const navigation = [
   { href: "/", label: "หน้าแรก" },
   { href: "/products/", label: "สินค้าทั้งหมด" },
-  { href: "/authorized/", label: "ความน่าเชื่อถือ" },
+  { href: "/faq/", label: "คำถามที่พบบ่อย" },
   { href: "/terms/", label: "เงื่อนไขการเช่าใช้" },
   { href: "/contact/", label: "ติดต่อเรา" },
 ] as const;

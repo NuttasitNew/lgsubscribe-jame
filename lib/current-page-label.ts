@@ -3,12 +3,10 @@ import { allProducts } from "@/lib/catalog-products";
 const staticPageLabels: Record<string, string> = {
   "/": "หน้าแรก",
   "/products": "สินค้าทั้งหมด",
-  "/authorized": "ความน่าเชื่อถือ",
   "/terms": "เงื่อนไขการเช่าใช้",
   "/contact": "ติดต่อเรา",
   "/application-guide": "ขั้นตอนการสมัคร",
   "/faq": "คำถามที่พบบ่อย",
-  "/payment-options": "ช่องทางชำระเงิน",
   "/service-and-maintenance": "บริการดูแลและบำรุงรักษา",
   "/what-is-lg-subscribe": "LG Subscribe คืออะไร",
 };

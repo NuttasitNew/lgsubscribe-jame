@@ -52,4 +52,11 @@ describe("SiteHeader", () => {
 
     expect(screen.queryByTestId("site-view-count")).not.toBeInTheDocument();
   });
+
+  it("links คำถามที่พบบ่อย to the FAQ page instead of the retired about page", () => {
+    render(<SiteHeader />);
+
+    expect(screen.getByRole("link", { name: "คำถามที่พบบ่อย" })).toHaveAttribute("href", "/faq");
+    expect(screen.queryByRole("link", { name: "เกี่ยวกับเรา" })).not.toBeInTheDocument();
+  });
 });

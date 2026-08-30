@@ -9,7 +9,7 @@ const headerNavigation = [
   ["/products/", "สินค้า"],
   ["/#reviews", "คำถามลูกค้า"],
   ["/what-is-lg-subscribe/", "LG Subscribe คืออะไร"],
-  ["/authorized/", "เกี่ยวกับเรา"],
+  ["/faq/", "คำถามที่พบบ่อย"],
   ["/contact/", "ติดต่อเรา"],
 ] as const;
 

@@ -19,6 +19,16 @@ const nextConfig: NextConfig = {
         destination: "/products/",
         permanent: true,
       },
+      {
+        source: "/authorized",
+        destination: "/faq/",
+        permanent: true,
+      },
+      {
+        source: "/payment-options",
+        destination: "/faq/",
+        permanent: true,
+      },
     ];
   },
 };
