@@ -73,6 +73,20 @@ describe("HomePage best sellers", () => {
   });
 });
 
+describe("HomePage subscribe steps", () => {
+  it("shows the subscribe steps after customer reviews", () => {
+    render(<HomePage />);
+
+    const reviews = screen.getByRole("heading", { name: "ประสบการณ์จากผู้ใช้งานจริง" });
+    const steps = screen.getByRole("heading", { name: "ขั้นตอนการ Subscribe สินค้า LG" });
+    const trust = screen.getByRole("heading", { name: "ข้อมูลชัดเจน" });
+
+    expect(reviews.compareDocumentPosition(steps)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(steps.compareDocumentPosition(trust)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(screen.queryByRole("img", { name: /ขั้นตอนการ Subscribe/ })).not.toBeInTheDocument();
+  });
+});
+
 describe("HomePage FAQ", () => {
   it("shows the shared FAQ questions and links to the FAQ page", () => {
     render(<HomePage />);

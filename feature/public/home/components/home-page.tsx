@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { ProductCard } from "@/components/product-card";
+import { SubscribeSteps } from "@/components/subscribe-steps";
 import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
 import { bestSellerProducts } from "@/lib/catalog-products";
@@ -290,6 +291,8 @@ export function HomePage() {
         </div>
       </section>
 
+      <SubscribeSteps className="bg-[#f4f1ed] py-12 sm:py-16" />
+
       <section className="border-y border-black/[0.06] bg-[#fbfbfb]">
         <div className="container-page grid sm:grid-cols-2 lg:grid-cols-4">
           {trustItems.map(([Icon, title, text]) => (
@@ -316,7 +319,10 @@ export function HomePage() {
               <p className="text-sm font-bold text-primary">FAQ LG Subscribe</p>
               <h2 className="mt-1 text-2xl font-bold text-neutral-950 sm:text-3xl">คำถามที่พบบ่อย</h2>
             </div>
-            <Link href="/faq/" className="hidden shrink-0 text-sm font-bold text-primary hover:underline sm:block">
+            <Link
+              href="/faq/"
+              className="hidden shrink-0 text-sm font-bold text-primary hover:underline sm:block"
+            >
               ดูทั้งหมด →
             </Link>
           </div>
