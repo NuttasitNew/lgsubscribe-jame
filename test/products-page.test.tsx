@@ -178,10 +178,22 @@ describe("ProductsPage knowledge visibility", () => {
 
     const heading = screen.getByRole("heading", { name: "เครื่องปรับอากาศ", level: 2 });
     const header = heading.closest("[data-testid=catalog-category-header]");
-    expect(header).toHaveClass("sticky", "top-[76px]", "lg:top-[calc(76px+6rem)]");
+    expect(header).toHaveClass("sticky", "top-[76px]", "z-20", "lg:top-[calc(76px+6rem)]");
     expect(header?.querySelector(".container-page")).not.toBeNull();
     expect(header?.parentElement?.closest(".container-page")).toBeNull();
     expect(screen.queryByRole("link", { name: "ดูสินค้าทั้งหมด →" })).not.toBeInTheDocument();
+  });
+
+  it("keeps product visitor counts under sticky category headings", () => {
+    render(<ProductsPage />);
+
+    const header = screen.getAllByTestId("catalog-category-header")[0];
+    const viewCount = screen.getAllByTestId("product-card-view-count")[0];
+    const card = viewCount.closest("[data-slot=card]");
+
+    expect(header).toHaveClass("z-20");
+    expect(card).toHaveClass("isolate");
+    expect(viewCount.closest(".relative.z-0")).not.toBeNull();
   });
 
   it("opens a category from the URL as a filtered catalog", () => {

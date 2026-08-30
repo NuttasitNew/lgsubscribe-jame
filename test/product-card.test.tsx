@@ -78,6 +78,7 @@ describe("ProductCard", () => {
       "h-full",
       "flex",
       "flex-col",
+      "isolate",
     );
   });
 });

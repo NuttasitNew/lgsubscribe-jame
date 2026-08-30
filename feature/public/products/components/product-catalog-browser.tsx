@@ -181,7 +181,7 @@ export function ProductCatalogBrowser() {
               </div>
             </div>
 
-            <div className="container-page pb-10 pt-4 sm:pb-12 sm:pt-6">
+            <div className="container-page relative z-0 pb-10 pt-4 sm:pb-12 sm:pt-6">
               <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {group.products.map((product, index) => (
                   <div key={product.slug} data-testid="catalog-model-card" className="h-full">

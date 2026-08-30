@@ -11,7 +11,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
   const hasPromotion = Boolean(product.promotionImage);
 
   return (
-    <Card className="group h-full overflow-hidden border-black/10 bg-white shadow-none transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <Card className="group isolate h-full overflow-hidden border-black/10 bg-white shadow-none transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <Link
         href={`/products/${product.slug}/`}
         className="relative block"
