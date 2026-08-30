@@ -1,24 +1,30 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { CreditCard, MessageCircle } from "lucide-react";
 import { ContactCta } from "@/components/contact-cta";
-import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
+import { LineMark } from "@/components/line-mark";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { createPageMetadata, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "สมัคร LG Subscribe ใช้อะไรบ้าง ขั้นตอน เอกสาร และการอนุมัติ",
-  description: "คู่มือสมัคร LG Subscribe ตั้งแต่เลือกสินค้า เตรียมข้อมูล ตรวจสอบเครดิต ทำสัญญา ไปจนถึงจัดส่งและติดตั้ง",
+  title: "สมัคร LG Subscribe ใช้บัตรเครดิตใบเดียวก็จบ",
+  description:
+    "สมัคร LG Subscribe ใช้บัตรเครดิตใบเดียวก็เพียงพอ รายละเอียดอื่นๆ แอด LINE OA @lgsubscribe ได้เลย",
   path: "/application-guide/",
 });
 
 const steps = [
-  { icon: "/images/generated/icon-consultation-v1.webp", title: "1. เลือกสินค้าและแพ็กเกจ", text: "แจ้งรุ่นที่สนใจ งบรายเดือน และสถานที่ติดตั้งให้เจ้าหน้าที่ตรวจสอบ" },
-  { icon: "/images/generated/icon-document-v1.webp", title: "2. เตรียมข้อมูลประกอบคำสั่งซื้อ", text: "เอกสารที่ใช้ขึ้นอยู่กับประเภทลูกค้าและหลักเกณฑ์ของบริษัท เจ้าหน้าที่จะแจ้งรายการล่าสุด" },
-  { icon: "/images/generated/icon-protection-v1.webp", title: "3. ตรวจสอบเครดิตและข้อมูล", text: "บริษัทตรวจสอบสถานะเครดิต สถานที่ติดตั้ง/จัดส่ง และข้อมูลอื่นก่อนพิจารณาอนุมัติ" },
-  { icon: "/images/generated/icon-delivery-v1.webp", title: "4. นัดจัดส่งหรือติดตั้ง", text: "เมื่อคำสั่งซื้อได้รับอนุมัติ บริษัทจะติดต่อเพื่อนัดหมายและส่งสัญญาคู่ฉบับทางอีเมล" },
-];
+  {
+    title: "มีบัตรเครดิต 1 ใบ",
+    text: "ใช้บัตรเครดิตใบเดียวก็สมัครได้ ไม่ต้องเตรียมเอกสารหลายอย่างให้ยุ่งยาก",
+    Icon: CreditCard,
+  },
+  {
+    title: "แอด LINE เพื่อดำเนินการต่อ",
+    text: "รุ่น ราคา แพ็กเกจ และการนัดหมาย คุยกับเจ้าหน้าที่ทาง LINE ได้เลย",
+    Icon: MessageCircle,
+  },
+] as const;
 
 export default function ApplicationGuidePage() {
   const schema = {
@@ -26,8 +32,12 @@ export default function ApplicationGuidePage() {
     "@type": "HowTo",
     name: "วิธีสมัคร LG Subscribe",
     description: metadata.description,
-    totalTime: "P7D",
-    step: steps.map((step, index) => ({ "@type": "HowToStep", position: index + 1, name: step.title, text: step.text })),
+    step: steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.title,
+      text: step.text,
+    })),
   };
 
   return (
@@ -36,38 +46,49 @@ export default function ApplicationGuidePage() {
       <header className="page-hero">
         <div className="container-page max-w-5xl">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-red-400">Application Guide</p>
-          <h1 className="mt-4 text-4xl font-bold sm:text-5xl">สมัคร LG Subscribe ใช้อะไรบ้าง?</h1>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/65">ขั้นตอนที่ควรรู้ก่อนส่งข้อมูล พร้อมคำตอบเรื่องบัตรเครดิต การตรวจเครดิต และการอนุมัติ</p>
+          <h1 className="mt-4 text-4xl font-bold sm:text-5xl">สมัคร LG Subscribe ใช้บัตรเครดิตใบเดียวก็จบ</h1>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/65">
+            ไม่ต้องเตรียมเอกสารหลายอย่าง รายละเอียดอื่นๆ กดแอด LINE ได้เลย
+          </p>
+          <Button asChild size="lg" className="mt-8 bg-[#06C755] hover:bg-[#05b64d]">
+            <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
+              <LineMark className="size-5" /> เพิ่มเพื่อน LINE {siteConfig.lineId}
+            </a>
+          </Button>
         </div>
       </header>
 
       <section className="section-space">
-        <div className="container-page max-w-5xl">
+        <div className="container-page">
           <div className="grid gap-5 md:grid-cols-2">
-            {steps.map((step) => <Card key={step.title}><CardContent className="p-7"><GeneratedIcon src={step.icon} alt="" /><h2 className="mt-5 text-xl font-bold">{step.title}</h2><p className="mt-3 leading-7 text-muted-foreground">{step.text}</p></CardContent></Card>)}
+            {steps.map(({ title, text, Icon }, index) => (
+              <article
+                key={title}
+                className="rounded-2xl border border-black/[0.07] bg-white p-7 shadow-[0_6px_22px_rgba(0,0,0,0.05)]"
+              >
+                <span className="grid size-12 place-items-center rounded-full border border-primary/15 bg-[#fff5f6] text-primary">
+                  <Icon className="size-5" strokeWidth={1.8} aria-hidden="true" />
+                </span>
+                <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                  ขั้นตอน {String(index + 1).padStart(2, "0")}
+                </p>
+                <h2 className="mt-2 text-2xl font-bold">{title}</h2>
+                <p className="mt-3 leading-7 text-muted-foreground">{text}</p>
+              </article>
+            ))}
           </div>
 
-          <div className="mt-14 grid gap-8 lg:grid-cols-2">
-            <div className="rounded-2xl bg-white p-7 shadow-sm">
-              <h2 className="text-2xl font-bold">ไม่มีบัตรเครดิต สมัครได้ไหม?</h2>
-              <p className="mt-4 leading-8 text-neutral-700">รูปแบบชำระไม่ได้จำกัดว่าต้องกันวงเงินบัตรเครดิตเหมือนการผ่อนบัตรทั่วไป แต่บริษัทมีขั้นตอนตรวจสอบเครดิตและข้อมูลก่อนอนุมัติ ช่องทางชำระจริงให้ยืนยันกับเจ้าหน้าที่ตามแพ็กเกจล่าสุด</p>
-            </div>
-            <div className="rounded-2xl bg-white p-7 shadow-sm">
-              <h2 className="text-2xl font-bold">LG Subscribe ขึ้นเครดิตบูโรไหม?</h2>
-              <p className="mt-4 leading-8 text-neutral-700">เงื่อนไขทางการระบุว่าบริษัทตรวจสอบสถานะเครดิตก่อนอนุมัติ แต่ขอบเขตการรายงานหรือผลต่อเครดิตอาจขึ้นอยู่กับสัญญาและผู้ให้บริการชำระเงิน ควรถามเจ้าหน้าที่และอ่านเอกสารยินยอมโดยตรง</p>
-            </div>
-          </div>
-
-          <div className="mt-12 rounded-2xl border border-red-100 bg-red-50 p-7">
-            <h2 className="text-2xl font-bold text-red-950">เช็กลิสต์ก่อนลงนาม</h2>
-            <ul className="mt-5 grid gap-3">
-              {["ยอดชำระรายเดือนและยอดรวมตลอดสัญญา", "ระยะสัญญาและวันที่เริ่มนับ", "ขอบเขตรับประกันและรอบบำรุงรักษา", "ช่องทางชำระเงินและเงื่อนไขผิดนัด", "เงื่อนไขย้ายสถานที่ติดตั้งหรือย้ายบ้าน"].map((item) => <li key={item} className="flex gap-3 text-red-950/80"><span aria-hidden="true">✓</span>{item}</li>)}
-            </ul>
-          </div>
-
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Button asChild className="bg-red-600 hover:bg-red-700"><a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">สอบถามรายการเอกสารล่าสุด</a></Button>
-            <Button asChild variant="outline"><Link href="/terms/">อ่านสรุปเงื่อนไขสัญญา</Link></Button>
+          <div className="mt-10 rounded-2xl border border-[#06C755]/20 bg-[#f3fff6] p-7 sm:p-9">
+            <h2 className="text-2xl font-bold text-neutral-950">รายละเอียดอื่นๆ แอด LINE ได้เลย</h2>
+            <p className="mt-3 max-w-3xl leading-7 text-neutral-700">
+              สอบถามรุ่นที่สนใจ ยอดต่อเดือน หรือนัดหมายติดตั้ง คุยกับเจ้าหน้าที่ที่ LINE Official Account{" "}
+              {siteConfig.lineId} ได้ทันที
+            </p>
+            <Button asChild size="lg" className="mt-6 bg-[#06C755] hover:bg-[#05b64d]">
+              <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
+                <LineMark className="size-5" /> เพิ่มเพื่อน LINE
+              </a>
+            </Button>
           </div>
         </div>
       </section>
