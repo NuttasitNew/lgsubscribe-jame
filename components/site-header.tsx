@@ -2,16 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LineMark } from "@/components/line-mark";
 import { SiteHeaderActions } from "@/components/site-header-actions";
-import { siteConfig } from "@/lib/site";
-
-const headerNavigation = [
-  ["/", "หน้าแรก"],
-  ["/products/", "สินค้า"],
-  ["/#reviews", "คำถามลูกค้า"],
-  ["/what-is-lg-subscribe/", "LG Subscribe คืออะไร"],
-  ["/faq/", "คำถามที่พบบ่อย"],
-  ["/contact/", "ติดต่อเรา"],
-] as const;
+import { navigation, siteConfig } from "@/lib/site";
 
 export function SiteHeader() {
   return (
@@ -29,13 +20,13 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-6 xl:flex" aria-label="เมนูหลัก">
-          {headerNavigation.map(([href, label]) => (
+          {navigation.map((item) => (
             <Link
-              key={href}
-              href={href}
+              key={item.href}
+              href={item.href}
               className="whitespace-nowrap text-[13px] font-semibold text-neutral-800 transition-colors hover:text-primary"
             >
-              {label}
+              {item.label}
             </Link>
           ))}
         </nav>

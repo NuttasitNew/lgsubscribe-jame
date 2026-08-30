@@ -28,6 +28,8 @@ const categories = Array.from(new Set(products.map((product) => product.category
 const navigationDescriptions: Record<string, string> = {
   "/": "ภาพรวมบริการและสินค้าที่น่าสนใจ",
   "/products/": "เลือกดูรุ่นที่อยู่ใน LG Subscription",
+  "/#reviews": "อ่านประสบการณ์จากผู้ใช้งานจริง",
+  "/what-is-lg-subscribe/": "รู้จักบริการเช่าใช้แบบรายเดือน",
   "/faq/": "คำถามที่พบบ่อยเกี่ยวกับ LG Subscribe",
   "/contact/": "คุยกับเจ้าหน้าที่เพื่อเช็กแพ็กเกจล่าสุด",
 };

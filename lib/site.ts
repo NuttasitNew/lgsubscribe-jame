@@ -33,7 +33,9 @@ export const siteConfig = {
 
 export const navigation = [
   { href: "/", label: "หน้าแรก" },
-  { href: "/products/", label: "สินค้าทั้งหมด" },
+  { href: "/products/", label: "สินค้า" },
+  { href: "/#reviews", label: "คำถามลูกค้า" },
+  { href: "/what-is-lg-subscribe/", label: "LG Subscribe คืออะไร" },
   { href: "/faq/", label: "คำถามที่พบบ่อย" },
   { href: "/contact/", label: "ติดต่อเรา" },
 ] as const;
