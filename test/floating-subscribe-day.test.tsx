@@ -11,6 +11,7 @@ const promoName =
 afterEach(() => {
   cleanup();
   window.localStorage.clear();
+  window.sessionStorage.clear();
   vi.useRealTimers();
 });
 
@@ -33,18 +34,27 @@ describe("FloatingSubscribeDay", () => {
 
     await user.click(screen.getByRole("button", { name: "ปิดโปรโมชัน LG Subscribe Day" }));
     expect(screen.queryByRole("dialog", { name: "โปรโมชัน LG Subscribe Day" })).not.toBeInTheDocument();
-    expect(window.localStorage.getItem(subscribeDayPopupStorageKey)).toBe("1");
+    expect(window.sessionStorage.getItem(subscribeDayPopupStorageKey)).toBe("1");
   });
 
-  it("does not reopen the popup after the visitor has already closed it", async () => {
+  it("does not reopen the popup after the visitor has already closed it during the same visit", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-08-29T11:26:00+07:00"));
-    window.localStorage.setItem(subscribeDayPopupStorageKey, "1");
+    window.sessionStorage.setItem(subscribeDayPopupStorageKey, "1");
     render(<FloatingSubscribeDay />);
 
     await vi.waitFor(() => {
       expect(screen.queryByRole("dialog", { name: "โปรโมชัน LG Subscribe Day" })).not.toBeInTheDocument();
     });
+  });
+
+  it("reopens the popup on a new visit even if a previous visit closed it", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-08-29T11:26:00+07:00"));
+    window.localStorage.setItem(subscribeDayPopupStorageKey, "1");
+    render(<FloatingSubscribeDay />);
+
+    expect(await screen.findByRole("dialog", { name: "โปรโมชัน LG Subscribe Day" })).toBeInTheDocument();
   });
 
   it("does not show the campaign popup outside the campaign window", async () => {

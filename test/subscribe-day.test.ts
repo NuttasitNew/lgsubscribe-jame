@@ -13,6 +13,7 @@ import {
 
 afterEach(() => {
   window.localStorage.clear();
+  window.sessionStorage.clear();
 });
 
 describe("LG Subscribe Day window", () => {
@@ -46,10 +47,20 @@ describe("LG Subscribe Day window", () => {
     expect(subscribeDayCampaign.alt).toContain("ลด 15%");
   });
 
-  it("remembers a closed popup so the next visit in the same campaign does not reopen it", () => {
+  it("remembers a closed popup only for the current website visit", () => {
     expect(wasSubscribeDayPopupDismissed()).toBe(false);
     markSubscribeDayPopupDismissed();
-    expect(window.localStorage.getItem(subscribeDayPopupStorageKey)).toBe("1");
+    expect(window.sessionStorage.getItem(subscribeDayPopupStorageKey)).toBe("1");
+    expect(window.localStorage.getItem(subscribeDayPopupStorageKey)).toBeNull();
     expect(wasSubscribeDayPopupDismissed()).toBe(true);
+  });
+
+  it("shows the popup again on a new visit even if a previous visit closed it", () => {
+    window.localStorage.setItem(subscribeDayPopupStorageKey, "1");
+    expect(wasSubscribeDayPopupDismissed()).toBe(false);
+
+    markSubscribeDayPopupDismissed();
+    window.sessionStorage.clear();
+    expect(wasSubscribeDayPopupDismissed()).toBe(false);
   });
 });

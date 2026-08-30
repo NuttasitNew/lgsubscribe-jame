@@ -18,10 +18,10 @@ export function isSubscribeDayActive(now: Date = new Date()): boolean {
 
 export function wasSubscribeDayPopupDismissed(): boolean {
   if (typeof window === "undefined") return false;
-  return window.localStorage.getItem(subscribeDayPopupStorageKey) === "1";
+  return window.sessionStorage.getItem(subscribeDayPopupStorageKey) === "1";
 }
 
 export function markSubscribeDayPopupDismissed(): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(subscribeDayPopupStorageKey, "1");
+  window.sessionStorage.setItem(subscribeDayPopupStorageKey, "1");
 }
