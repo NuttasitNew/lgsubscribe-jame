@@ -20,8 +20,6 @@ describe("LG Thailand Subscription catalog", () => {
       label: "ความจุซัก",
       value: "14 กก.",
     });
-    expect(washTower?.reviews).toHaveLength(3);
-    expect(washTower?.reviews?.every((review) => review.rating >= 4)).toBe(true);
   });
 
   it("keeps an official LG Thailand Subscription source for every product", () => {

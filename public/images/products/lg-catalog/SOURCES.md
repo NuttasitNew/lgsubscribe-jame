@@ -89,6 +89,7 @@ Downloaded: 21 August 2026
 | `tx2315dt5g.jpg` | `TX2315DT5G` | https://www.lg.com/th/laundry/top-load-washing-machine/tx2315dt5g/ | https://www.lg.com/content/dam/channel/wcms/th/image-update/washing-machine/2026/tx2315dt5g-degpeth/gallery/top-loading-washing-machine-tx-2026-t95x4ehdc4-tx2315dt5g-th-e-graphite-15kg-01-front_450.jpg | downloaded |
 | `rv10vhp2b.jpg` | `RV10VHP2B` | https://www.lg.com/th/laundry/dryer/rv10vhp2b/ | https://www.lg.com/content/dam/channel/wcms/th/images/washing-machine/rv10vhp2b_ablpeth_eath_th_c/450.jpg | downloaded |
 | `oled77c6psa.jpg` | `OLED77C6PSA` | https://www.lg.com/th/tv-soundbars/oled-evo/oled77c6psa/ | https://www.lg.com/content/dam/channel/wcms/th/image-update/tv/2026/oled/oled81-42c6psa-atm/gallery/77-c6/update/OLED77C6PSA-450-01.jpg | downloaded |
+| `oled83c6psa.jpg` | `OLED83C6PSA.ATM` | https://www.lg.com/th/tv-soundbars/oled-evo/oled83c6psa/ | official LG gallery packshot | downloaded |
 | `oled65c6psa.jpg` | `OLED65C6PSA` | https://www.lg.com/th/tv-soundbars/oled-evo/oled65c6psa/ | https://www.lg.com/content/dam/channel/wcms/th/image-update/tv/2026/oled/oled81-42c6psa-atm/gallery/65-c6/update/OLED65C6PSA-450-01.jpg | downloaded |
 | `oled55c6psa.jpg` | `OLED55C6PSA` | https://www.lg.com/th/tv-soundbars/oled-evo/oled55c6psa/ | https://www.lg.com/content/dam/channel/wcms/th/image-update/tv/2026/oled/oled81-42c6psa-atm/gallery/55-c6/update/OLED55C6PSA-450-01.jpg | downloaded |
 | `100qned86bs.jpg` | `100QNED86BS` | https://www.lg.com/th/tv-soundbars/qned-evo/100qned86bs/ | https://www.lg.com/content/dam/channel/wcms/th/image-update/tv/2026/qned/100-55qned86bsa-atm/gallery/100-qned85/basic/lg-qned-evo-qned85-2026-100-gallery-basic.jpg | downloaded |
@@ -103,3 +104,16 @@ Downloaded: 21 August 2026
 | `oled65c6psa-s80ty.jpg` | `OLED65C6PSA.S80TY` | https://www.lg.com/th/tv-soundbars/oled-evo/oled65c6psa/ | reused OLED65C6PSA packshot | downloaded |
 | `oled55c6psa-s30a.jpg` | `OLED55C6PSA.S30A` | https://www.lg.com/th/tv-soundbars/oled-evo/oled55c6psa/ | reused OLED55C6PSA packshot | downloaded |
 | `34u650a-b.jpg` | `34U650A-B` | Price list_Aug_V3.pdf p.48 | Price list packshot | extracted-from-price-list |
+
+## September V3 exact-model refresh
+
+| File | Exact model | Official product source | Image source | Status |
+| --- | --- | --- | --- | --- |
+| `gv-b25ffgdb.jpg` | `GV-B25FFGDB.ABMPLMT` | https://www.lg.com/th/refrigerators/multi-door-refrigerator/gv-b25ffgdb/ | official LG gallery packshot | downloaded |
+| `gn-f392pqak.jpg` | `GN-F392PQAK.AEPPLM1` | https://www.lg.com/th/refrigerators/2-door-refrigerator/gn-f392pqak/ | official LG gallery packshot | downloaded |
+| `tx2726st5j.jpg` | `TX2726ST5J.APBPETH` | https://www.lg.com/th/laundry/top-load-washing-machine/tx2726st5j/ | official LG gallery packshot | downloaded |
+| `gc-l24ffcbb.jpg` | `GC-L24FFCBB.AEVPLM1` | https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-l24ffcbb/ | official LG gallery packshot | downloaded |
+| `ms2032gas.jpg` | `MS2032GAS.BBKPETH` | https://www.lg.com/th/microwave-ovens/solo-microwave/ms2032gas/ | official LG gallery packshot | downloaded |
+| `tx2523at7g.png` | `TX2523AT7G.AEGPETH` | https://lgsubscribe-official.com/products/021b5011-b267-4b30-840e-89a1e0c9750b | `Price list Sep_V3.pdf` p.22 exact-model packshot | extracted-from-price-list |
+| `as30ggw10.png` | `AS30GGW10.ABAE` | `Price list Sep_V3.pdf` p.29 | exact gift packshot for `DD23GMWE1S.ATH` | extracted-from-price-list |
+| `s80ty.jpg` | `S80TY` | https://www.lg.com/th/speakers/soundbars/s80ty/ | official LG gallery packshot | downloaded |

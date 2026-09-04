@@ -60,7 +60,6 @@ export type Product = {
   promotionImage?: string;
   gallery?: ProductGalleryImage[];
   specifications?: { label: string; value: string }[];
-  reviews?: ProductReview[];
 };
 
 export type ProductGalleryImage = {
@@ -78,9 +77,7 @@ export type CustomerStory = {
   rating: number;
 };
 
-export type ProductReview = CustomerStory;
-
-const washTowerReviews: ProductReview[] = [
+const washTowerReviews: CustomerStory[] = [
   {
     product: "LG WashTower™ WT1410NHEG",
     reviewer: "คุณเมย์",
@@ -235,7 +232,6 @@ export const products: Product[] = [
       { label: "ระบบซัก", value: "AI DD™ / 6 Motion DD" },
       { label: "ระบบอบ", value: "DUAL Inverter HeatPump™" },
     ],
-    reviews: washTowerReviews,
   },
 ];
 

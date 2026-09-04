@@ -94,8 +94,8 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     category: "เครื่องลดความชื้น",
     eyebrow: "ควบคุมความชื้น ลดกลิ่นอับ",
     summary:
-      "LG PuriCare Dehumidifier รุ่น DD23GMWE1 รองรับการลดความชื้นสูงสุด 40 ลิตรต่อวันภายใต้เงื่อนไขทดสอบ 30°C/RH80% มีถัง 5 ลิตรและต่อท่อน้ำทิ้งได้",
-    models: ["DD23GMWE1"],
+      "LG PuriCare Dehumidifier ชุด DD23GMWE1S รองรับการลดความชื้น พร้อมของแถม AeroMini ตามรายการโปรโมชันเดือนกันยายน",
+    models: ["DD23GMWE1S"],
     highlights: [
       "Dual Inverter Compressor",
       "โหมด Smart+, Silent, Laundry และ Spot",
@@ -134,9 +134,9 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     category: "ไมโครเวฟ",
     eyebrow: "อุ่นและปรุงอาหารได้สม่ำเสมอ",
     summary:
-      "LG NeoChef™ รุ่น MS3032JAS ความจุ 30 ลิตร เคลือบ EasyClean™ ช่วยให้เช็ดทำความสะอาดภายในได้ง่ายขึ้น และมีไฟ LED ส่องอาหารภายใน",
-    models: ["MS3032JAS"],
-    highlights: ["EasyClean™", "ความจุ 30 ลิตร", "ดีไซน์บางกะทัดรัด", "ไฟ LED ภายใน"],
+      "LG NeoChef™ รุ่น MS4295DIS ความจุ 42 ลิตร ใช้ Smart Inverter เพื่อควบคุมความร้อน พร้อม EasyClean™ และไฟ LED ภายใน",
+    models: ["MS4295DIS"],
+    highlights: ["Smart Inverter", "EasyClean™", "ความจุ 42 ลิตร", "ไฟ LED ภายใน"],
     selectionCriteria: [
       "เทียบความจุกับขนาดภาชนะที่ใช้จริง",
       "ตรวจโหมดอุ่น ละลายน้ำแข็ง และปรุงอาหารที่ต้องการ",
@@ -160,12 +160,14 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
       "L257SFZW",
       "J257SQZW",
       "X24FFCRB",
+      "PTOL24FFCBB",
       "G24FFQKB",
       "V22FFQMB",
       "B48FPGAM",
-      "GV-V25FFGRB",
+      "GV-B25FFGDB",
       "GN-F452PQAK",
       "GN-V389FQEF",
+      "GN-F392PQAK",
     ],
     highlights: [
       "Multi Air Flow",
@@ -218,6 +220,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
       "OLED55C6PSA",
       "OLED65C6PSA",
       "OLED77C6PSA",
+      "OLED83C6PSA",
       "OLED55C6PSA.S30A",
       "OLED65C6PSA.S80TY",
       "OLED77C6PSA.S80TY",
@@ -225,7 +228,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
       "75NU855BPSA",
       "S95TR",
       "S70TY",
-      "StandbyME 2",
+      "27LX6TDGA",
       "27LX6TDGA.GRAB",
       "32LX6BDGA",
     ],
@@ -276,7 +279,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     eyebrow: "ทำความสะอาดและจัดการฝุ่นในจุดเดียว",
     summary:
       "LG CordZero™ กลุ่ม All-in-One Tower รวมแท่นชาร์จ จัดเก็บอุปกรณ์ และระบบทิ้งฝุ่นอัตโนมัติในรุ่นที่รองรับ ความแตกต่างหลักอยู่ที่หัวดูด แบตเตอรี่ และอุปกรณ์ในชุด",
-    models: ["A9T-ULTRA", "A9T-CORE", "A9T-LITE"],
+    models: ["A9T-ULTRA", "A9T-CORE"],
     highlights: ["All-in-One Tower", "Kompressor™", "ระบบกรองหลายชั้น", "LG ThinQ™ ตามรุ่น"],
     selectionCriteria: [
       "เลือกหัวดูดจากพื้นแข็ง พรม ที่นอน หรือการถูพื้น",
@@ -297,14 +300,15 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
       "มีทั้งเครื่องฝาหน้า เครื่องซักอบในตัว เครื่องฝาบน และ WashTower™ ตั้งแต่ขนาดกะทัดรัดถึงครอบครัวใหญ่ โดยความจุซักกับอบต้องพิจารณาแยกกัน",
     models: [
       "WT1410NHEG",
-      "WT1410NHEN",
       "WT2116SHEG",
+      "WT1410NHEN",
       "WT2520NHEG",
       "WT2520NHEN",
       "FV1413H4M",
       "FV1413S4M",
       "F2520RNTB",
-      "TX2723ST5J",
+      "TX2726ST5J",
+      "TX2523AT7G",
       "TX2315DT5G",
       "RV10VHP2B",
     ],
@@ -355,7 +359,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     eyebrow: "เกม งาน และความบันเทิง",
     summary:
       "กลุ่มจอในรายการ Subscribe มีทั้ง UltraGear สำหรับเกม UltraFine สำหรับงาน และ Smart Monitor Swing สำหรับใช้งานทั่วไป",
-    models: ["32U889SA", "32U889SA.GRAB", "45GX950A-B", "52G930B-B", "40U990A-W", "34U650A-B"],
+    models: ["34U650A-B", "32U889SA", "32U889.GRAB"],
     highlights: [
       "OLED และ IPS ตามรุ่น",
       "UltraWide 21:9 ตามรุ่น",

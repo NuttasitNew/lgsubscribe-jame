@@ -190,6 +190,14 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/dd23gmwe1.jpg",
     officialUrl: "https://www.lg.com/th/dehumidifier/dd23gmwe1/",
   },
+  DD23GMWE1S: {
+    name: "เครื่องลดความชื้น LG PuriCare รุ่น DD23GMWE1 พร้อม AeroMini",
+    description:
+      "ชุด LG Subscribe รหัส DD23GMWE1S ประกอบด้วยเครื่องลดความชื้น LG PuriCare รุ่น DD23GMWE1 และเครื่องฟอกอากาศขนาดเล็ก AeroMini รุ่น AS30GGW10",
+    image: "/images/products/lg-catalog/dd23gmwe1.jpg",
+    officialUrl: "https://www.lg.com/th/dehumidifier/dd23gmwe1/",
+    officialModel: "DD23GMWE1S.ATH",
+  },
   DFC533FV: {
     name: "เครื่องล้างจาน DFC533FV สีเงิน WI-FI control",
     description:
@@ -204,13 +212,13 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/dfc335hm.jpg",
     officialUrl: "https://www.lg.com/th/dishwasher/dfc335hm/",
   },
-  MS3032JAS: {
-    name: "ไมโครเวฟอุ่นอาหาร ขนาด 30 ลิตร สีดำ รุ่น MS3032JAS",
+  MS4295DIS: {
+    name: "ไมโครเวฟ LG NeoChef™ ขนาด 42 ลิตร สีดำ รุ่น MS4295DIS",
     description:
-      "ไมโครเวฟอุ่นอาหาร ขนาด 30 ลิตร สีดำ รุ่น MS3032JAS เคลือบ EasyClean™ ทำความสะอาดง่าย ดีไซน์บางกะทัดรัด และมีไฟ LED ส่องภายใน",
-    image: "/images/products/lg-catalog/ms3032jas.jpg",
-    officialUrl: "https://www.lg.com/th/microwave-ovens/solo-microwave/ms3032jas/",
-    officialModel: "MS3032JAS.BBKPETH",
+      "ไมโครเวฟ LG NeoChef™ รุ่น MS4295DIS ความจุ 42 ลิตร กำลังไฟ 1,200 วัตต์ พร้อม Smart Inverter, EasyClean™ และไฟ LED ภายใน",
+    image: "/images/products/lg-catalog/ms4295dis.jpg",
+    officialUrl: "https://www.lg.com/th/microwave-ovens/solo-microwave/mc4295dis/",
+    officialModel: "MS4295DIS.BBKPETH",
   },
   X257CMEW: {
     name: "ตู้เย็น Instaview Side by Side 22.4 คิว GC-X257CMEW Smart Inverter Compressor™",
@@ -232,6 +240,14 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
       "ตู้เย็น Multi-Door 22.5 คิว รุ่น GC-X24FFCRB ระบบ Smart Inverter Compressor พร้อมคงความสดของอาหารได้ยาวนานถึง 7 วัน",
     image: "/images/products/lg-catalog/x24ffcrb.jpg",
     officialUrl: "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-x24ffcrb/",
+  },
+  PTOL24FFCBB: {
+    name: "ตู้เย็น Multi-Door GC-L24FFCBB พร้อมไมโครเวฟ MS2032GAS",
+    description:
+      "ชุด LG Subscribe รหัส PTOL24FFCBB ประกอบด้วยตู้เย็น Multi-Door GC-L24FFCBB ขนาด 22.6 คิว แบบต่อท่อน้ำ พร้อมไมโครเวฟ MS2032GAS ขนาด 20 ลิตร",
+    image: "/images/products/lg-catalog/gc-l24ffcbb.jpg",
+    officialUrl: "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-l24ffcbb/",
+    officialModel: "PTOL24FFCBB.APTO",
   },
   G24FFQKB: {
     name: "ตู้เย็น Instaview Multi-Door 22.5 คิว GC-G24FFQKB Smart Inverter Compressor",
@@ -272,13 +288,13 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     officialUrl: "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-b48fpgam/",
     officialModel: "GC-B48FPGAM.ADBPLMT",
   },
-  "GV-V25FFGRB": {
-    name: "ตู้เย็น Instaview Multi-Door 21.8 คิว GV-V25FFGRB Smart Inverter Compressor",
+  "GV-B25FFGDB": {
+    name: "ตู้เย็น Multi-Door 21.6 คิว รุ่น GV-B25FFGDB Smart Inverter Compressor",
     description:
-      "ตู้เย็น Multi-Door 21.8 คิว รุ่น GV-V25FFGRB ระบบ Smart Inverter Compressor มีฟังก์ชัน InstaView เคาะ 2 ครั้งเพื่อดูด้านใน",
-    image: "/images/products/lg-catalog/v25ffgrb.jpg",
-    officialUrl: "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gv-v25ffgrb/",
-    officialModel: "GV-V25FFGRB.ABMPLMT",
+      "ตู้เย็น Multi-Door รุ่น GV-B25FFGDB ความจุ 21.6 คิว หรือ 611 ลิตร พร้อม LinearCooling™, DoorCooling+™ และ Smart Inverter Compressor",
+    image: "/images/products/lg-catalog/gv-b25ffgdb.jpg",
+    officialUrl: "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gv-b25ffgdb/",
+    officialModel: "GV-B25FFGDB.ABMPLMT",
   },
   "GN-F452PQAK": {
     name: "ตู้เย็น 2 ประตู ขนาด 16.2 คิว รุ่น GN-F452PQAK ระบบ Smart Inverter",
@@ -295,6 +311,14 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/v389fqef.jpg",
     officialUrl: "https://www.lg.com/th/refrigerators/2-door-refrigerator/gn-v389fqef/",
     officialModel: "GN-V389FQEF.AEPPLMT",
+  },
+  "GN-F392PQAK": {
+    name: "ตู้เย็น 2 ประตู 13.9 คิว รุ่น GN-F392PQAK Smart Inverter Compressor",
+    description:
+      "ตู้เย็น 2 ประตูรุ่น GN-F392PQAK ความจุ 13.9 คิว พร้อม DoorCooling+™, LINEARCooling™, Hygiene Fresh™ และระบบทำน้ำแข็งอัตโนมัติ",
+    image: "/images/products/lg-catalog/gn-f392pqak.jpg",
+    officialUrl: "https://www.lg.com/th/refrigerators/2-door-refrigerator/gn-f392pqak/",
+    officialModel: "GN-F392PQAK.AEPPLM1",
   },
   S3MFC: {
     name: "LG Styler ตู้ถนอมผ้า รุ่น S3MFC",
@@ -346,6 +370,14 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
       'ทีวี 77" LG OLED evo C6 4K Smart TV 2026 รุ่น OLED77C6PSA α11 AI Processor Gen 3, Perfect Black, Dolby Vision & Dolby Atmos, webOS 26',
     image: "/images/products/lg-catalog/oled77c6psa.jpg",
     officialUrl: "https://www.lg.com/th/tv-soundbars/oled-evo/oled77c6psa/",
+  },
+  OLED83C6PSA: {
+    name: 'ทีวี 83" LG OLED evo C6 4K Smart TV 2026 รุ่น OLED83C6PSA',
+    description:
+      'ทีวี 83" LG OLED evo C6 4K Smart TV 2026 รุ่น OLED83C6PSA พร้อม OLED evo 4K, Alpha 11 AI Processor Gen 3, Dolby Vision, Dolby Atmos และ webOS 26',
+    image: "/images/products/lg-catalog/oled83c6psa.jpg",
+    officialUrl: "https://www.lg.com/th/tv-soundbars/oled-evo/oled83c6psa/",
+    officialModel: "OLED83C6PSA.ATM",
   },
   OLED65C6PSA: {
     name: 'ทีวี 65" LG OLED evo C6 4K Smart TV 2026 รุ่น OLED65C6PSA',
@@ -440,13 +472,13 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/stage301.jpg",
     officialUrl: "https://www.lg.com/th/speakers/party-speakers/stage301/",
   },
-  "StandbyME 2": {
+  "27LX6TDGA": {
     name: "LG StanbyME2 รุ่น 27LX6TDGA | Super Portable Screen | Motion Art",
     description:
       "LG StanbyME 2 หน้าจอขนาด 27 นิ้ว หน้าจอสัมผัสแบบพกพา สามารถถอดได้ พกพาสะดวก พร้อม USB-C และแบตเตอรี่ในตัว เล่นได้ 4 ชั่วโมง",
     image: "/images/products/lg-catalog/standbyme-2.jpg",
     officialUrl: "https://www.lg.com/th/lifestyle-screens/stanbyme/27lx6tdga/",
-    officialModel: "27LX6TDGA",
+    officialModel: "27LX6TDGA.ATM",
   },
   "27LX6TDGA.GRAB": {
     name: "LG StanbyME 2 พร้อมลำโพง xboom Grab",
@@ -535,12 +567,21 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     image: "/images/products/lg-catalog/f2520rntb.jpg",
     officialUrl: "https://www.lg.com/th/laundry/front-load-washing-machine/f2520rntb/",
   },
-  TX2723ST5J: {
-    name: "เครื่องซักผ้าฝาบน 23 กก รุ่น TX2723ST5J ระบบ Inverter Direct Drive",
+  TX2726ST5J: {
+    name: "เครื่องซักผ้าฝาบน 26 กก. รุ่น TX2726ST5J ระบบ Inverter Direct Drive",
     description:
-      "เครื่องซักผ้าฝาบน 23 กก. รุ่น TX2723ST5J ระบบ Inverter Direct Drive ระบบ AIDD ซักสะอาดและรวดเร็วด้วย TurboWash3D™",
-    image: "/images/products/lg-catalog/tx2723st5j.jpg",
-    officialUrl: "https://www.lg.com/th/laundry/top-load-washing-machine/tx2723st5j/",
+      "เครื่องซักผ้าฝาบน 26 กก. รุ่น TX2726ST5J พร้อม AI DD™, TurboWash3D™, EasyUnload™, 6 Motion™ และ LG ThinQ™",
+    image: "/images/products/lg-catalog/tx2726st5j.jpg",
+    officialUrl: "https://www.lg.com/th/laundry/top-load-washing-machine/tx2726st5j/",
+    officialModel: "TX2726ST5J.APBPETH",
+  },
+  TX2523AT7G: {
+    name: "เครื่องซักผ้าฝาบน 23 กก. รุ่น TX2523AT7G ระบบ Inverter Direct Drive",
+    description:
+      "เครื่องซักผ้าฝาบน 23 กก. รุ่น TX2523AT7G พร้อม AI DD™, TurboWash™, EasyUnload™, 6 Motion™ และ LG ThinQ™",
+    image: "/images/products/lg-catalog/tx2523at7g.png",
+    officialUrl: "https://lgsubscribe-official.com/products/021b5011-b267-4b30-840e-89a1e0c9750b",
+    officialModel: "TX2523AT7G.AEGPETH",
   },
   TX2315DT5G: {
     name: "เครื่องซักผ้าฝาบน 15 กก รุ่น TX2315DT5G ระบบ Inverter Direct Drive",
@@ -586,7 +627,7 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     officialUrl: "https://www.lg.com/th/monitors/smart-monitors/32u889sa-w/",
     officialModel: "32U889SA-W",
   },
-  "32U889SA.GRAB": {
+  "32U889.GRAB": {
     name: 'จอมอนิเตอร์ 31.5" Smart Monitor Swing พร้อมลำโพง xboom Grab',
     description:
       "ชุดจอมอนิเตอร์ 32U889SA-W พร้อมลำโพงพกพา LG xboom Grab สำหรับใช้งานจอและลำโพงในชุดเดียว",
@@ -656,7 +697,6 @@ export const catalogProducts: Product[] = productKnowledgeGuides.flatMap((guide)
         ? [{ label: "รหัสสินค้าเพิ่มเติม", value: source.officialModel }]
         : featuredProduct?.specifications,
       gallery: featuredProduct?.gallery,
-      reviews: featuredProduct?.reviews,
     });
   }),
 );

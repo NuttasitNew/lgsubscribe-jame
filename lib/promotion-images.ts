@@ -1,17 +1,24 @@
 import { promotionImageAssets, type PromotionImageAsset } from "@/lib/promotion-image-assets";
 import type { Product, ProductGalleryImage } from "@/lib/site";
 
-export const PROMOTION_CAMPAIGN = "aug-v3";
-export const PROMOTION_SOURCE_DIRNAME = "Price list_Aug_V3";
+export const PROMOTION_CAMPAIGN = "sep-v4";
+export const PROMOTION_SOURCE_DIRNAME = "Price list_Sep_V4";
 export const PROMOTION_PUBLIC_DIR = `/images/products/promotions/${PROMOTION_CAMPAIGN}`;
 
 const COMBINED_FOLDER_MODELS: Record<string, readonly string[]> = {
   "WD516AN-WD518AN": ["WD516AN", "WD518AN"],
 };
 
+const SOURCE_FOLDER_MODEL_ALIASES: Record<string, readonly string[]> = {
+  "55QNED80BSA.ATM": ["QNED80B"],
+  "32U889SA-W.ATM": ["32U889SA"],
+};
+
 export function promotionAssetMatchesModel(sourceFolder: string, model: string): boolean {
   const combinedModels = COMBINED_FOLDER_MODELS[sourceFolder];
   if (combinedModels) return combinedModels.includes(model);
+  const aliases = SOURCE_FOLDER_MODEL_ALIASES[sourceFolder];
+  if (aliases) return aliases.includes(model);
   if (sourceFolder === model) return true;
 
   const dotIndex = sourceFolder.indexOf(".");

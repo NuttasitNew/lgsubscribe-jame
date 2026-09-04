@@ -80,7 +80,7 @@ describe("ProductsPage knowledge visibility", () => {
     for (const product of catalogProducts) {
       expect(product.image).toMatch(/^\/images\/products\/lg-catalog\//);
       expect(product.image).not.toMatch(/https?:\/\/www\.lg\.com\//);
-      expect(product.imageSource).toMatch(/^https:\/\/www\.lg\.com\//);
+      expect(product.imageSource).toMatch(/^https:\/\/(?:www\.lg\.com|lgsubscribe-official\.com)\//);
       expect(existsSync(join(process.cwd(), "public", product.image))).toBe(true);
       expect(sources).toContain(`\`${product.image.split("/").at(-1)}\``);
     }

@@ -22,13 +22,13 @@ describe("ProductCard", () => {
     expect(image.closest("[data-image-slot=image]")).toHaveClass("aspect-square", "rounded-none", "border-0");
   });
 
-  it("shows the cheapest starting monthly price from the August price list", () => {
+  it("shows the regular monthly price from the September price list", () => {
     const product = catalogProducts.find((item) => item.model === "WD516AN");
-    expect(product?.monthlyPrice).toBe(149);
+    expect(product?.monthlyPrice).toBe(499);
 
     render(<ProductCard product={product!} />);
     expect(screen.getAllByText("เริ่มต้น")[0]).toBeInTheDocument();
-    expect(screen.getByText(/฿149/)).toBeInTheDocument();
+    expect(screen.getByText(/฿499/)).toBeInTheDocument();
     expect(screen.queryByText("สอบถามราคาล่าสุด")).not.toBeInTheDocument();
     const orderCount = screen.getByTestId("product-order-count");
     expect(orderCount).toHaveTextContent("สั่งซื้อ");

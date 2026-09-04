@@ -18,7 +18,7 @@ export type ProductSpecificationRecord = {
   note?: string;
 };
 
-const VERIFIED_AT = "2026-08-12";
+const VERIFIED_AT = "2026-09-02";
 
 function verifiedRecord(
   sourceUrl: string,
@@ -346,7 +346,8 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
     { label: "มอเตอร์พัดลม", value: "BLDC" },
     { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
   ]),
-  DD23GMWE1: verifiedRecord("https://www.lg.com/th/dehumidifier/dd23gmwe1/", "DD23GMWE1", [
+  DD23GMWE1S: verifiedRecord("https://www.lg.com/th/dehumidifier/dd23gmwe1/", "DD23GMWE1S.ATH", [
+    { label: "ชุดสินค้า", value: "DD23GMWE1 + เครื่องฟอกอากาศ AeroMini AS30GGW10" },
     { label: "ความสามารถลดความชื้น", value: "23 ลิตร/วัน" },
     { label: "ความสามารถที่ 30°C / RH 80%", value: "40 ลิตร/วัน" },
     { label: "ความจุถังน้ำ", value: "5.0 ลิตร" },
@@ -376,18 +377,16 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
     { label: "ประตูเปิดอัตโนมัติ", value: "รองรับ" },
     { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
   ]),
-  MS3032JAS: verifiedRecord(
-    "https://www.lg.com/th/microwave-ovens/solo-microwave/ms3032jas/",
-    "MS3032JAS.BBKPETH",
+  MS4295DIS: verifiedRecord(
+    "https://www.lg.com/th/microwave-ovens/solo-microwave/mc4295dis/",
+    "MS4295DIS.BBKPETH",
     [
       { label: "ประเภท", value: "ไมโครเวฟระบบอุ่นอาหาร" },
-      { label: "ความจุ", value: "30 ลิตร" },
-      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "508 × 290 × 400 มม." },
-      { label: "น้ำหนัก", value: "13.1 กก." },
-      { label: "กำลังไมโครเวฟ", value: "900 วัตต์" },
-      { label: "กำลังไฟฟ้ารวม", value: "1,350 วัตต์" },
+      { label: "ความจุ", value: "42 ลิตร" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "544 × 308 × 432 มม." },
+      { label: "กำลังไมโครเวฟ", value: "1,200 วัตต์" },
       { label: "แหล่งจ่ายไฟ", value: "220 โวลต์ / 50 เฮิรตซ์" },
-      { label: "เทคโนโลยี", value: "EasyClean" },
+      { label: "เทคโนโลยี", value: "Smart Inverter และ EasyClean" },
     ],
   ),
   X257CMEW: verifiedRecord(
@@ -430,6 +429,18 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor (BLDC)" },
       { label: "InstaView", value: "InstaView Door-in-Door" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  PTOL24FFCBB: verifiedRecord(
+    "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-l24ffcbb/",
+    "PTOL24FFCBB.APTO",
+    [
+      { label: "ชุดสินค้า", value: "ตู้เย็น GC-L24FFCBB + ไมโครเวฟ MS2032GAS" },
+      { label: "ประเภทตู้เย็น", value: "Multi-Door แบบต่อท่อน้ำ" },
+      { label: "ความจุรวม", value: "641 ลิตร (22.6 คิว)" },
+      { label: "ขนาดตู้เย็น (กว้าง × สูง × ลึก)", value: "914 × 1,792 × 729 มม." },
+      { label: "ระบบจ่ายน้ำ", value: "ต่อท่อน้ำ พร้อม Water Filter" },
+      { label: "ไมโครเวฟในชุด", value: "MS2032GAS ความจุ 20 ลิตร" },
     ],
   ),
   G24FFQKB: verifiedRecord(
@@ -537,7 +548,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
     { label: "ขนาดลำโพง (กว้าง × สูง × ลึก)", value: "312 × 311 × 282 มม." },
     { label: "น้ำหนักสุทธิ", value: "6.5 กก." },
   ]),
-  "StandbyME 2": verifiedRecord("https://www.lg.com/th/lifestyle-screens/stanbyme/27lx6tdga/", "27LX6TDGA", [
+  "27LX6TDGA": verifiedRecord("https://www.lg.com/th/lifestyle-screens/stanbyme/27lx6tdga/", "27LX6TDGA.ATM", [
     { label: "ขนาดหน้าจอ", value: "27 นิ้ว" },
     { label: "ความละเอียด", value: "QHD 2,560 × 1,440 พิกเซล" },
     { label: "อัตรารีเฟรช", value: "60Hz" },
@@ -573,20 +584,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ความจุถังเก็บฝุ่น", value: "0.44 ลิตร / 0.88 ลิตรเมื่อบีบอัด" },
       { label: "ความจุถุงเก็บฝุ่นใน Tower", value: "2.5 ลิตร" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
-    ],
-  ),
-  "A9T-LITE": verifiedRecord(
-    "https://www.lg.com/th/vacuum-cleaner/cordless-vacuum-cleaner/a9t-lite/",
-    "A9T-LITE",
-    [
-      { label: "แบตเตอรี่", value: "ลิเธียมไอออน 1 ก้อน" },
-      { label: "เวลาใช้งานสูงสุด", value: "60 นาที (40 นาทีเมื่อใช้หัวดูดไฟฟ้า)" },
-      { label: "เวลาชาร์จ", value: "240 นาที" },
-      { label: "ขนาดตัวเครื่อง", value: "260 × 270 × 1,120 มม.; 2.9 กก." },
-      { label: "ขนาด All-in-One Tower", value: "255 × 1,009 × 297 มม.; 9.7 กก." },
-      { label: "ความจุถังเก็บฝุ่น", value: "0.44 ลิตร / 0.88 ลิตรเมื่อบีบอัด" },
-      { label: "ความจุถุงเก็บฝุ่นใน Tower", value: "2.5 ลิตร" },
-      { label: "ระบบอัจฉริยะ", value: "Kompressor และ LG ThinQ (Wi-Fi)" },
     ],
   ),
   WT1410NHEG: verifiedRecord(
@@ -648,16 +645,27 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
   ),
-  TX2723ST5J: verifiedRecord(
-    "https://www.lg.com/th/laundry/top-load-washing-machine/tx2723st5j/",
-    "TX2723ST5J",
+  TX2726ST5J: verifiedRecord(
+    "https://www.lg.com/th/laundry/top-load-washing-machine/tx2726st5j/",
+    "TX2726ST5J.APBPETH",
+    [
+      { label: "ประเภท", value: "เครื่องซักผ้าฝาบน" },
+      { label: "ความจุซักสูงสุด", value: "26 กก." },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "686 × 1,092 × 721 มม." },
+      { label: "ระบบซัก", value: "AI DD และ Auto Tub Clean" },
+      { label: "ระบบไอน้ำ", value: "Steam" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  TX2523AT7G: verifiedRecord(
+    "https://lgsubscribe-official.com/products/021b5011-b267-4b30-840e-89a1e0c9750b",
+    "TX2523AT7G.AEGPETH",
     [
       { label: "ประเภท", value: "เครื่องซักผ้าฝาบน" },
       { label: "ความจุซักสูงสุด", value: "23 กก." },
-      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "686 × 1,092 × 721 มม." },
-      { label: "น้ำหนัก", value: "59 กก." },
-      { label: "ระดับประหยัดพลังงานการซัก", value: "5 ดาว" },
-      { label: "มอเตอร์", value: "Inverter Direct Drive" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "651 × 1,060 × 680 มม." },
+      { label: "ระบบซัก", value: "AI DD และ Auto Tub Clean" },
+      { label: "ระบบไอน้ำ", value: "Steam" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
   ),
@@ -773,15 +781,15 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "LG ThinQ (Wi-Fi)", value: "ไม่รองรับ" },
     ],
   ),
-  "GV-V25FFGRB": verifiedRecord(
-    "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gv-v25ffgrb/",
-    "GV-V25FFGRB.ABMPLMT",
+  "GV-B25FFGDB": verifiedRecord(
+    "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gv-b25ffgdb/",
+    "GV-B25FFGDB.ABMPLMT",
     [
-      { label: "ความจุรวม", value: "21.8 คิว (617 ลิตร)" },
-      { label: "ความจุช่องแช่แข็ง", value: "176 ลิตร" },
-      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "835 × 1,860 × 736 มม." },
-      { label: "น้ำหนัก", value: "119 กก." },
-      { label: "การใช้พลังงาน", value: "844 กิโลวัตต์-ชั่วโมง/ปี" },
+      { label: "ประเภท", value: "ตู้เย็น Multi-Door" },
+      { label: "ความจุรวม", value: "21.6 คิว (611 ลิตร)" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "835 × 1,860 × 735 มม." },
+      { label: "ระบบทำความเย็น", value: "LinearCooling และ DoorCooling+" },
+      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
   ),
@@ -794,6 +802,18 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ขนาด (กว้าง × สูง × ลึก)", value: "700 × 1,845 × 725 มม." },
       { label: "น้ำหนัก", value: "73 กก." },
       { label: "การใช้พลังงาน", value: "435 กิโลวัตต์-ชั่วโมง/ปี" },
+      { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
+    ],
+  ),
+  "GN-F392PQAK": verifiedRecord(
+    "https://www.lg.com/th/refrigerators/2-door-refrigerator/gn-f392pqak/",
+    "GN-F392PQAK.AEPPLM1",
+    [
+      { label: "ประเภท", value: "ตู้เย็น 2 ประตู แช่แข็งบน" },
+      { label: "ความจุรวม", value: "13.98 คิว (394 ลิตร)" },
+      { label: "ขนาด (กว้าง × สูง × ลึก)", value: "700 × 1,760 × 680 มม." },
+      { label: "ระบบทำความเย็น", value: "DoorCooling+" },
+      { label: "คอมเพรสเซอร์", value: "Smart Inverter Compressor" },
       { label: "LG ThinQ (Wi-Fi)", value: "รองรับ" },
     ],
   ),
@@ -868,6 +888,19 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ขนาดไม่รวมขาตั้ง (กว้าง × สูง × ลึก)", value: "1,711 × 982 × 47.1 มม." },
       { label: "น้ำหนักไม่รวมขาตั้ง", value: "23.5 กก." },
       { label: "ช่อง HDMI", value: "4 ช่อง รองรับ 4K 120Hz, eARC, VRR, ALLM" },
+    ],
+  ),
+  OLED83C6PSA: verifiedRecord(
+    "https://www.lg.com/th/tv-soundbars/oled-evo/oled83c6psa/",
+    "OLED83C6PSA.ATM",
+    [
+      { label: "ขนาดหน้าจอ", value: "83 นิ้ว" },
+      { label: "ประเภทจอ", value: "OLED evo 4K" },
+      { label: "ความละเอียด", value: "3,840 × 2,160 พิกเซล" },
+      { label: "หน่วยประมวลผล", value: "Alpha 11 AI Processor Gen 3" },
+      { label: "รูปแบบภาพ", value: "Dolby Vision" },
+      { label: "รูปแบบเสียง", value: "Dolby Atmos" },
+      { label: "ระบบปฏิบัติการ", value: "webOS 26" },
     ],
   ),
   OLED65C6PSA: verifiedRecord(
@@ -987,41 +1020,6 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ระบบ", value: "จอไลฟ์สไตล์ถอดและแขวนได้" },
     ],
   ),
-  "45GX950A-B": verifiedRecord(
-    "https://www.lg.com/th/monitors/gaming/45gx950a-b/",
-    "45GX950A-B.ATM",
-    [
-      { label: "ขนาดหน้าจอ", value: "45 นิ้ว" },
-      { label: "ประเภทพาเนล", value: "OLED Dual-Mode" },
-      { label: "ความละเอียด", value: "5K2K (5,120 × 2,160)" },
-      { label: "เวลาตอบสนอง", value: "0.03 มิลลิวินาที (GtG)" },
-      { label: "HDR", value: "DisplayHDR True Black 400" },
-      { label: "พอร์ต", value: "DisplayPort 2.1, HDMI และ USB-C 90 วัตต์" },
-    ],
-  ),
-  "52G930B-B": verifiedRecord(
-    "https://www.lg.com/th/monitors/gaming/52g930b-b/",
-    "52G930B-B.ATM",
-    [
-      { label: "ขนาดหน้าจอ", value: "52 นิ้ว" },
-      { label: "รูปแบบหน้าจอ", value: "UltraWide 21:9" },
-      { label: "ความละเอียด", value: "5K2K" },
-      { label: "อัตรารีเฟรชสูงสุด", value: "240Hz" },
-      { label: "HDMI", value: "2 ช่อง HDMI 2.1" },
-      { label: "USB-C Power Delivery", value: "90 วัตต์" },
-    ],
-  ),
-  "40U990A-W": verifiedRecord(
-    "https://www.lg.com/th/monitors/uhd-4k-5k/40u990a-w/",
-    "40U990A-W.ATM",
-    [
-      { label: "ขนาดหน้าจอ", value: "40 นิ้ว" },
-      { label: "ประเภทพาเนล", value: "Nano IPS Black 5K2K" },
-      { label: "พอร์ต", value: "Thunderbolt 5 และ HDMI 2 ช่อง" },
-      { label: "USB-C", value: "1 upstream / 4 downstream" },
-      { label: "ขนาดรวมขาตั้ง (กว้าง × สูง × ลึก)", value: "947.7 × 614.3 × 260 มม." },
-    ],
-  ),
   "34U650A-B": verifiedRecord(
     "https://www.lg.com/th/monitors/",
     "34U650A-B.ATM",
@@ -1033,7 +1031,7 @@ export const productSpecificationRecords: Record<string, ProductSpecificationRec
       { label: "ขนาดรวมขาตั้ง (กว้าง × สูง × ลึก)", value: "816.7 × 535.2 × 230 มม." },
     ],
   ),
-  "32U889SA.GRAB": verifiedRecord(
+  "32U889.GRAB": verifiedRecord(
     "https://www.lg.com/th/monitors/smart-monitors/32u889sa-w/",
     "32U889.GRAB",
     [
@@ -1074,8 +1072,10 @@ for (const [alias, catalogModel] of Object.entries({
   "WD110MN.ABGPLMT": "WD110MN",
   "65NU855B": "65NU855BPSA",
   "75NU855B": "75NU855BPSA",
-  STANBYME2: "StandbyME 2",
-  "STANBYME 2": "StandbyME 2",
+  STANBYME2: "27LX6TDGA",
+  "STANBYME 2": "27LX6TDGA",
+  STANDBYME2: "27LX6TDGA",
+  "STANDBYME 2": "27LX6TDGA",
   "GRAB.ATHALBK": "GRAB",
   "BOUNCE.ATHALBK": "BOUNCE",
   "STAGE301.ATHALBK": "STAGE301",
@@ -1095,14 +1095,12 @@ for (const [alias, catalogModel] of Object.entries({
   "GC-J257SQZW.AEPPLMT": "J257SQZW",
   "GC-V22FFQMB.AEPPLMT": "V22FFQMB",
   "GC-B48FPGAM.ADBPLMT": "B48FPGAM",
-  "GV-V25FFGRB.ABMPLMT": "GV-V25FFGRB",
+  "GV-B25FFGDB.ABMPLMT": "GV-B25FFGDB",
   "GN-F452PQAK.AEPPLMT": "GN-F452PQAK",
+  "GN-F392PQAK.AEPPLM1": "GN-F392PQAK",
   "GN-V389FQEF.AEPPLMT": "GN-V389FQEF",
   "100MRGB96BS.ATM": "100MRGB96BS",
   "32LX6BDGA.ATM": "32LX6BDGA",
-  "45GX950A-B.ATM": "45GX950A-B",
-  "52G930B-B.ATM": "52G930B-B",
-  "40U990A-W.ATM": "40U990A-W",
   "34U650A-B.ATM": "34U650A-B",
 })) {
   productSpecificationModelLookup.set(normalizeModel(alias), catalogModel);

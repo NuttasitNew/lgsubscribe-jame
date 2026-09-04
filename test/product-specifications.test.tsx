@@ -14,8 +14,8 @@ describe("official LG product specifications", () => {
     for (const product of allProducts) {
       const record = getProductSpecificationRecord(product.model);
       expect(record, product.model).toBeDefined();
-      expect(record?.sourceUrl, product.model).toMatch(/^https:\/\/www\.lg\.com\//);
-      expect(record?.verifiedAt, product.model).toBe("2026-08-12");
+      expect(record?.sourceUrl, product.model).toMatch(/^https:\/\/(?:www\.lg\.com|lgsubscribe-official\.com)\//);
+      expect(record?.verifiedAt, product.model).toBe("2026-09-02");
 
       if (record?.status === "verified") {
         expect(record.groups.flatMap((group) => group.items).length, product.model).toBeGreaterThanOrEqual(4);
@@ -31,10 +31,10 @@ describe("official LG product specifications", () => {
 
   it("keeps catalog aliases tied to the exact official SKU used for technical data", () => {
     expect(getProductSpecificationRecord("QNED80B")?.sourceModel).toBe("55QNED80BSA");
-    expect(getProductSpecificationRecord("MS3032JAS.BBKPETH")?.sourceModel).toBe("MS3032JAS.BBKPETH");
+    expect(getProductSpecificationRecord("MS4295DIS.BBKPETH")?.sourceModel).toBe("MS4295DIS.BBKPETH");
     expect(getProductSpecificationRecord("65NU855B")?.sourceModel).toBe("65NU855BPSA");
     expect(getProductSpecificationRecord("75NU855B")?.sourceModel).toBe("75NU855BPSA");
-    expect(getProductSpecificationRecord("StandbyME 2")?.sourceModel).toBe("27LX6TDGA");
+    expect(getProductSpecificationRecord("StandbyME 2")?.sourceModel).toBe("27LX6TDGA.ATM");
     expect(getProductSpecificationRecord("32U889SA")?.sourceModel).toBe("32U889SA-W");
     expect(getProductSpecificationRecord("GRAB.ATHALBK")?.sourceModel).toBe("GRAB");
     expect(getProductSpecificationRecord("BOUNCE.ATHALBK")?.sourceModel).toBe("BOUNCE");

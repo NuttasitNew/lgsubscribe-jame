@@ -3,13 +3,17 @@ import { catalogProducts } from "@/lib/catalog-products";
 import { getSubscriptionStartingPrice, subscriptionStartingPrices } from "@/lib/subscription-starting-prices";
 
 describe("subscription starting prices", () => {
-  it("uses the cheapest first-bill or package price from the August workbook", () => {
-    expect(getSubscriptionStartingPrice("WD516AN")).toBe(149);
-    expect(getSubscriptionStartingPrice("WD518AN")).toBe(149);
-    expect(getSubscriptionStartingPrice("SAQ13A")).toBe(849);
-    expect(getSubscriptionStartingPrice("AS10GDBY0")).toBe(1099);
+  it("uses the regular monthly price from the September workbook", () => {
+    expect(getSubscriptionStartingPrice("WD516AN")).toBe(499);
+    expect(getSubscriptionStartingPrice("WD518AN")).toBe(499);
+    expect(getSubscriptionStartingPrice("SAQ13A")).toBe(699);
+    expect(getSubscriptionStartingPrice("AS10GDBY0")).toBe(899);
     expect(getSubscriptionStartingPrice("GRAB")).toBe(109);
-    expect(getSubscriptionStartingPrice("DFC533FV")).toBe(599);
+    expect(getSubscriptionStartingPrice("DFC533FV")).toBe(549);
+    expect(getSubscriptionStartingPrice("ZT1Q12GULA1")).toBe(1499);
+    expect(getSubscriptionStartingPrice("ZTRQ48GYLA1")).toBe(2799);
+    expect(getSubscriptionStartingPrice("RV10VHP2B")).toBe(599);
+    expect(getSubscriptionStartingPrice("TX2726ST5J")).toBe(549);
   });
 
   it("copies those starting prices onto matching catalog cards", () => {
@@ -23,7 +27,7 @@ describe("subscription starting prices", () => {
   it("falls back to the campaign starting price when the exact SKU is not in the workbook", () => {
     expect(getSubscriptionStartingPrice("UNKNOWN-SKU")).toBeNull();
     expect(getSubscriptionStartingPrice("UNKNOWN-SKU", "เครื่องปรับอากาศ")).toBe(149);
-    expect(getSubscriptionStartingPrice("UNKNOWN-SKU", "จอมอนิเตอร์")).toBe(399);
+    expect(getSubscriptionStartingPrice("UNKNOWN-SKU", "จอมอนิเตอร์")).toBe(349);
   });
 
   it("gives every catalog card a starting monthly price", () => {

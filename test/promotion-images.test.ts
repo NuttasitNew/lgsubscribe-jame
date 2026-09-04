@@ -10,96 +10,58 @@ import {
 import { promotionImageAssets } from "@/lib/promotion-image-assets";
 
 const matchingFixtures = [
-  { sourceFolder: "SAQ13A", publicPath: "/images/products/promotions/aug-v3/saq13a__price-list-aug-v3.png" },
+  { sourceFolder: "SAQ13A", publicPath: "/images/products/promotions/sep-v3/saq13a__price-list-sep-v3.png" },
   {
     sourceFolder: "A9T-ULTRA.DCBPETH",
-    publicPath: "/images/products/promotions/aug-v3/a9t-ultra-dcbpeth__price-list-aug-v3.png",
+    publicPath: "/images/products/promotions/sep-v3/a9t-ultra-dcbpeth__price-list-sep-v3.png",
   },
   {
     sourceFolder: "WD516AN-WD518AN",
-    publicPath: "/images/products/promotions/aug-v3/wd516an-wd518an__price-list-aug-v3.png",
+    publicPath: "/images/products/promotions/sep-v3/wd516an-wd518an__price-list-sep-v3.png",
   },
   {
     sourceFolder: "DD23GMWE1S.ATH",
-    publicPath: "/images/products/promotions/aug-v3/dd23gmwe1s-ath__price-list-aug-v3.png",
+    publicPath: "/images/products/promotions/sep-v3/dd23gmwe1s-ath__price-list-sep-v3.png",
   },
   {
     sourceFolder: "GC-X257CMEW.ATEPLMT",
-    publicPath: "/images/products/promotions/aug-v3/gc-x257cmew-ateplmt__price-list-aug-v3.png",
+    publicPath: "/images/products/promotions/sep-v3/gc-x257cmew-ateplmt__price-list-sep-v3.png",
   },
   {
-    sourceFolder: "PTODFC553FV.APTO",
-    publicPath: "/images/products/promotions/aug-v3/ptodfc553fv-apto__price-list-aug-v3.png",
+    sourceFolder: "PTOL24FFCBB.APTO",
+    publicPath: "/images/products/promotions/sep-v3/ptol24ffcbb-apto__price-list-sep-v3.png",
   },
 ];
-
-const catalogModelsWithPromotion = [
-  "A9T-CORE",
-  "A9T-LITE",
-  "A9T-ULTRA",
-  "ART13A",
-  "ART18A",
-  "AS10GDBY0",
-  "AS25GCBY0",
-  "AS60GHWG0",
-  "AS65GDBY0",
-  "B48FPGAM",
-  "DFC335HM",
-  "F2520RNTB",
-  "FV1413H4M",
-  "FV1413S4M",
-  "G24FFQKB",
-  "GN-F452PQAK",
-  "GN-V389FQEF",
-  "GV-V25FFGRB",
-  "J257SQZW",
-  "L257SFZW",
-  "MS3032JAS",
-  "RV10VHP2B",
-  "S3MFC",
-  "SAQ11A",
-  "SAQ13A",
-  "SAQ18B",
-  "SAQ24B",
-  "TX2315DT5G",
-  "TX2723ST5J",
-  "V22FFQMB",
-  "WD110MN",
-  "WD516AN",
-  "WD518AN",
-  "WT1410NHEG",
-  "WT1410NHEN",
-  "WT2116SHEG",
-  "WT2520NHEG",
-  "WT2520NHEN",
-  "X257CMEW",
-  "X257CMHW",
-] as const;
 
 describe("promotion still matching", () => {
   it("matches a catalog model to the exact source folder or SKU prefix", () => {
     expect(promotionAssetMatchesModel("SAQ13A", "SAQ13A")).toBe(true);
     expect(promotionAssetMatchesModel("A9T-ULTRA.DCBPETH", "A9T-ULTRA")).toBe(true);
     expect(getPromotionImageSrc("SAQ13A", matchingFixtures)).toBe(
-      "/images/products/promotions/aug-v3/saq13a__price-list-aug-v3.png",
+      "/images/products/promotions/sep-v3/saq13a__price-list-sep-v3.png",
     );
     expect(getPromotionImageSrc("A9T-ULTRA", matchingFixtures)).toBe(
-      "/images/products/promotions/aug-v3/a9t-ultra-dcbpeth__price-list-aug-v3.png",
+      "/images/products/promotions/sep-v3/a9t-ultra-dcbpeth__price-list-sep-v3.png",
     );
   });
 
   it("shares the WD516AN-WD518AN still between both water-purifier models", () => {
     expect(getPromotionImageSrc("WD516AN", matchingFixtures)).toBe(
-      "/images/products/promotions/aug-v3/wd516an-wd518an__price-list-aug-v3.png",
+      "/images/products/promotions/sep-v3/wd516an-wd518an__price-list-sep-v3.png",
     );
     expect(getPromotionImageSrc("WD518AN", matchingFixtures)).toBe(
-      "/images/products/promotions/aug-v3/wd516an-wd518an__price-list-aug-v3.png",
+      "/images/products/promotions/sep-v3/wd516an-wd518an__price-list-sep-v3.png",
     );
+  });
+
+  it("matches the intentional catalog aliases to their exact September SKU", () => {
+    expect(promotionAssetMatchesModel("55QNED80BSA.ATM", "QNED80B")).toBe(true);
+    expect(promotionAssetMatchesModel("32U889SA-W.ATM", "32U889SA")).toBe(true);
   });
 
   it("treats a refrigerator SKU with a GC- prefix as the same catalog model", () => {
     expect(getPromotionImageSrc("X257CMEW", matchingFixtures)).toBe(
-      "/images/products/promotions/aug-v3/gc-x257cmew-ateplmt__price-list-aug-v3.png",
+      "/images/products/promotions/sep-v3/gc-x257cmew-ateplmt__price-list-sep-v3.png",
     );
   });
 
@@ -116,7 +78,7 @@ describe("product gallery promotion stills", () => {
     const gallery = buildProductGallery({
       name: "เครื่องกรองน้ำ LG PuriCare รุ่น WD516",
       image: "/images/products/lg-catalog/wd516an.jpg",
-      promotionImage: "/images/products/promotions/aug-v3/wd516an-wd518an__price-list-aug-v3.png",
+      promotionImage: "/images/products/promotions/sep-v3/wd516an-wd518an__price-list-sep-v3.png",
       gallery: [
         {
           src: "/images/products/lg-catalog/wd516an.jpg",
@@ -132,7 +94,7 @@ describe("product gallery promotion stills", () => {
     });
 
     expect(gallery.map((image) => image.src)).toEqual([
-      "/images/products/promotions/aug-v3/wd516an-wd518an__price-list-aug-v3.png",
+      "/images/products/promotions/sep-v3/wd516an-wd518an__price-list-sep-v3.png",
       "/images/products/lg-catalog/wd516an.jpg",
       "/images/products/official/wt1410nheg/01-front.jpeg",
     ]);
@@ -140,7 +102,7 @@ describe("product gallery promotion stills", () => {
   });
 
   it("does not insert the same promotion still twice", () => {
-    const promotionSrc = "/images/products/promotions/aug-v3/saq13a__price-list-aug-v3.png";
+    const promotionSrc = "/images/products/promotions/sep-v3/saq13a__price-list-sep-v3.png";
     const gallery = buildProductGallery({
       name: "แอร์ SAQ13A",
       image: "/images/products/lg-catalog/saq13a.jpg",
@@ -161,18 +123,20 @@ describe("product gallery promotion stills", () => {
 });
 
 describe("synced catalog promotion stills", () => {
-  it("exposes a public promotion still only for exact catalog matches", () => {
+  it("exposes a September promotion still for every current catalog card", () => {
     const matched = catalogProducts.filter((product) => product.promotionImage);
-    expect(matched.map((product) => product.model).sort()).toEqual([...catalogModelsWithPromotion]);
+    expect(promotionImageAssets).toHaveLength(82);
+    expect(catalogProducts).toHaveLength(83);
+    expect(matched).toHaveLength(catalogProducts.length);
+    expect(matched.map((product) => product.model).sort()).toEqual(
+      catalogProducts.map((product) => product.model).sort(),
+    );
+    expect(promotionImageAssets.every((asset) => asset.publicPath.includes("/sep-v4/"))).toBe(true);
 
-    const airWithoutStill = catalogProducts.find((product) => product.model === "SIQ11B");
-    const dehumidifier = catalogProducts.find((product) => product.model === "DD23GMWE1");
-    const speaker = catalogProducts.find((product) => product.model === "STAGE301");
-
-    expect(airWithoutStill?.promotionImage).toBeUndefined();
-    expect(dehumidifier?.promotionImage).toBeUndefined();
-    expect(speaker?.promotionImage).toBeUndefined();
-    expect(airWithoutStill?.image).toBe("/images/products/lg-catalog/siq11b.jpg");
+    const unusedAssets = promotionImageAssets.filter(
+      (asset) => !catalogProducts.some((product) => promotionAssetMatchesModel(asset.sourceFolder, product.model)),
+    );
+    expect(unusedAssets).toEqual([]);
   });
 
   it("keeps promotion stills on public paths that exist on disk", () => {

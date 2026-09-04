@@ -6,6 +6,7 @@
  * Usage:
  *   node scripts/sync-promotion-images.mjs
  *   node scripts/sync-promotion-images.mjs --source "Price list_Aug_V3" --campaign aug-v3
+ *   node scripts/sync-promotion-images.mjs --source "Price list_Sep_V3" --campaign sep-v3 --used-only
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -25,6 +26,7 @@ function parseArgs(argv) {
   const options = {
     source: "Price list_Aug_V3",
     campaign: "aug-v3",
+    usedOnly: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -36,6 +38,8 @@ function parseArgs(argv) {
     } else if (flag === "--campaign" && value) {
       options.campaign = value;
       index += 1;
+    } else if (flag === "--used-only") {
+      options.usedOnly = true;
     }
   }
 
@@ -104,7 +108,7 @@ ${rows}
   fs.writeFileSync(filePath, contents);
 }
 
-const { source, campaign } = parseArgs(process.argv.slice(2));
+const { source, campaign, usedOnly } = parseArgs(process.argv.slice(2));
 const sourceRoot = path.join(root, ".gen", source);
 const destDir = path.join(root, "public", "images", "products", "promotions", campaign);
 const assetModulePath = path.join(root, "lib", "promotion-image-assets.ts");
@@ -124,7 +128,9 @@ fs.mkdirSync(unusedRoot, { recursive: true });
 
 const assets = [];
 
-for (const statusRoot of [usedRoot, unusedRoot]) {
+const statusRoots = usedOnly ? [usedRoot] : [usedRoot, unusedRoot];
+
+for (const statusRoot of statusRoots) {
   for (const entry of fs.readdirSync(statusRoot, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
 
@@ -153,12 +159,14 @@ assets.sort((left, right) => left.sourceFolder.localeCompare(right.sourceFolder)
 writeAssetModule(assetModulePath, assets);
 writeSourcesMarkdown(path.join(destDir, "SOURCES.md"), source, campaign, assets, expectedFileSuffix);
 
-for (const asset of assets) {
-  if (asset.sourceStatusRoot !== unusedRoot) continue;
-  fs.renameSync(
-    path.join(unusedRoot, asset.sourceFolder),
-    path.join(usedRoot, asset.sourceFolder),
-  );
+if (!usedOnly) {
+  for (const asset of assets) {
+    if (asset.sourceStatusRoot !== unusedRoot) continue;
+    fs.renameSync(
+      path.join(unusedRoot, asset.sourceFolder),
+      path.join(usedRoot, asset.sourceFolder),
+    );
+  }
 }
 
 console.log(`Copied ${assets.length} canonical promotion stills to ${path.relative(root, destDir)} and marked them used`);

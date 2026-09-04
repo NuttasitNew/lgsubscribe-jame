@@ -6,14 +6,12 @@ import { ProductOrderCount } from "@/components/live-view-count";
 import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { ProductGallery } from "@/feature/public/products/components/product-gallery";
-import { ProductReviews } from "@/feature/public/products/components/product-reviews";
 import { ProductSpecifications } from "@/feature/public/products/components/product-specifications";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { allProducts } from "@/lib/catalog-products";
 import { getProductKnowledgeGuide } from "@/lib/product-knowledge";
-import { getProductReviewAverage, getProductReviews } from "@/lib/product-reviews";
 import { getProductSpecificationRecord } from "@/lib/product-specifications";
 import { buildProductGallery } from "@/lib/promotion-images";
 import { createPageMetadata, siteConfig } from "@/lib/site";
@@ -46,8 +44,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const product = allProducts.find((item) => item.slug === slug);
   if (!product) notFound();
   const specificationRecord = getProductSpecificationRecord(product.model);
-  const reviews = getProductReviews(product);
-  const reviewAverage = getProductReviewAverage(product.model);
   const structuredSpecifications =
     specificationRecord?.status === "verified"
       ? specificationRecord.groups.flatMap((group) =>
@@ -72,23 +68,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     description: product.description,
     brand: { "@type": "Brand", name: "LG" },
     ...(structuredSpecifications.length ? { additionalProperty: structuredSpecifications } : {}),
-    ...(reviews.length
-      ? {
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: reviewAverage.toFixed(1),
-            reviewCount: reviews.length,
-            bestRating: 5,
-          },
-          review: reviews.map((review) => ({
-            "@type": "Review",
-            author: { "@type": "Person", name: review.reviewer },
-            name: review.title,
-            reviewBody: review.summary,
-            reviewRating: { "@type": "Rating", ratingValue: review.rating, bestRating: 5 },
-          })),
-        }
-      : {}),
     ...(product.monthlyPrice !== null
       ? {
           offers: {
@@ -222,15 +201,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           </div>
         </div>
       </section>
-
-      {reviews.length ? (
-        <ProductReviews
-          productName={product.name}
-          category={product.category}
-          reviews={reviews}
-          average={reviewAverage}
-        />
-      ) : null}
 
       {specificationRecord ? (
         <ProductSpecifications model={product.model} record={specificationRecord} />
