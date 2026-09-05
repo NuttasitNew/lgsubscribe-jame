@@ -1,6 +1,8 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { Profiler, type ProfilerOnRenderCallback } from "react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  ProductOrderCount,
   ProductViewCount,
   productViewStorageKey,
   resetVisitBonuses,
@@ -48,5 +50,41 @@ describe("product view visit persistence", () => {
     localStorage.setItem(productViewStorageKey(model), "1");
     render(<ProductViewCount model={model} />);
     await waitFor(() => expect(visibleCount()).toBe(base + 1));
+  });
+});
+
+describe("live counter redraws", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("does not commit listing counts every second when the displayed number is unchanged", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-05T12:00:00+07:00"));
+
+    let commits = 0;
+    const onRender: ProfilerOnRenderCallback = () => {
+      commits += 1;
+    };
+
+    render(
+      <Profiler id="live-counts" onRender={onRender}>
+        {Array.from({ length: 12 }, (_, index) => (
+          <ProductViewCount key={`view-${index}`} model={model} />
+        ))}
+        {Array.from({ length: 12 }, (_, index) => (
+          <ProductOrderCount key={`order-${index}`} model={model} />
+        ))}
+      </Profiler>,
+    );
+
+    const commitsAfterPaint = commits;
+    expect(commitsAfterPaint).toBeGreaterThan(0);
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(commits).toBe(commitsAfterPaint);
   });
 });

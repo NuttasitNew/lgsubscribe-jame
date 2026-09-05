@@ -16,43 +16,132 @@ const SESSION_TICK_MS = 550;
 
 type Listener = () => void;
 
-let sharedNow = Date.now();
-const listeners = new Set<Listener>();
+let sharedNow = 0;
+const clockListeners = new Set<Listener>();
 let timer: ReturnType<typeof setInterval> | null = null;
+let scrolling = false;
+let scrollingReset: ReturnType<typeof setTimeout> | null = null;
+let scrollPauseBound = false;
+const productViewSnapshots = new Map<string, ViewSnapshot>();
+let siteViewSnapshot: ViewSnapshot | null = null;
+
+function liveNow() {
+  if (sharedNow === 0) {
+    sharedNow = Date.now();
+  }
+  return sharedNow;
+}
+
+function pauseClockWhileScrolling() {
+  scrolling = true;
+  if (scrollingReset !== null) {
+    clearTimeout(scrollingReset);
+  }
+  scrollingReset = setTimeout(() => {
+    scrolling = false;
+    sharedNow = Date.now();
+    clockListeners.forEach((entry) => entry());
+  }, 160);
+}
+
+function bindScrollPause() {
+  if (scrollPauseBound || typeof window === "undefined") return;
+  window.addEventListener("scroll", pauseClockWhileScrolling, { passive: true });
+  scrollPauseBound = true;
+}
+
+function unbindScrollPause() {
+  if (!scrollPauseBound || typeof window === "undefined") return;
+  window.removeEventListener("scroll", pauseClockWhileScrolling);
+  scrollPauseBound = false;
+  if (scrollingReset !== null) {
+    clearTimeout(scrollingReset);
+    scrollingReset = null;
+  }
+  scrolling = false;
+}
 
 function subscribeLiveClock(listener: Listener) {
-  listeners.add(listener);
+  clockListeners.add(listener);
+  bindScrollPause();
   if (timer === null) {
+    sharedNow = Date.now();
     timer = setInterval(() => {
+      if (scrolling) return;
       sharedNow = Date.now();
-      listeners.forEach((entry) => entry());
+      clockListeners.forEach((entry) => entry());
     }, CLOCK_INTERVAL_MS);
   }
   return () => {
-    listeners.delete(listener);
-    if (listeners.size === 0 && timer !== null) {
+    clockListeners.delete(listener);
+    if (clockListeners.size === 0 && timer !== null) {
       clearInterval(timer);
       timer = null;
+      unbindScrollPause();
     }
   };
 }
 
-function getLiveNow() {
-  return sharedNow;
+function reuseSnapshot(previous: ViewSnapshot | null | undefined, next: ViewSnapshot) {
+  if (previous && previous.total === next.total && previous.current === next.current) {
+    return previous;
+  }
+  return next;
 }
 
-function useLiveNow() {
-  return useSyncExternalStore(subscribeLiveClock, getLiveNow, getLiveNow);
+function liveProductViewSnapshot(model: string) {
+  const next = reuseSnapshot(productViewSnapshots.get(model), getProductViewSnapshot(model, liveNow()));
+  productViewSnapshots.set(model, next);
+  return next;
+}
+
+function liveSiteViewSnapshot() {
+  siteViewSnapshot = reuseSnapshot(siteViewSnapshot, getSiteViewSnapshot(liveNow()));
+  return siteViewSnapshot;
+}
+
+function liveProductOrders(model: string) {
+  return getProductOrdersAt(model, liveNow());
+}
+
+function useLiveProductView(model: string) {
+  return useSyncExternalStore(subscribeLiveClock, () => liveProductViewSnapshot(model), liveProductViewSnapshot.bind(null, model));
+}
+
+function useLiveProductOrders(model: string) {
+  return useSyncExternalStore(subscribeLiveClock, () => liveProductOrders(model), liveProductOrders.bind(null, model));
+}
+
+function useLiveSiteView() {
+  return useSyncExternalStore(subscribeLiveClock, liveSiteViewSnapshot, liveSiteViewSnapshot);
 }
 
 export function productViewStorageKey(model: string) {
   return `lg-views:product:${model}`;
 }
 
+export function resetLiveClock() {
+  sharedNow = 0;
+  productViewSnapshots.clear();
+  siteViewSnapshot = null;
+  scrolling = false;
+  if (scrollingReset !== null) {
+    clearTimeout(scrollingReset);
+    scrollingReset = null;
+  }
+  if (timer !== null) {
+    clearInterval(timer);
+    timer = null;
+  }
+  clockListeners.clear();
+  unbindScrollPause();
+}
+
 export function resetVisitBonuses() {
   visitBonusByKey.clear();
   visitBonusTimers.forEach((timeout) => window.clearTimeout(timeout));
   visitBonusTimers.clear();
+  resetLiveClock();
 }
 
 const visitBonusByKey = new Map<string, number>();
@@ -153,15 +242,15 @@ function LiveDot({ className }: { className?: string }) {
 }
 
 export function SiteViewStats({ className }: { className?: string }) {
-  const now = useLiveNow();
+  const snapshot = useLiveSiteView();
   const bonus = useVisitBonus("lg-views:site", true);
-  const snapshot: ViewSnapshot = getSiteViewSnapshot(now);
   const total = snapshot.total + bonus;
   const current = Math.max(snapshot.current, bonus);
 
   return (
     <p
       data-testid="site-view-count"
+      suppressHydrationWarning
       aria-label={`ผู้เข้าชมเว็บไซต์ ${formatViewCount(total)} คน${current > 0 ? ` กำลังมีผู้เข้าชม ${formatViewCount(current)} คน` : ""}`}
       className={cn("flex flex-wrap items-center gap-x-2 gap-y-1 text-xs", className)}
     >
@@ -193,15 +282,15 @@ export function ProductViewCount({
   countSession?: boolean;
   className?: string;
 }) {
-  const now = useLiveNow();
+  const snapshot = useLiveProductView(model);
   const bonus = useVisitBonus(productViewStorageKey(model), countSession);
-  const snapshot = getProductViewSnapshot(model, now);
   const total = snapshot.total + bonus;
   const current = snapshot.current + bonus;
 
   return (
     <p
       data-testid="product-view-count"
+      suppressHydrationWarning
       aria-label={`${formatViewCount(total)} ผู้เข้าชม`}
       className={cn(
         "pointer-events-none flex items-center gap-1.5 whitespace-nowrap rounded-full bg-neutral-950/80 px-2.5 py-1 text-[11px] font-bold text-white",
@@ -217,12 +306,12 @@ export function ProductViewCount({
 }
 
 export function ProductOrderCount({ model, className }: { model: string; className?: string }) {
-  const now = useLiveNow();
-  const total = getProductOrdersAt(model, now);
+  const total = useLiveProductOrders(model);
 
   return (
     <p
       data-testid="product-order-count"
+      suppressHydrationWarning
       aria-label={`สั่งซื้อแล้ว ${formatViewCount(total)} ราย`}
       className={cn("inline-flex items-center gap-1 text-xs leading-none text-muted-foreground", className)}
     >
