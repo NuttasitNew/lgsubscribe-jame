@@ -86,7 +86,7 @@ export function ProductCatalogBrowser() {
     >
       <div
         id="catalog-search"
-        className="sticky top-[76px] z-30 hidden scroll-mt-[92px] border-b border-black/10 bg-white/95 py-4 shadow-[0_10px_24px_rgba(0,0,0,0.05)] backdrop-blur-xl lg:block lg:py-5"
+        className="sticky top-[76px] z-30 hidden scroll-mt-[92px] border-b border-black/10 bg-white py-4 shadow-[0_8px_20px_rgba(0,0,0,0.04)] lg:block lg:py-5"
       >
         <div className="container-page">
           <div className="flex items-center gap-2 sm:gap-3">
