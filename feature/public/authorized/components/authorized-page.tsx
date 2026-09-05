@@ -30,11 +30,6 @@ const verificationSteps = [
     title: "แจ้งรหัสตัวแทน",
     text: `แจ้งรหัส ${authorizedAgent.code} ให้เจ้าหน้าที่เพื่อตรวจสอบสถานะตัวแทนขาย`,
   },
-  {
-    step: "3",
-    title: "รอการยืนยัน",
-    text: "เจ้าหน้าที่จะยืนยันได้ว่าเป็นตัวแทนการขายที่ได้รับอนุญาต ไม่ใช่บริษัท LG เอง",
-  },
 ] as const;
 
 export default function AuthorizedPage() {

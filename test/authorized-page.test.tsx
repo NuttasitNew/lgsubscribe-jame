@@ -33,5 +33,11 @@ describe("AuthorizedPage", () => {
       "href",
       siteConfig.lineUrl,
     );
+    expect(screen.getByText(`โทร ${authorizedAgent.verificationPhone.name}`)).toBeInTheDocument();
+    expect(screen.getByText("แจ้งรหัสตัวแทน")).toBeInTheDocument();
+    expect(screen.queryByText("รอการยืนยัน")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("เจ้าหน้าที่จะยืนยันได้ว่าเป็นตัวแทนการขายที่ได้รับอนุญาต ไม่ใช่บริษัท LG เอง"),
+    ).not.toBeInTheDocument();
   });
 });
