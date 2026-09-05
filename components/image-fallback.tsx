@@ -10,6 +10,7 @@ type ImageFallbackProps = {
   className?: string;
   loading?: "eager" | "lazy";
   fit?: "cover" | "contain";
+  sizes?: string;
 };
 
 const aspectClasses = {
@@ -28,6 +29,7 @@ export function ImageFallback({
   className,
   loading = "lazy",
   fit = "cover",
+  sizes = "(max-width: 768px) 100vw, 50vw",
 }: ImageFallbackProps) {
   const isDark = tone === "dark";
 
@@ -47,8 +49,9 @@ export function ImageFallback({
           src={src}
           alt={label}
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes={sizes}
           loading={loading}
+          decoding="async"
           className={
             fit === "contain"
               ? "object-contain"
