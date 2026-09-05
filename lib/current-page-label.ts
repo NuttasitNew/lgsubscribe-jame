@@ -6,6 +6,7 @@ const staticPageLabels: Record<string, string> = {
   "/contact": "ติดต่อเรา",
   "/application-guide": "ขั้นตอนการสมัคร",
   "/faq": "คำถามที่พบบ่อย",
+  "/authorized": "ความน่าเชื่อถือ",
   "/service-and-maintenance": "บริการดูแลและบำรุงรักษา",
   "/what-is-lg-subscribe": "LG Subscribe คืออะไร",
 };

@@ -60,6 +60,7 @@ describe("primary navigation", () => {
       { href: "/#reviews", label: "คำถามลูกค้า" },
       { href: "/what-is-lg-subscribe", label: "LG Subscribe คืออะไร" },
       { href: "/faq", label: "คำถามที่พบบ่อย" },
+      { href: "/authorized", label: "ความน่าเชื่อถือ" },
       { href: "/contact", label: "ติดต่อเรา" },
     ]);
   });

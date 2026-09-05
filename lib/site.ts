@@ -31,12 +31,57 @@ export const siteConfig = {
   ],
 } as const;
 
+export const authorizedAgent = {
+  path: "/authorized/",
+  nameTh: "นภัสกร บุญเดช",
+  nameEn: "Napassakorn Boondej",
+  roleTh: "ผู้จัดการฝ่ายขาย",
+  roleEn: "Sales Manager",
+  code: "LGF216232",
+  photo: "/images/authorized/napatsakorn-boondech.jpg",
+  photoAlt: "คุณนภัสกร บุญเดช รับรางวัล Excellent LSM Award บนเวทีงาน LG Subscribe พร้อมเกียรติบัตร",
+  photoWidth: 1267,
+  photoHeight: 1309,
+  verificationPhone: {
+    label: "02-057-5757",
+    href: "tel:+6620575757",
+    name: "LG Call Center",
+  },
+} as const;
+
+/** Footer copy for Google Ads / trademark reviewers: authorized agent, not LG. */
+export const siteOperatorDisclosure = {
+  blurb:
+    "ตัวแทนการขายบริการ LG Subscribe ที่ได้รับอนุญาตจาก LG โดยตรง — ไม่ใช่เว็บไซต์ทางการของ LG Electronics",
+  th: {
+    heading: "ข้อความชี้แจงสถานะผู้ให้บริการ",
+    identity:
+      "เว็บไซต์นี้ดำเนินการโดยตัวแทนการขายบริการ LG Subscribe ที่ได้รับอนุญาตจาก LG โดยตรง ไม่ใช่เว็บไซต์ทางการของ LG Electronics หรือ LG Thailand และเราไม่ได้เป็นบริษัท LG",
+    credentials: `ผู้ดูแลช่องทางนี้คือ ${authorizedAgent.nameTh} ${authorizedAgent.roleTh} รหัสตัวแทน ${authorizedAgent.code} ลูกค้าสามารถโทรตรวจสอบสถานะตัวแทนขายได้ที่ ${authorizedAgent.verificationPhone.name} ${authorizedAgent.verificationPhone.label}`,
+    rights:
+      "เราได้รับสิทธิ์ในการขาย โปรโมท และทำการตลาดบริการ LG Subscribe ตามที่ LG รับรอง รวมถึงมีสิทธิ์ในการดูแลลูกค้าและบริหารจัดการช่องทางจัดจำหน่ายด้วยตนเอง",
+    trademark:
+      "LG, LG Electronics และ LG Subscribe เป็นเครื่องหมายการค้าของ LG Electronics Inc. การใช้ชื่อ โลโก้ และเครื่องหมายดังกล่าวบนเว็บไซต์นี้มีวัตถุประสงค์เพื่อระบุสินค้าและบริการที่นำเสนอเท่านั้น",
+  },
+  en: {
+    heading: "Website operator disclosure",
+    identity:
+      "This website is operated by an authorized sales agent for LG Subscribe, directly authorized by LG. It is not the official website of LG Electronics or LG Thailand, and we are not LG.",
+    credentials: `This channel is managed by ${authorizedAgent.nameEn}, a ${authorizedAgent.roleEn} with authorized agent code ${authorizedAgent.code}. You can verify this agent status by calling ${authorizedAgent.verificationPhone.name} at ${authorizedAgent.verificationPhone.label}.`,
+    rights:
+      "We are authorized to sell, promote, and market the LG Subscribe service as certified by LG, and to provide customer care and independently manage distribution channels.",
+    trademark:
+      "LG, LG Electronics, and LG Subscribe are trademarks of LG Electronics Inc. Their use on this website is solely to identify the products and services offered.",
+  },
+} as const;
+
 export const navigation = [
   { href: "/", label: "หน้าแรก" },
   { href: "/products/", label: "สินค้า" },
   { href: "/#reviews", label: "คำถามลูกค้า" },
   { href: "/what-is-lg-subscribe/", label: "LG Subscribe คืออะไร" },
   { href: "/faq/", label: "คำถามที่พบบ่อย" },
+  { href: authorizedAgent.path, label: "ความน่าเชื่อถือ" },
   { href: "/contact/", label: "ติดต่อเรา" },
 ] as const;
 
@@ -278,8 +323,7 @@ export const faqs = [
   },
   {
     question: "เมื่อชำระครบตามสัญญาแล้ว เครื่องจะเป็นของใคร?",
-    answer:
-      "เมื่อชำระค่างวดครบถ้วนตามเงื่อนไขของสัญญา กรรมสิทธิ์ในสินค้าจะโอนให้ลูกค้าตามข้อกำหนดของสัญญา",
+    answer: "เมื่อชำระค่างวดครบถ้วนตามเงื่อนไขของสัญญา กรรมสิทธิ์ในสินค้าจะโอนให้ลูกค้าตามข้อกำหนดของสัญญา",
   },
 ] as const;
 

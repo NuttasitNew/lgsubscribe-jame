@@ -20,8 +20,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/authorized",
-        destination: "/faq/",
+        source: "/authorize",
+        destination: "/authorized/",
         permanent: true,
       },
       {

@@ -12,6 +12,7 @@ const staticPages = [
   "/application-guide/",
   "/service-and-maintenance/",
   "/faq/",
+  "/authorized/",
   "/contact/",
 ];
 

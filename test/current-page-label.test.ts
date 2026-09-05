@@ -6,6 +6,7 @@ describe("getCurrentPageLabel", () => {
     expect(getCurrentPageLabel("/")).toBe("หน้าแรก");
     expect(getCurrentPageLabel("/products/")).toBe("สินค้าทั้งหมด");
     expect(getCurrentPageLabel("/faq/")).toBe("คำถามที่พบบ่อย");
+    expect(getCurrentPageLabel("/authorized/")).toBe("ความน่าเชื่อถือ");
   });
 
   it("uses the product name on a product detail route", () => {

@@ -4,7 +4,7 @@ import { JsonLd } from "@/components/json-ld";
 import { MobileDock } from "@/components/mobile-dock";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { siteConfig } from "@/lib/site";
+import { siteConfig, siteOperatorDisclosure } from "@/lib/site";
 
 export default function PublicLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const organizationSchema = {
@@ -15,6 +15,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     url: siteConfig.url,
     logo: `${siteConfig.url}/brand/lg-logo.svg`,
     description: siteConfig.description,
+    disambiguatingDescription: siteOperatorDisclosure.en.identity,
     sameAs: [siteConfig.lineUrl],
     email: siteConfig.email,
     contactPoint: siteConfig.phoneNumbers.map((phone) => ({

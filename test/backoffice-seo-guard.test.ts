@@ -26,8 +26,11 @@ describe("backoffice SEO boundary", () => {
     expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/price"))).toBe(false);
   });
 
-  it("does not list the retired authorized or payment-options pages", () => {
-    expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/authorized"))).toBe(false);
+  it("lists the public authorized credibility page", () => {
+    expect(sitemap().some((entry) => new URL(entry.url).pathname === "/authorized/")).toBe(true);
+  });
+
+  it("does not list the retired payment-options page", () => {
     expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/payment-options"))).toBe(
       false,
     );
@@ -65,7 +68,7 @@ describe("backoffice SEO boundary", () => {
     }
   });
 
-  it("does not keep public website links to retired authorized or payment-options pages", () => {
+  it("does not keep public website links to the retired payment-options page", () => {
     const files = [
       ...listSourceFiles("app/(public)"),
       ...listSourceFiles("feature/public"),
@@ -75,7 +78,6 @@ describe("backoffice SEO boundary", () => {
     ].filter((file) => file.endsWith(".ts") || file.endsWith(".tsx"));
 
     for (const file of files) {
-      expect(readFileSync(file, "utf8"), file).not.toMatch(/\/authorized\//);
       expect(readFileSync(file, "utf8"), file).not.toMatch(/\/payment-options\//);
     }
   });

@@ -31,6 +31,7 @@ const navigationDescriptions: Record<string, string> = {
   "/#reviews": "อ่านประสบการณ์จากผู้ใช้งานจริง",
   "/what-is-lg-subscribe/": "รู้จักบริการเช่าใช้แบบรายเดือน",
   "/faq/": "คำถามที่พบบ่อยเกี่ยวกับ LG Subscribe",
+  "/authorized/": "ตรวจสอบรหัสตัวแทนขายและความน่าเชื่อถือ",
   "/contact/": "คุยกับเจ้าหน้าที่เพื่อเช็กแพ็กเกจล่าสุด",
 };
 
