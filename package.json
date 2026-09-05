@@ -16,6 +16,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "sync:promotion-images": "node scripts/sync-promotion-images.mjs",
+    "compose:promotions": "node scripts/compose-monthly-promotions.mjs",
+    "generate:sep-promotions": "node scripts/generate-sep-promotion-batch.mjs",
+    "verify:sep-promotions": "node scripts/verify-sep-promotion-assets.mjs",
     "organize:promotion-images": "node scripts/organize-promotion-images.mjs",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev"
