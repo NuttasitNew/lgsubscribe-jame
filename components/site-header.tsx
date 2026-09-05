@@ -6,7 +6,7 @@ import { navigation, siteConfig } from "@/lib/site";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-black/[0.07] bg-white/95 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-black/[0.07] bg-white">
       <div className="mx-auto flex h-[76px] w-full max-w-[1480px] items-center justify-between gap-5 px-5 sm:px-8">
         <Link href="/" aria-label="LG Subscribe หน้าแรก" className="group flex shrink-0 items-center gap-3">
           <Image
