@@ -162,7 +162,7 @@ export function ProductSearchSheet({ children }: { children?: ReactNode }) {
                 >
                   <span className="relative block aspect-square w-[4.5rem] overflow-hidden rounded-xl bg-white">
                     <Image
-                      src={product.promotionImage ?? product.image}
+                      src={product.image}
                       alt=""
                       fill
                       sizes="72px"
