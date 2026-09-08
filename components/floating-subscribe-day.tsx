@@ -65,14 +65,14 @@ export function FloatingSubscribeDay() {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="โปรโมชัน LG Subscribe Day"
+        aria-label={subscribeDayCampaign.dialogLabel}
         className="relative w-full max-w-[min(100%,28rem)] sm:max-w-[32rem]"
         onClick={(event) => event.stopPropagation()}
       >
         <button
           type="button"
           onClick={dismiss}
-          aria-label="ปิดโปรโมชัน LG Subscribe Day"
+          aria-label={subscribeDayCampaign.closeLabel}
           className="absolute right-2 top-2 z-10 grid size-8 place-items-center rounded-full bg-neutral-800 text-white shadow-lg ring-2 ring-white transition-colors hover:bg-neutral-950 sm:-right-3 sm:-top-3 sm:ring-0"
         >
           <X className="size-4" strokeWidth={3} aria-hidden="true" />
@@ -82,8 +82,9 @@ export function FloatingSubscribeDay() {
             <Image
               src={subscribeDayCampaign.image}
               alt={subscribeDayCampaign.alt}
-              width={1254}
-              height={1254}
+              width={1200}
+              height={1200}
+              priority
               className="h-auto w-full"
               sizes="(min-width: 640px) 32rem, calc(100vw - 1.5rem)"
             />
