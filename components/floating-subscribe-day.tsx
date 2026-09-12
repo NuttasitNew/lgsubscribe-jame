@@ -82,8 +82,8 @@ export function FloatingSubscribeDay() {
             <Image
               src={subscribeDayCampaign.image}
               alt={subscribeDayCampaign.alt}
-              width={1200}
-              height={1200}
+              width={1254}
+              height={1254}
               priority
               className="h-auto w-full"
               sizes="(min-width: 640px) 32rem, calc(100vw - 1.5rem)"

@@ -6,11 +6,11 @@ import { subscribeDayPopupStorageKey } from "@/lib/subscribe-day";
 import { siteConfig } from "@/lib/site";
 
 const promoName =
-  "LG Subscribe 9.9 Surprise Deal 8–11 กันยายน 2569 เริ่มต้น 99 บาทต่อเดือน สอบถามใน LINE";
-const dialogName = "โปรโมชัน 9.9 Surprise Deal";
-const closeName = "ปิดโปรโมชัน 9.9 Surprise Deal";
-const duringCampaign = "2026-09-08T11:26:00+07:00";
-const afterCampaign = "2026-09-12T00:00:00+07:00";
+  "LG Subscribe Day 12–20 กันยายน 2569 ลด 15% ทุกรอบบิล ลูกค้าใหม่ตั้งแต่ 2 เครื่อง ลูกค้าเก่าตั้งแต่ 1 เครื่อง สอบถามใน LINE";
+const dialogName = "โปรโมชัน LG Subscribe Day";
+const closeName = "ปิดโปรโมชัน LG Subscribe Day";
+const duringCampaign = "2026-09-12T11:26:00+07:00";
+const afterCampaign = "2026-09-21T00:00:00+07:00";
 
 afterEach(() => {
   cleanup();
