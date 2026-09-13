@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lgsubscribe-jame.vercel.app";
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lgthailand-subscribe.com";
 
 export const siteConfig = {
   name: "LG Subscribe Thailand",
