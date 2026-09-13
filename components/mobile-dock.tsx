@@ -124,7 +124,7 @@ export function MobileDock() {
 
             <div className="mt-auto grid gap-2 border-t border-black/[0.07] bg-white p-4">
               <p className="mb-1 text-xs font-semibold text-neutral-500">ต้องการให้ช่วยเลือกแพ็กเกจ?</p>
-              <Button asChild className="h-12 rounded-xl bg-[#008438] hover:bg-[#006e30]">
+              <Button asChild className="h-12 rounded-xl bg-[#06C755] text-neutral-950 hover:bg-[#06C755]/90">
                 <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
                   แชทผ่าน LINE {siteConfig.lineId}
                 </a>
@@ -241,7 +241,7 @@ export function MobileDock() {
           target="_blank"
           rel="noreferrer"
           aria-label="แชทกับฝ่ายขายทาง LINE"
-          className="group relative grid size-14 shrink-0 place-items-center rounded-full bg-[#008438] text-white shadow-[0_8px_22px_rgba(6,199,85,0.34)] transition-transform hover:scale-105 active:scale-95"
+          className="group relative grid size-14 shrink-0 place-items-center rounded-full bg-[#06C755] text-white shadow-[0_8px_22px_rgba(6,199,85,0.34)] transition-transform hover:scale-105 active:scale-95"
         >
           <span
             aria-hidden="true"

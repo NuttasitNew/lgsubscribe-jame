@@ -177,7 +177,7 @@ export default function AuthorizedPage() {
                   ใช้ช่องทางนี้เมื่อต้องการสอบถามรุ่น ราคา หรือเริ่มสมัคร ไม่ใช่เบอร์ตรวจสอบสถานะตัวแทน
                 </p>
                 <div className="mt-5 grid gap-3">
-                  <Button asChild className="bg-[#008438] hover:bg-[#006e30]">
+                  <Button asChild className="bg-[#06C755] text-neutral-950 hover:bg-[#06C755]/90">
                     <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
                       LINE Official Account {siteConfig.lineId}
                     </a>

@@ -103,9 +103,9 @@ export function FloatingSubscribeDay({
             target="_blank"
             rel="noreferrer"
             onClick={dismiss}
-            className="flex items-center justify-center gap-2 bg-[#008438] px-4 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-[#007a34] sm:py-4 sm:text-base"
+            className="flex items-center justify-center gap-2 bg-[#06C755] px-4 py-3.5 text-[15px] font-bold text-neutral-950 transition-colors hover:bg-[#06C755]/90 sm:py-4 sm:text-base"
           >
-            <LineMark className="size-6" />
+            <LineMark className="size-6 text-white" />
             {subscribeDayCampaign.ctaLabel}
           </a>
         </div>

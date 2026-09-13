@@ -91,9 +91,9 @@ export function SubscribeSteps({ className }: { className?: string }) {
           <p className="min-w-0 flex-1 text-base font-bold leading-7 text-neutral-950 sm:text-lg">
             หากสงสัยหรือติดตรงขั้นตอนไหน สามารถสอบถามได้ทันที
           </p>
-          <Button asChild size="lg" className="bg-[#008438] hover:bg-[#007a34]">
+          <Button asChild size="lg" className="bg-[#06C755] text-neutral-950 hover:bg-[#06C755]/90">
             <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
-              <LineMark className="size-5" /> แอด LINE {siteConfig.lineId}
+              <LineMark className="size-5 text-white" /> แอด LINE {siteConfig.lineId}
             </a>
           </Button>
         </div>
@@ -129,12 +129,12 @@ function StepRow({ step, index }: { step: Step; index: number }) {
           className={cn(
             "mt-0.5 grid size-12 shrink-0 place-items-center rounded-full border-[1.5px] sm:mt-0",
             step.icon === "line"
-              ? "border-[#06C755] bg-[#008438] text-white"
+              ? "border-[#06C755] bg-[#06C755] text-white"
               : "border-primary bg-white text-primary",
           )}
         >
           {step.icon === "line" ? (
-            <LineMark className="size-6" />
+            <LineMark className="size-6 text-white" />
           ) : (
             <step.icon className="size-5" strokeWidth={1.8} aria-hidden="true" />
           )}
