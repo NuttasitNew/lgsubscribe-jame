@@ -27,7 +27,7 @@ describe("SiteHeader", () => {
     const user = userEvent.setup();
     render(<SiteHeader />);
 
-    expect(screen.getByRole("button", { name: "ค้นหาสินค้า" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "ค้นหาสินค้า" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "ค้นหาสินค้า" }));
     expect(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" })).toBeVisible();
   });

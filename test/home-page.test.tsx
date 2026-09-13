@@ -65,7 +65,7 @@ describe("HomePage best sellers", () => {
 
     for (const product of bestSellerProducts) {
       expect(screen.getByRole("heading", { name: product.name })).toBeInTheDocument();
-      expect(screen.getByRole("link", { name: `ดูรายละเอียด ${product.name}` })).toHaveAttribute(
+      expect(screen.getByRole("img", { name: `ภาพโปรโมชัน ${product.name}` }).closest("a")).toHaveAttribute(
         "href",
         `/products/${product.slug}`,
       );

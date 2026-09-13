@@ -119,3 +119,8 @@
     @apply bg-gradient-to-r from-red-800 via-red-600 to-red-500 bg-clip-text text-transparent;
   }
 }
+
+/* Preserve per-visit popup dismissal before React hydrates server markup. */
+html[data-subscribe-day-hidden] .subscribe-day-popup {
+  display: none;
+}

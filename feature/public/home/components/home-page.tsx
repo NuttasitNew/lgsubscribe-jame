@@ -1,4 +1,5 @@
 import Image from "next/image";
+import heroImage from "@/lib/home-hero-image.json";
 import Link from "next/link";
 import {
   BadgeCheck,
@@ -92,6 +93,13 @@ export function HomePage() {
   return (
     <>
       <JsonLd data={faqSchema} />
+      <link
+        rel="preload"
+        as="image"
+        href={heroImage.desktopSrc}
+        media="(min-width: 1024px)"
+        fetchPriority="high"
+      />
 
       <section className="home-hero">
         <div className="container-page relative grid min-h-[570px] min-w-0 items-center overflow-hidden py-12 lg:min-h-[640px] lg:grid-cols-[0.9fr_1.1fr] lg:py-16">
@@ -133,14 +141,17 @@ export function HomePage() {
           </div>
 
           <div className="relative z-10 mt-10 aspect-[1.75/1] w-full overflow-hidden rounded-2xl bg-[#f5f1ec] lg:absolute lg:inset-0 lg:mt-0 lg:aspect-auto lg:w-full lg:rounded-none">
-            <Image
-              src="/images/hero/lg-subscribe-official-products-composite-v2.png"
-              alt="กลุ่มสินค้า LG Subscribe ได้แก่ ตู้เย็น WashTower เครื่องดูดฝุ่น เครื่องกรองน้ำ เครื่องฟอกอากาศ และเครื่องปรับอากาศ"
-              fill
-              preload
-              sizes="(max-width: 1024px) calc(100vw - 40px), 1280px"
-              className="object-cover object-center lg:object-left"
-            />
+            <picture>
+              <source media="(min-width: 1024px)" srcSet={heroImage.desktopSrc} />
+              {/* Critical mobile artwork is inline; desktop keeps a full-resolution cached image. */}
+              <img
+                src={heroImage.mobileSrc}
+                alt="กลุ่มสินค้า LG Subscribe ได้แก่ ตู้เย็น WashTower เครื่องดูดฝุ่น เครื่องกรองน้ำ เครื่องฟอกอากาศ และเครื่องปรับอากาศ"
+                width={1604}
+                height={916}
+                className="absolute inset-0 h-full w-full object-cover object-center lg:object-left"
+              />
+            </picture>
             <div className="absolute bottom-4 left-4 overflow-hidden rounded-xl bg-white px-5 pt-4 text-center shadow-xl sm:bottom-8 sm:left-7 sm:px-7 sm:pt-5 lg:bottom-auto lg:left-auto lg:right-6 lg:top-[38%]">
               <p className="text-sm font-bold text-neutral-800">ลดสูงสุด</p>
               <p className="mt-0.5 text-5xl font-black leading-none text-primary sm:text-6xl">
@@ -234,8 +245,8 @@ export function HomePage() {
             </Link>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-            {bestSellerProducts.map((product, index) => (
-              <ProductCard key={product.slug} product={product} eager={index === 0} />
+            {bestSellerProducts.map((product) => (
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </div>
@@ -283,7 +294,7 @@ export function HomePage() {
                       <span className="text-neutral-300">{"★".repeat(5 - story.rating)}</span>
                     </p>
                   </div>
-                  <p className="mt-2 text-xs text-neutral-400">{story.context}</p>
+                  <p className="mt-2 text-xs text-neutral-600">{story.context}</p>
                 </div>
               </article>
             ))}

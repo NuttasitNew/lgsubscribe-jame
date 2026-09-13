@@ -2,11 +2,21 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  experimental: { inlineCss: true },
   trailingSlash: true,
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
+    qualities: [50, 75],
   },
   poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/images/optimized/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+    ];
+  },
   async redirects() {
     return [
       {

@@ -15,6 +15,7 @@ export function SiteHeader() {
             width={1581}
             height={316}
             preload
+            sizes="(max-width: 640px) 156px, 184px"
             className="h-auto w-[9.75rem] transition-transform group-hover:scale-[1.02] sm:w-[11.5rem]"
           />
         </Link>

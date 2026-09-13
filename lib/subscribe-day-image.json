@@ -1,0 +1,17 @@
+{
+  "source": "/images/campaigns/lg-subscribe-day-popup.jpg",
+  "images": [
+    {
+      "width": 384,
+      "src": "/images/optimized/subscribe-day-a98f604ea6-384.avif"
+    },
+    {
+      "width": 750,
+      "src": "/images/optimized/subscribe-day-a98f604ea6-750.avif"
+    },
+    {
+      "width": 1024,
+      "src": "/images/optimized/subscribe-day-a98f604ea6-1024.avif"
+    }
+  ]
+}

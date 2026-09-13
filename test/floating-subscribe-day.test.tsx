@@ -1,3 +1,4 @@
+import { renderToString } from "react-dom/server";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -20,6 +21,11 @@ afterEach(() => {
 });
 
 describe("FloatingSubscribeDay", () => {
+  it("includes the automatic popup in server HTML instead of waiting for hydration", () => {
+    const html = renderToString(<FloatingSubscribeDay initialActive />);
+    expect(html).toContain('role="dialog"');
+    expect(html).toContain("/images/optimized/subscribe-day-");
+  });
   it("opens the campaign popup on a first visit during Subscribe Day and sends people to LINE OA", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date(duringCampaign));
@@ -45,7 +51,7 @@ describe("FloatingSubscribeDay", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date(duringCampaign));
     window.sessionStorage.setItem(subscribeDayPopupStorageKey, "1");
-    render(<FloatingSubscribeDay />);
+    render(<FloatingSubscribeDay initialActive />);
 
     await vi.waitFor(() => {
       expect(screen.queryByRole("dialog", { name: dialogName })).not.toBeInTheDocument();

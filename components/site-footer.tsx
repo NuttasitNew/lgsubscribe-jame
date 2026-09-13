@@ -23,6 +23,7 @@ export function SiteFooter() {
               alt="LG Subscribe"
               width={1581}
               height={316}
+              sizes="192px"
               className="h-auto w-[12rem]"
             />
           </Link>
@@ -93,13 +94,16 @@ export function SiteFooter() {
             </p>
             <p className="mt-2 text-sm leading-7 text-white/55">
               ตรวจสอบสถานะตัวแทนได้ที่ {authorizedAgent.verificationPhone.name}{" "}
-              <a href={authorizedAgent.verificationPhone.href} className="text-white/80 hover:text-white">
+              <a
+                href={authorizedAgent.verificationPhone.href}
+                className="text-white/80 underline underline-offset-4 hover:text-white"
+              >
                 {authorizedAgent.verificationPhone.label}
               </a>
             </p>
-            <p lang="en" className="mt-1 text-sm leading-7 text-white/45">
-              {authorizedAgent.nameEn} · {authorizedAgent.roleEn} · Agent code {authorizedAgent.code}. Verify with{" "}
-              {authorizedAgent.verificationPhone.name} {authorizedAgent.verificationPhone.label}.
+            <p lang="en" className="mt-1 text-sm leading-7 text-white/60">
+              {authorizedAgent.nameEn} · {authorizedAgent.roleEn} · Agent code {authorizedAgent.code}. Verify
+              with {authorizedAgent.verificationPhone.name} {authorizedAgent.verificationPhone.label}.
             </p>
           </div>
           <Link
@@ -139,7 +143,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="container-page flex flex-col gap-3 py-6 text-xs leading-6 text-white/45 md:flex-row md:items-center md:justify-between">
+        <div className="container-page flex flex-col gap-3 py-6 text-xs leading-6 text-white/60 md:flex-row md:items-center md:justify-between">
           <div className="grid gap-2">
             <p>© {new Date().getFullYear()} LG Subscribe Thailand. All rights reserved.</p>
             <SiteViewStats />

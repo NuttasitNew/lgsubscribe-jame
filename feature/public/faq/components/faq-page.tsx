@@ -39,6 +39,7 @@ export default function FaqPage() {
 
       <section className="section-space">
         <div className="container-page">
+          <h2 className="sr-only">คำถามและคำตอบเกี่ยวกับบริการ LG Subscribe</h2>
           <FaqAccordion />
         </div>
       </section>

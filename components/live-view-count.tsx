@@ -104,16 +104,25 @@ function liveProductOrders(model: string) {
   return getProductOrdersAt(model, liveNow());
 }
 
+// The server and hydration snapshot must not depend on each process clock.
+const initialViewSnapshot: ViewSnapshot = { total: 0, current: 0 };
+const getInitialViewSnapshot = () => initialViewSnapshot;
+const getInitialOrders = () => 0;
+
 function useLiveProductView(model: string) {
-  return useSyncExternalStore(subscribeLiveClock, () => liveProductViewSnapshot(model), liveProductViewSnapshot.bind(null, model));
+  return useSyncExternalStore(
+    subscribeLiveClock,
+    () => liveProductViewSnapshot(model),
+    getInitialViewSnapshot,
+  );
 }
 
 function useLiveProductOrders(model: string) {
-  return useSyncExternalStore(subscribeLiveClock, () => liveProductOrders(model), liveProductOrders.bind(null, model));
+  return useSyncExternalStore(subscribeLiveClock, () => liveProductOrders(model), getInitialOrders);
 }
 
 function useLiveSiteView() {
-  return useSyncExternalStore(subscribeLiveClock, liveSiteViewSnapshot, liveSiteViewSnapshot);
+  return useSyncExternalStore(subscribeLiveClock, liveSiteViewSnapshot, getInitialViewSnapshot);
 }
 
 export function productViewStorageKey(model: string) {

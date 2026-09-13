@@ -5,10 +5,14 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ArrowRight, X } from "lucide-react";
 import { LineMark } from "@/components/line-mark";
-import { ProductSearchSheet } from "@/components/product-search-sheet";
+import dynamic from "next/dynamic";
+
+const ProductSearchSheet = dynamic(() =>
+  import("@/components/product-search-sheet").then((module) => module.ProductSearchSheet),
+);
 import { Button } from "@/components/ui/button";
-import { isProductsSection } from "@/lib/catalog-search";
-import { getCurrentPageLabel } from "@/lib/current-page-label";
+import { isProductsSection } from "@/lib/catalog-routes";
+import { getStaticPageLabel } from "@/lib/static-page-label";
 import {
   Sheet,
   SheetClose,
@@ -37,7 +41,7 @@ const navigationDescriptions: Record<string, string> = {
 
 export function MobileDock() {
   const pathname = usePathname();
-  const currentPageLabel = getCurrentPageLabel(pathname);
+  const currentPageLabel = getStaticPageLabel(pathname);
   const showProductSearch = isProductsSection(pathname);
 
   return (
@@ -120,7 +124,7 @@ export function MobileDock() {
 
             <div className="mt-auto grid gap-2 border-t border-black/[0.07] bg-white p-4">
               <p className="mb-1 text-xs font-semibold text-neutral-500">ต้องการให้ช่วยเลือกแพ็กเกจ?</p>
-              <Button asChild className="h-12 rounded-xl bg-[#06C755] hover:bg-[#05b64d]">
+              <Button asChild className="h-12 rounded-xl bg-[#008438] hover:bg-[#006e30]">
                 <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
                   แชทผ่าน LINE {siteConfig.lineId}
                 </a>
@@ -147,7 +151,6 @@ export function MobileDock() {
               <button
                 type="button"
                 className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[1.25rem] bg-primary px-4 text-left text-white transition-colors hover:bg-primary/90"
-                aria-label="เปิดหมวดสินค้าแบบด่วน"
               >
                 <span
                   aria-hidden="true"
@@ -159,7 +162,7 @@ export function MobileDock() {
                   <span className="rounded-[2px] bg-white" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[10px] font-medium tracking-normal text-white/65">
+                  <span className="block text-[10px] font-medium tracking-normal text-white/90">
                     เลือกหมวดหมู่
                   </span>
                   <span className="block truncate text-sm font-bold">{currentPageLabel}</span>
@@ -238,7 +241,7 @@ export function MobileDock() {
           target="_blank"
           rel="noreferrer"
           aria-label="แชทกับฝ่ายขายทาง LINE"
-          className="group relative grid size-14 shrink-0 place-items-center rounded-full bg-[#06C755] text-white shadow-[0_8px_22px_rgba(6,199,85,0.34)] transition-transform hover:scale-105 active:scale-95"
+          className="group relative grid size-14 shrink-0 place-items-center rounded-full bg-[#008438] text-white shadow-[0_8px_22px_rgba(6,199,85,0.34)] transition-transform hover:scale-105 active:scale-95"
         >
           <span
             aria-hidden="true"

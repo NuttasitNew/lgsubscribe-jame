@@ -6,12 +6,7 @@ import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  authorizedAgent,
-  createPageMetadata,
-  siteConfig,
-  siteOperatorDisclosure,
-} from "@/lib/site";
+import { authorizedAgent, createPageMetadata, siteConfig, siteOperatorDisclosure } from "@/lib/site";
 
 export const metadata: Metadata = createPageMetadata({
   title: `ความน่าเชื่อถือ | ตัวแทนขาย LG Subscribe รหัส ${authorizedAgent.code}`,
@@ -66,11 +61,13 @@ export default function AuthorizedPage() {
       <header className="page-hero">
         <div className="container-page max-w-5xl text-center">
           <GeneratedIcon src="/images/generated/icon-protection-v1.webp" alt="" className="mx-auto" />
-          <p className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-red-400">Authorized Sale Agent</p>
+          <p className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-red-400">
+            Authorized Sale Agent
+          </p>
           <h1 className="mt-3 text-4xl font-bold sm:text-5xl">ความน่าเชื่อถือ</h1>
           <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/65">
-            ตัวแทนการขายบริการ LG Subscribe ที่ได้รับอนุญาตจาก LG โดยตรง ไม่ใช่เว็บไซต์ทางการของ LG Electronics
-            หรือ LG Thailand
+            ตัวแทนการขายบริการ LG Subscribe ที่ได้รับอนุญาตจาก LG โดยตรง ไม่ใช่เว็บไซต์ทางการของ LG
+            Electronics หรือ LG Thailand
           </p>
         </div>
       </header>
@@ -101,10 +98,12 @@ export default function AuthorizedPage() {
 
               <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
                 <div>
-                  <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">Authorized Sale Agent</p>
+                  <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
+                    Authorized Sale Agent
+                  </p>
                   <h2 className="mt-3 text-3xl font-bold sm:text-4xl">คุณ{authorizedAgent.nameTh}</h2>
                   <p className="mt-2 text-lg font-semibold text-neutral-700">{authorizedAgent.roleTh}</p>
-                  <p lang="en" className="mt-1 text-sm text-neutral-500">
+                  <p lang="en" className="mt-1 text-sm text-neutral-600">
                     {authorizedAgent.nameEn}
                   </p>
                   <p className="mt-4 leading-7 text-muted-foreground">
@@ -113,7 +112,7 @@ export default function AuthorizedPage() {
                   </p>
                 </div>
                 <div className="rounded-2xl border border-black/10 bg-[#f7f5f2] p-6 text-center">
-                  <p className="text-sm font-semibold text-neutral-500">รหัสตัวแทนขาย</p>
+                  <p className="text-sm font-semibold text-neutral-600">รหัสตัวแทนขาย</p>
                   <p className="mt-2 text-4xl font-bold tracking-[0.14em] text-neutral-950 sm:text-5xl">
                     {authorizedAgent.code}
                   </p>
@@ -162,9 +161,9 @@ export default function AuthorizedPage() {
                   <li>บริหารจัดการช่องทางจัดจำหน่ายด้วยตนเอง</li>
                 </ul>
                 <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950/80">
-                  เว็บไซต์นี้ไม่ใช่เว็บไซต์ทางการของ LG Electronics และไม่ได้เป็นบริษัท LG
-                  หากไม่แน่ใจให้โทร {authorizedAgent.verificationPhone.name}{" "}
-                  {authorizedAgent.verificationPhone.label} แล้วแจ้งรหัส {authorizedAgent.code}
+                  เว็บไซต์นี้ไม่ใช่เว็บไซต์ทางการของ LG Electronics และไม่ได้เป็นบริษัท LG หากไม่แน่ใจให้โทร{" "}
+                  {authorizedAgent.verificationPhone.name} {authorizedAgent.verificationPhone.label}{" "}
+                  แล้วแจ้งรหัส {authorizedAgent.code}
                 </div>
               </CardContent>
             </Card>
@@ -178,7 +177,7 @@ export default function AuthorizedPage() {
                   ใช้ช่องทางนี้เมื่อต้องการสอบถามรุ่น ราคา หรือเริ่มสมัคร ไม่ใช่เบอร์ตรวจสอบสถานะตัวแทน
                 </p>
                 <div className="mt-5 grid gap-3">
-                  <Button asChild className="bg-[#06C755] hover:bg-[#05b64d]">
+                  <Button asChild className="bg-[#008438] hover:bg-[#006e30]">
                     <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
                       LINE Official Account {siteConfig.lineId}
                     </a>

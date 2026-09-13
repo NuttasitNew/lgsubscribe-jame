@@ -52,7 +52,7 @@ export default function ContactPage() {
                 ใช้ช่องทางนี้สำหรับทุกการแชทกับฝ่ายขาย รวมถึงส่งชื่อรุ่น รูปสินค้า เอกสาร
                 หรือขอราคาแพ็กเกจล่าสุด
               </p>
-              <Button asChild className="mt-6 bg-[#06C755] hover:bg-[#05b64d]">
+              <Button asChild className="mt-6 bg-[#008438] hover:bg-[#006e30]">
                 <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
                   เพิ่มเพื่อนและเปิด LINE
                 </a>

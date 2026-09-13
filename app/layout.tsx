@@ -56,10 +56,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="th" className="scroll-smooth" data-scroll-behavior="smooth">
+    <html suppressHydrationWarning lang="th" className="scroll-smooth" data-scroll-behavior="smooth">
       <body className="min-h-screen bg-background text-foreground antialiased">
         {children}
-        <Analytics />
+        {process.env.VERCEL === "1" && <Analytics />}
         <GoogleAnalytics />
       </body>
     </html>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
@@ -24,18 +24,22 @@ function scrollWindowToTop() {
   });
 }
 
-export function ProductCatalogBrowser() {
-  const searchParams = useSearchParams();
-  const urlQuery = searchParams.get("q") ?? "";
-  const urlCategory = searchParams.get("category") ?? "all";
-  const [query, setQuery] = useState(urlQuery);
-  const [activeCategory, setActiveCategory] = useState(urlCategory);
-  const previousFilter = useRef({ query: "", category: "all" });
+function CatalogUrlFilters({ onChange }: { onChange: (query: string, category: string) => void }) {
+  const params = useSearchParams();
+  const query = params.get("q") ?? "";
+  const category = params.get("category") ?? "all";
+  useEffect(() => onChange(query, category), [query, category, onChange]);
+  return null;
+}
 
-  useEffect(() => {
-    setQuery(urlQuery);
-    setActiveCategory(urlCategory);
-  }, [urlCategory, urlQuery]);
+export function ProductCatalogBrowser() {
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const previousFilter = useRef({ query: "", category: "all" });
+  const syncUrlFilters = useCallback((nextQuery: string, nextCategory: string) => {
+    setQuery(nextQuery);
+    setActiveCategory(nextCategory);
+  }, []);
 
   const normalizedQuery = normalizeSearchValue(query);
   const hasActiveFilter = activeCategory !== "all" || normalizedQuery.length > 0;
@@ -84,6 +88,9 @@ export function ProductCatalogBrowser() {
       className="scroll-mt-[76px] bg-[#f4f1ed]"
       aria-label="รายการสินค้าจากเอกสาร"
     >
+      <Suspense fallback={null}>
+        <CatalogUrlFilters onChange={syncUrlFilters} />
+      </Suspense>
       <div
         id="catalog-search"
         className="sticky top-[76px] z-30 hidden scroll-mt-[92px] border-b border-black/10 bg-white py-4 shadow-[0_8px_20px_rgba(0,0,0,0.04)] lg:block lg:py-5"
@@ -108,7 +115,7 @@ export function ProductCatalogBrowser() {
                   type="button"
                   aria-label="ล้างคำค้นหา"
                   onClick={() => setQuery("")}
-                  className="absolute right-2 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-xl text-neutral-500 transition hover:bg-black/5 hover:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
+                  className="absolute right-2 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-xl text-neutral-600 transition hover:bg-black/5 hover:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
                 >
                   <X className="size-4" aria-hidden="true" />
                 </button>
@@ -176,7 +183,7 @@ export function ProductCatalogBrowser() {
                       ดูสินค้าทั้งหมด →
                     </Link>
                   ) : null}
-                  <p className="text-sm font-semibold text-neutral-500">{group.products.length} รุ่น</p>
+                  <p className="text-sm font-semibold text-neutral-600">{group.products.length} รุ่น</p>
                 </div>
               </div>
             </div>
@@ -184,11 +191,7 @@ export function ProductCatalogBrowser() {
             <div className="container-page relative z-0 pb-10 pt-4 sm:pb-12 sm:pt-6">
               <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {group.products.map((product, index) => (
-                  <div
-                    key={product.slug}
-                    data-testid="catalog-model-card"
-                    className="h-full min-w-0"
-                  >
+                  <div key={product.slug} data-testid="catalog-model-card" className="h-full min-w-0">
                     <ProductCard product={product} eager={groupIndex === 0 && index === 0} />
                   </div>
                 ))}
@@ -200,7 +203,7 @@ export function ProductCatalogBrowser() {
         <div className="container-page py-5">
           <div className="rounded-3xl border border-dashed border-black/15 bg-white px-6 py-14 text-center">
             <p className="text-xl font-bold text-neutral-950">ยังไม่พบสินค้าที่ตรงกับคำค้นหา</p>
-            <p className="mt-2 text-sm leading-6 text-neutral-500">
+            <p className="mt-2 text-sm leading-6 text-neutral-600">
               ลองค้นหาด้วยชื่อหมวด เช่น “ตู้เย็น” หรือรหัสรุ่นที่อยู่บนสินค้า
             </p>
             <button

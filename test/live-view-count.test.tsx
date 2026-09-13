@@ -88,3 +88,30 @@ describe("live counter redraws", () => {
     expect(commits).toBe(commitsAfterPaint);
   });
 });
+
+describe("server hydration", () => {
+  it("hydrates cached HTML without a mismatch when the browser clock is later", async () => {
+    const { renderToString } = await import("react-dom/server");
+    const { hydrateRoot } = await import("react-dom/client");
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-09-12T00:00:00Z"));
+    const container = document.createElement("div");
+    container.innerHTML = renderToString(<ProductViewCount model={model} />);
+    document.body.append(container);
+    resetVisitBonuses();
+    vi.setSystemTime(new Date("2026-09-13T09:00:00Z"));
+    const onRecoverableError = vi.fn();
+    let root: ReturnType<typeof hydrateRoot>;
+    try {
+      await act(async () => {
+        root = hydrateRoot(container, <ProductViewCount model={model} />, { onRecoverableError });
+      });
+      expect(onRecoverableError).not.toHaveBeenCalled();
+      expect(Number(container.textContent?.replace(/[^\d]/g, ""))).toBeGreaterThan(0);
+    } finally {
+      await act(async () => root!.unmount());
+      container.remove();
+      vi.useRealTimers();
+    }
+  });
+});

@@ -1,3 +1,11 @@
+import inlineCampaignImage from "@/lib/subscribe-day-image-inline.json";
+import {
+  isSubscribeDayActive,
+  subscribeDayCampaign,
+  subscribeDayPopupStorageKey,
+  SUBSCRIBE_DAY_START,
+  SUBSCRIBE_DAY_END,
+} from "@/lib/subscribe-day";
 import { FloatingLineContact } from "@/components/floating-line-contact";
 import { FloatingSubscribeDay } from "@/components/floating-subscribe-day";
 import { JsonLd } from "@/components/json-ld";
@@ -7,6 +15,7 @@ import { SiteHeader } from "@/components/site-header";
 import { siteConfig, siteOperatorDisclosure } from "@/lib/site";
 
 export default function PublicLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const initialCampaignActive = isSubscribeDayActive();
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -36,10 +45,30 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
       >
         ข้ามไปยังเนื้อหาหลัก
       </a>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `(function(){var hidden=Date.now()<Date.parse(${JSON.stringify(SUBSCRIBE_DAY_START)})||Date.now()>=Date.parse(${JSON.stringify(SUBSCRIBE_DAY_END)});try{hidden=hidden||sessionStorage.getItem(${JSON.stringify(subscribeDayPopupStorageKey)})==="1"}catch{}document.documentElement.toggleAttribute("data-subscribe-day-hidden",hidden)})()`,
+        }}
+      />
+      <FloatingSubscribeDay
+        initialActive={initialCampaignActive}
+        image={
+          // This small critical image is included in the first response to avoid an extra RTT.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={inlineCampaignImage.src}
+            alt={subscribeDayCampaign.alt}
+            fetchPriority="high"
+            decoding="async"
+            width={750}
+            height={750}
+            className="h-auto w-full"
+          />
+        }
+      />
       <SiteHeader />
       <main id="main-content">{children}</main>
       <SiteFooter />
-      <FloatingSubscribeDay />
       <FloatingLineContact />
       <MobileDock />
     </>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { subscribeDayImage } from "@/lib/subscribe-day-image";
 import { X } from "lucide-react";
 import { LineMark } from "@/components/line-mark";
 import {
@@ -13,9 +13,15 @@ import {
 } from "@/lib/subscribe-day";
 import { siteConfig } from "@/lib/site";
 
-export function FloatingSubscribeDay() {
-  const [isActive, setIsActive] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+export function FloatingSubscribeDay({
+  initialActive = false,
+  image,
+}: {
+  initialActive?: boolean;
+  image?: ReactNode;
+}) {
+  const [isActive, setIsActive] = useState(initialActive);
+  const [isOpen, setIsOpen] = useState(initialActive);
 
   useEffect(() => {
     function updateVisibility() {
@@ -59,14 +65,14 @@ export function FloatingSubscribeDay() {
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/65 p-3 backdrop-blur-[2px] sm:p-6"
+      className="subscribe-day-popup fixed inset-0 z-[80] flex items-center justify-center bg-black/65 p-3 sm:p-6"
       onClick={dismiss}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-label={subscribeDayCampaign.dialogLabel}
-        className="relative w-full max-w-[min(100%,28rem)] sm:max-w-[32rem]"
+        className="relative box-content aspect-square w-full max-w-[min(100%,28rem)] pb-[52px] sm:max-w-[32rem] sm:pb-14"
         onClick={(event) => event.stopPropagation()}
       >
         <button
@@ -77,24 +83,27 @@ export function FloatingSubscribeDay() {
         >
           <X className="size-4" strokeWidth={3} aria-hidden="true" />
         </button>
-        <div className="overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-1 ring-black/10">
-          <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer" onClick={dismiss}>
-            <Image
-              src={subscribeDayCampaign.image}
-              alt={subscribeDayCampaign.alt}
-              width={1254}
-              height={1254}
-              priority
-              className="h-auto w-full"
-              sizes="(min-width: 640px) 32rem, calc(100vw - 1.5rem)"
-            />
+        <div className="absolute inset-0 overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-1 ring-black/10">
+          <a className="block aspect-square" href={siteConfig.lineUrl} target="_blank" rel="noreferrer" onClick={dismiss}>
+            {image ?? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                {...subscribeDayImage}
+                alt={subscribeDayCampaign.alt}
+                width={1254}
+                height={1254}
+                loading="eager"
+                fetchPriority="high"
+                className="h-auto w-full"
+              />
+            )}
           </a>
           <a
             href={siteConfig.lineUrl}
             target="_blank"
             rel="noreferrer"
             onClick={dismiss}
-            className="flex items-center justify-center gap-2 bg-[#06C755] px-4 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-[#05b64d] sm:py-4 sm:text-base"
+            className="flex items-center justify-center gap-2 bg-[#008438] px-4 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-[#007a34] sm:py-4 sm:text-base"
           >
             <LineMark className="size-6" />
             {subscribeDayCampaign.ctaLabel}

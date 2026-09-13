@@ -12,15 +12,12 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
 
   return (
     <Card className="group isolate h-full overflow-hidden border-black/10 bg-white shadow-none transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <Link
-        href={`/products/${product.slug}/`}
-        className="relative block"
-        aria-label={`ดูรายละเอียด ${product.name}`}
-      >
+      <Link href={`/products/${product.slug}/`} className="relative block">
         <ImageFallback
           label={`${hasPromotion ? "ภาพโปรโมชัน" : "ภาพสินค้า"} ${product.name}`}
           src={product.promotionImage ?? product.image}
           aspect="square"
+          sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) 50vw, 400px"
           loading={eager ? "eager" : "lazy"}
           fit="contain"
           className="rounded-none border-0"
@@ -36,7 +33,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
       </Link>
       <div className="hidden items-center justify-between border-b border-black/10 px-6 py-5 sm:flex">
         <Badge variant="secondary">{product.category}</Badge>
-        <span className="text-xs font-bold tracking-[0.18em] text-neutral-400">{product.model}</span>
+        <span className="text-xs font-bold tracking-[0.18em] text-neutral-600">{product.model}</span>
       </div>
       <CardContent className="grid flex-1 gap-3 p-6">
         <h3 className="line-clamp-2 min-h-0 text-xl font-bold leading-8 text-neutral-950 sm:min-h-14">

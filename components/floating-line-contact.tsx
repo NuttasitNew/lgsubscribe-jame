@@ -32,7 +32,7 @@ export function FloatingLineContact() {
           href={siteConfig.lineUrl}
           target="_blank"
           rel="noreferrer"
-          className="group flex items-center gap-2.5 rounded-full bg-gradient-to-br from-[#06C755] to-[#04a647] py-2 pl-2 pr-4 text-white shadow-[0_4px_16px_rgba(6,199,85,0.42)] transition-transform hover:scale-[1.03] active:scale-[0.98]"
+          className="group flex items-center gap-2.5 rounded-full bg-gradient-to-br from-[#008438] to-[#006e30] py-2 pl-2 pr-4 text-white shadow-[0_4px_16px_rgba(6,199,85,0.42)] transition-transform hover:scale-[1.03] active:scale-[0.98]"
         >
           <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-white text-[#06C755]">
             <span

@@ -21,7 +21,11 @@
     "verify:sep-promotions": "node scripts/verify-sep-promotion-assets.mjs",
     "organize:promotion-images": "node scripts/organize-promotion-images.mjs",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "analyze": "next experimental-analyze",
+    "analyze:save": "next experimental-analyze --output",
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "optimize:images": "node scripts/optimize-critical-images.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans-thai": "^5.3.0",
@@ -57,9 +61,11 @@
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-prettier": "^5.5.6",
     "jsdom": "^29.1.1",
+    "lighthouse": "^13.4.1",
     "postcss": "^8.5.26",
     "prettier": "^3.9.6",
     "prisma": "^7.9.1",
+    "sharp": "^0.35.4",
     "tailwindcss": "^3.4.19",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^6.0.3",

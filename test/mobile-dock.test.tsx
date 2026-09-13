@@ -29,11 +29,11 @@ describe("MobileDock product search", () => {
 
     expect(screen.queryByRole("link", { name: "ไปยังช่องค้นหาสินค้า" })).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "ค้นหาสินค้า LG" }));
-    expect(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" })).toBeVisible();
+    await user.click(await screen.findByRole("button", { name: /ค้นหาสินค้า LG/ }));
+    expect(screen.getByRole("searchbox", { name: /ค้นหาสินค้า LG/ })).toBeVisible();
     expect(screen.getByRole("combobox", { name: "กรองตามหมวดสินค้า" })).toBeVisible();
 
-    await user.type(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), "AS60GHWG0");
+    await user.type(screen.getByRole("searchbox", { name: /ค้นหาสินค้า LG/ }), "AS60GHWG0");
     const results = screen.getAllByTestId("product-search-result");
     expect(results).toHaveLength(1);
     expect(within(results[0]).getByText("AS60GHWG0")).toBeVisible();
@@ -45,9 +45,9 @@ describe("MobileDock product search", () => {
     navigation.pathname = "/products/lg-saq13a/";
     render(<MobileDock />);
 
-    expect(screen.queryByRole("button", { name: "เปิดหมวดสินค้าแบบด่วน" })).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "ค้นหาสินค้า LG" }));
-    await user.type(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), "SAQ13A");
+    expect(screen.queryByRole("button", { name: /เลือกหมวดหมู่/ })).not.toBeInTheDocument();
+    await user.click(await screen.findByRole("button", { name: /ค้นหาสินค้า LG/ }));
+    await user.type(screen.getByRole("searchbox", { name: /ค้นหาสินค้า LG/ }), "SAQ13A");
 
     expect(screen.getAllByTestId("product-search-result")).toHaveLength(1);
     expect(screen.getByRole("link", { name: "ดูบนหน้าสินค้า" })).toHaveAttribute(
@@ -60,7 +60,7 @@ describe("MobileDock product search", () => {
     navigation.pathname = "/contact/";
     render(<MobileDock />);
 
-    expect(screen.getByRole("button", { name: "เปิดหมวดสินค้าแบบด่วน" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "ค้นหาสินค้า LG" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /เลือกหมวดหมู่/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /ค้นหาสินค้า LG/ })).not.toBeInTheDocument();
   });
 });

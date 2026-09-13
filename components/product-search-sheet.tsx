@@ -54,7 +54,7 @@ export function ProductSearchSheet({ children }: { children?: ReactNode }) {
           <button
             type="button"
             className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[1.25rem] bg-primary px-4 text-left text-white transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-            aria-label="ค้นหาสินค้า LG"
+            aria-label="ค้นหาได้ทันที ชื่อ หมวด หรือรหัสรุ่น — ค้นหาสินค้า LG"
           >
             <span
               aria-hidden="true"
@@ -63,7 +63,7 @@ export function ProductSearchSheet({ children }: { children?: ReactNode }) {
               <Search className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-[10px] font-medium tracking-normal text-white/65">
+              <span className="block text-[10px] font-medium tracking-normal text-white/90">
                 ค้นหาได้ทันที
               </span>
               <span className="block truncate text-sm font-bold">ชื่อ หมวด หรือรหัสรุ่น</span>
@@ -98,7 +98,7 @@ export function ProductSearchSheet({ children }: { children?: ReactNode }) {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="ค้นหาชื่อสินค้า หมวด หรือรหัสรุ่น"
-              className="h-14 w-full rounded-2xl border border-black/15 bg-white pl-12 pr-12 text-base font-semibold text-neutral-950 outline-none transition placeholder:text-sm placeholder:font-normal placeholder:text-neutral-400 focus:border-red-700 focus:ring-4 focus:ring-red-700/10 [&::-webkit-search-cancel-button]:appearance-none"
+              className="h-14 w-full rounded-2xl border border-black/15 bg-white pl-12 pr-12 text-base font-semibold text-neutral-950 outline-none transition placeholder:text-sm placeholder:font-normal placeholder:text-neutral-600 focus:border-red-700 focus:ring-4 focus:ring-red-700/10 [&::-webkit-search-cancel-button]:appearance-none"
             />
             {query ? (
               <button
@@ -161,13 +161,7 @@ export function ProductSearchSheet({ children }: { children?: ReactNode }) {
                   className="grid grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-black/[0.08] bg-white p-2.5"
                 >
                   <span className="relative block aspect-square w-[4.5rem] overflow-hidden rounded-xl bg-white">
-                    <Image
-                      src={product.image}
-                      alt=""
-                      fill
-                      sizes="72px"
-                      className="object-contain"
-                    />
+                    <Image src={product.image} alt="" fill sizes="72px" className="object-contain" />
                   </span>
                   <span className="min-w-0">
                     <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-primary">

@@ -224,7 +224,7 @@ function ComparePanel({
             <p className="text-sm font-bold leading-5 text-neutral-950">{item.title}</p>
           ) : null}
           {item.badge ? (
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-bold text-primary">
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-bold text-red-800">
               {item.badge}
             </span>
           ) : null}

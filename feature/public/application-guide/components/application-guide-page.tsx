@@ -50,7 +50,7 @@ export default function ApplicationGuidePage() {
           <p className="mt-5 max-w-3xl text-lg leading-8 text-white/65">
             ไม่ต้องเตรียมเอกสารหลายอย่าง รายละเอียดอื่นๆ กดแอด LINE ได้เลย
           </p>
-          <Button asChild size="lg" className="mt-8 bg-[#06C755] hover:bg-[#05b64d]">
+          <Button asChild size="lg" className="mt-8 bg-[#008438] hover:bg-[#006e30]">
             <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
               <LineMark className="size-5" /> เพิ่มเพื่อน LINE {siteConfig.lineId}
             </a>
@@ -84,7 +84,7 @@ export default function ApplicationGuidePage() {
               สอบถามรุ่นที่สนใจ ยอดต่อเดือน หรือนัดหมายติดตั้ง คุยกับเจ้าหน้าที่ที่ LINE Official Account{" "}
               {siteConfig.lineId} ได้ทันที
             </p>
-            <Button asChild size="lg" className="mt-6 bg-[#06C755] hover:bg-[#05b64d]">
+            <Button asChild size="lg" className="mt-6 bg-[#008438] hover:bg-[#006e30]">
               <a href={siteConfig.lineUrl} target="_blank" rel="noreferrer">
                 <LineMark className="size-5" /> เพิ่มเพื่อน LINE
               </a>

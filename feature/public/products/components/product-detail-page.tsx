@@ -130,21 +130,26 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         <div className="container-page">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
             <div className="grid min-w-0 gap-4 lg:sticky lg:top-[132px] lg:self-start">
-              <ProductGallery images={gallery} productName={product.name} model={product.model} countSession />
+              <ProductGallery
+                images={gallery}
+                productName={product.name}
+                model={product.model}
+                countSession
+              />
               <div className="rounded-2xl border border-black/10 bg-neutral-950 p-7 text-white">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-400">Product overview</p>
-                <p className="mt-8 text-5xl font-bold tracking-[-0.06em] text-white/10">{product.model}</p>
+                <p className="mt-8 text-5xl font-bold tracking-[-0.06em] text-white/60">{product.model}</p>
                 <dl className="mt-10 divide-y divide-white/10 border-y border-white/10 text-sm">
                   <div className="flex justify-between gap-4 py-4">
-                    <dt className="text-white/45">หมวดสินค้า</dt>
+                    <dt className="text-white/60">หมวดสินค้า</dt>
                     <dd className="font-semibold">{product.category}</dd>
                   </div>
                   <div className="flex justify-between gap-4 py-4">
-                    <dt className="text-white/45">รุ่น</dt>
+                    <dt className="text-white/60">รุ่น</dt>
                     <dd className="font-semibold">{product.model}</dd>
                   </div>
                   <div className="flex justify-between gap-4 py-4">
-                    <dt className="text-white/45">ระยะสัญญา</dt>
+                    <dt className="text-white/60">ระยะสัญญา</dt>
                     <dd className="font-semibold">
                       {product.contractMonths ? `${product.contractMonths} งวด` : "สอบถามล่าสุด"}
                     </dd>
@@ -170,7 +175,10 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                       ฿{product.monthlyPrice.toLocaleString("th-TH")}
                       <span className="text-base font-medium">/เดือน</span>
                     </p>
-                    <ProductOrderCount model={product.model} className="text-red-800/80 [&_span]:text-red-800" />
+                    <ProductOrderCount
+                      model={product.model}
+                      className="text-red-800/80 [&_span]:text-red-800"
+                    />
                   </div>
                 </div>
               ) : (

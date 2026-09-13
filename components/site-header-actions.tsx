@@ -3,8 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
-import { ProductSearchSheet } from "@/components/product-search-sheet";
-import { isProductsSection } from "@/lib/catalog-search";
+import dynamic from "next/dynamic";
+
+const ProductSearchSheet = dynamic(() =>
+  import("@/components/product-search-sheet").then((module) => module.ProductSearchSheet),
+);
+import { isProductsSection } from "@/lib/catalog-routes";
 
 export function SiteHeaderActions() {
   const pathname = usePathname();
