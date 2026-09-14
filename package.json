@@ -25,7 +25,9 @@
     "analyze": "next experimental-analyze",
     "analyze:save": "next experimental-analyze --output",
     "lighthouse": "node scripts/lighthouse.mjs",
-    "optimize:images": "node scripts/optimize-critical-images.mjs"
+    "optimize:images": "node scripts/optimize-critical-images.mjs",
+    "db:deploy": "prisma migrate deploy",
+    "backoffice:credentials": "node scripts/backoffice-credentials.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans-thai": "^5.3.0",

@@ -8,9 +8,13 @@ import { getPrisma } from "@/lib/db/prisma";
 import { processLineWebhookEvent } from "@/lib/line/process-line-webhook-event";
 import { reserveLineWebhookEvent } from "@/lib/line/reserve-line-webhook-event";
 
+loadEnv({ path: ".env.development.local", quiet: true });
 loadEnv({ path: ".env.local", quiet: true });
 
 const runDatabaseIntegration = process.env.RUN_DATABASE_INTEGRATION === "true";
+if (runDatabaseIntegration && process.env.DATABASE_ENV !== "development") {
+  throw new Error("LINE integration tests require DATABASE_ENV=development");
+}
 
 describe.skipIf(!runDatabaseIntegration)("LINE webhook Neon persistence", () => {
   it("persists a user, raw event, message, thread and daily activity exactly once", async () => {

@@ -6,6 +6,61 @@ datasource db {
   provider = "postgresql"
 }
 
+model SeoKeyword {
+  id           String   @id @default(uuid())
+  keyword      String
+  normalized   String
+  targetPath   String
+  cluster      String
+  priority     String   @default("P1")
+  country      String   @default("tha")
+  device       String   @default("MOBILE")
+  targetRank   Int      @default(10)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  measurements SeoMeasurement[]
+
+  @@unique([normalized, country, device])
+}
+
+// Period metrics are never summed across overlapping periods or sources.
+model SeoMeasurement {
+  id           String   @id @default(uuid())
+  keywordId    String
+  periodStart  DateTime @db.Date
+  periodEnd    DateTime @db.Date
+  source       String
+  status       String
+  clicks       Int?
+  impressions  Int?
+  position     Float?
+  observedPage String?
+  measuredAt   DateTime @default(now())
+  keyword      SeoKeyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+
+  @@unique([keywordId, periodStart, periodEnd, source])
+  @@index([periodEnd, source])
+}
+
+model SeoSyncRun {
+  id          String   @id @default(uuid())
+  source      String
+  status      String
+  periodStart DateTime @db.Date
+  periodEnd   DateTime @db.Date
+  processed   Int      @default(0)
+  message     String?
+  startedAt   DateTime @default(now())
+  finishedAt  DateTime?
+}
+
+model BackofficeLoginAttempt {
+  key       String @id
+  attempts  Int @default(1)
+  expiresAt DateTime
+}
+
 enum LineWebhookStatus {
   PENDING
   PROCESSED

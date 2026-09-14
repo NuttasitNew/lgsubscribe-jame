@@ -14,24 +14,24 @@ function catalogHref(category: string) {
 }
 
 describe("HomePage popular categories", () => {
-  it("opens the catalog filtered to the selected category", () => {
+  it("opens dedicated category pages and preserves filters for other categories", () => {
     render(<HomePage />);
 
     expect(screen.getByRole("link", { name: /ตู้เย็น LG รุ่น/ })).toHaveAttribute(
       "href",
-      catalogHref("ตู้เย็น"),
+      "/categories/refrigerators",
     );
     expect(screen.getByRole("link", { name: /เครื่องซักผ้า LG รุ่น/ })).toHaveAttribute(
       "href",
-      catalogHref("เครื่องซักผ้าและอบผ้า"),
+      "/categories/washing-machines",
     );
     expect(screen.getByRole("link", { name: /เครื่องปรับอากาศ LG รุ่น/ })).toHaveAttribute(
       "href",
-      catalogHref("เครื่องปรับอากาศ"),
+      "/categories/air-conditioners",
     );
     expect(screen.getByRole("link", { name: /เครื่องกรองน้ำ LG รุ่น/ })).toHaveAttribute(
       "href",
-      catalogHref("เครื่องกรองน้ำ"),
+      "/categories/water-purifiers",
     );
     expect(screen.getByRole("link", { name: /เครื่องดูดฝุ่น LG รุ่น/ })).toHaveAttribute(
       "href",
@@ -39,7 +39,7 @@ describe("HomePage popular categories", () => {
     );
     expect(screen.getByRole("link", { name: /ทีวีและความบันเทิง LG รุ่น/ })).toHaveAttribute(
       "href",
-      catalogHref("ทีวีและเครื่องเสียง"),
+      "/categories/tvs",
     );
     expect(screen.getByRole("link", { name: /เครื่องฟอกอากาศ LG รุ่น/ })).toHaveAttribute(
       "href",

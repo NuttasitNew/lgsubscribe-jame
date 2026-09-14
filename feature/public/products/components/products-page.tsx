@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { seoCategories } from "@/lib/seo-categories";
 import { ContactCta } from "@/components/contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { ProductCatalogBrowser } from "@/feature/public/products/components/product-catalog-browser";
@@ -31,6 +33,21 @@ export default function ProductsPage() {
       <h1 className="sr-only">สินค้าเครื่องใช้ไฟฟ้า LG แบบรายเดือน</h1>
 
       <ProductCatalogBrowser />
+      <section className="container-page py-10">
+        <h2 className="text-2xl font-bold">เลือกแพ็กเกจตามประเภทสินค้า</h2>
+        <p className="mt-3 text-muted-foreground">เปรียบเทียบรุ่น ราคา และสิ่งที่ต้องเตรียมก่อนสมัคร</p>
+        <nav aria-label="คู่มือเลือกสินค้ารายเดือน" className="mt-5 flex flex-wrap gap-3">
+          {seoCategories.map((category) => (
+            <Link
+              key={category.slug}
+              href={`/categories/${category.slug}/`}
+              className="rounded-xl border px-4 py-3 font-medium text-primary"
+            >
+              {category.label} LG รายเดือน
+            </Link>
+          ))}
+        </nav>
+      </section>
       <ContactCta />
     </>
   );

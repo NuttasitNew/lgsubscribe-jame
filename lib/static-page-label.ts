@@ -1,4 +1,9 @@
+import { seoCategories } from "@/lib/seo-categories";
+
 const staticPageLabels: Record<string, string> = {
+  ...Object.fromEntries(
+    seoCategories.map((category) => [`/categories/${category.slug}`, `${category.label} LG รายเดือน`]),
+  ),
   "/": "หน้าแรก",
   "/products": "สินค้าทั้งหมด",
   "/contact": "ติดต่อเรา",

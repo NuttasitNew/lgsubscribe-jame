@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { BackofficeLogin } from "@/feature/backoffice/components/backoffice-login";
-import { requireLocalBackofficePreview } from "@/feature/backoffice/require-local-backoffice-preview";
+import { notFound } from "next/navigation";
+import { authConfigured, isLocalPreview } from "@/feature/backoffice/auth/session";
 
 export const metadata: Metadata = {
   title: "เข้าสู่ระบบ",
 };
 
 export default function BackofficeLoginPage() {
-  // Page-level guard prevents Next static export from serializing private UI into the production artifact.
-  requireLocalBackofficePreview();
+  if (!authConfigured() && !isLocalPreview()) notFound();
 
   return <BackofficeLogin />;
 }

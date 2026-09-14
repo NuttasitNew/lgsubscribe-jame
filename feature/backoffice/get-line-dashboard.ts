@@ -1,4 +1,5 @@
 import { getPrisma } from "@/lib/db/prisma";
+import { requireBackofficeAccess } from "@/feature/backoffice/auth/session";
 
 export type BackofficeLineOverview = {
   databaseConnected: true;
@@ -36,6 +37,7 @@ function startOfBangkokDay(now = new Date()) {
 
 /** Loads the real LINE ingestion status displayed in the local backoffice. */
 export async function getBackofficeLineOverview(): Promise<BackofficeLineOverview> {
+  await requireBackofficeAccess();
   const prisma = getPrisma();
   const today = startOfBangkokDay();
   const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1_000);

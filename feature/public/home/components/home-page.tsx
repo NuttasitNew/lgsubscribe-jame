@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
 import { bestSellerProducts } from "@/lib/catalog-products";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
+import { categoryHref } from "@/lib/seo-categories";
 import { customerStories, faqs, products } from "@/lib/site";
 
 const categoryCards = [
@@ -184,7 +185,7 @@ export function HomePage() {
             {categoryCards.map((item) => (
               <Link
                 key={item.label}
-                href={buildProductsSearchHref("", item.category)}
+                href={categoryHref(item.category) ?? buildProductsSearchHref("", item.category)}
                 className="group rounded-2xl border border-black/[0.07] bg-white p-3 text-center shadow-[0_5px_22px_rgba(0,0,0,0.06)] transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg"
               >
                 <span className="relative block aspect-[1.35/1] overflow-hidden rounded-[6px] bg-white">

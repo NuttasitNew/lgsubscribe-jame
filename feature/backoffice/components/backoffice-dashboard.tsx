@@ -13,13 +13,13 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { BackofficeLineOverview } from "@/feature/backoffice/get-line-dashboard";
+import Link from "next/link";
 
 const navItems = [
   { label: "ภาพรวม", icon: LayoutDashboard, active: true },
   { label: "ผู้ใช้ LINE", icon: MessageCircle, active: false },
   { label: "ข้อความ LINE", icon: Inbox, active: false },
   { label: "บทความ", icon: FileText, active: false },
-  { label: "คำค้นหา", icon: Search, active: false },
   { label: "ตั้งค่าระบบ", icon: Settings, active: false },
 ] as const;
 
@@ -91,6 +91,13 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
           </div>
 
           <nav className="mt-7 space-y-1" aria-label="เมนู Backoffice">
+            <Link
+              href="/backoffice/seo/"
+              className="flex items-center gap-3 rounded-xl bg-[#c4142e] px-3 py-2.5 text-sm font-medium text-white"
+            >
+              <Search className="size-4" />
+              ติดตาม SEO / Keyword
+            </Link>
             {navItems.map(({ label, icon: Icon, active }) => (
               <div
                 key={label}
@@ -108,15 +115,21 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
           <div className="mt-auto rounded-2xl border border-[#cfd2d5] bg-[#eceeef] p-4">
             <div className="flex items-center gap-2 text-xs font-semibold text-[#303338]">
               <LockKeyhole className="size-3.5 text-[#a80f28]" />
-              ปิดการเข้าถึงอยู่
+              พื้นที่ผู้ดูแล
             </div>
             <p className="mt-2 text-xs leading-5 text-[#6f7479]">
-              เชื่อมข้อมูล Neon แล้ว แต่ยังเปิดเฉพาะ local preview จนกว่าจะมีระบบ Auth จริง
+              ตรวจสิทธิ์ก่อนอ่านข้อมูลภายใน และแยกฐานข้อมูลพัฒนากับข้อมูลจริง
             </p>
           </div>
         </aside>
 
         <main id="backoffice-main" className="min-w-0 px-4 py-4 sm:px-6 sm:py-6 xl:px-10 xl:py-8">
+          <Link
+            href="/backoffice/seo/"
+            className="mb-4 inline-flex rounded-xl bg-[#c4142e] px-4 py-3 text-sm font-semibold text-white lg:hidden"
+          >
+            ติดตาม SEO / Keyword →
+          </Link>
           <div className="mb-4 flex items-center justify-between rounded-2xl border border-[#d5d8db] bg-[#f7f8f8] px-4 py-3 lg:hidden">
             <div className="flex items-center gap-2.5">
               <div className="grid size-8 place-items-center rounded-lg bg-[#c4142e] text-xs font-bold text-white">
@@ -135,7 +148,7 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
               <div>
                 <div className="flex flex-wrap items-center gap-2 text-xs text-white/60">
                   <span className="rounded-full border border-white/15 px-3 py-1">
-                    ข้อมูลจริงจาก Neon Development
+                    {process.env.DATABASE_ENV === "production" ? "Neon Production" : "Neon Development"}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Circle className="size-2 fill-[#4fc38a] text-[#4fc38a]" /> ฐานข้อมูลเชื่อมต่อแล้ว

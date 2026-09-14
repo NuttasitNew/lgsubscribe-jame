@@ -22,30 +22,13 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## LINE webhook and backoffice
 
-The LINE webhook stores raw events, LINE profiles, messages, chat summaries, and daily activity in Neon Postgres. The backoffice is intentionally available only in local preview mode until real authentication is connected.
+The LINE webhook stores raw events, LINE profiles, messages, chat summaries, and daily activity in Neon Postgres. The backoffice now includes authenticated SEO tracking at `/backoffice/seo/`.
 
-1. Pull the Vercel Development environment after connecting the Neon Marketplace resource:
+See [SEO tracking and environment setup](docs/seo/tracking.md) for the development/production Neon branches, login credentials, CSV import, Search Console connection, and release prerequisites.
 
-   ```bash
-   npx vercel@latest env pull .env.local --environment=development --yes
-   ```
+For local development, use `.env.development.local` with the development branch and `BACKOFFICE_DESIGN_PREVIEW=true`, then run `npm run db:deploy` and `npm run dev`. Never point this environment at the production branch. Production requires administrator authentication and explicit production database settings.
 
-2. Add `LINE_CHANNEL_SECRET`, `LINE_CHANNEL_ACCESS_TOKEN`, and `BACKOFFICE_DESIGN_PREVIEW=true` to `.env.local`. Never commit their values.
-
-3. Apply database migrations and start the app:
-
-   ```bash
-   npm run db:migrate
-   npm run dev
-   ```
-
-4. Open [http://localhost:3000/backoffice/](http://localhost:3000/backoffice/). After deployment, configure LINE Developers to send events to:
-
-   ```text
-   https://your-domain.example/api/line/webhook/
-   ```
-
-The trailing slash is intentional because this project uses trailing-slash routes. A production backoffice needs an authentication provider before the local-only guard can be removed.
+The LINE webhook endpoint remains `/api/line/webhook/`; preserve its credentials and data routing when preparing a release.
 
 Run the real-database integration test only against a disposable or development database:
 

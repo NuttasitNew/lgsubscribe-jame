@@ -1,10 +1,9 @@
 import { BackofficeDashboard } from "@/feature/backoffice/components/backoffice-dashboard";
 import { getBackofficeLineOverview } from "@/feature/backoffice/get-line-dashboard";
-import { requireLocalBackofficePreview } from "@/feature/backoffice/require-local-backoffice-preview";
+import { requireBackofficeAccess } from "@/feature/backoffice/auth/session";
 
 export default async function BackofficePage() {
-  // Page-level guard keeps the private UI unavailable in production builds.
-  requireLocalBackofficePreview();
+  await requireBackofficeAccess();
   const lineOverview = await getBackofficeLineOverview();
 
   return <BackofficeDashboard lineOverview={lineOverview} />;

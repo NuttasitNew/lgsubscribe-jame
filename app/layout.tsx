@@ -49,6 +49,9 @@ export const metadata: Metadata = {
     },
   },
   category: "shopping",
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
   icons: {
     icon: "/icon.svg",
   },

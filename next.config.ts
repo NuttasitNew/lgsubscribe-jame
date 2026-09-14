@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Allows an isolated verification build alongside an existing local server.
+  distDir: process.env.NEXT_BUILD_DIR ?? ".next",
   devIndicators: false,
   experimental: { inlineCss: true },
   trailingSlash: true,
