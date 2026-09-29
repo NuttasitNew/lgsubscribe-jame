@@ -26,8 +26,28 @@ const reviewPhotosByModel: Record<string, ReviewPhoto[]> = {
   ],
 };
 
+// The customer photo matches the navy/beige finish. The delivery photos show
+// WashTower cartons without a visible machine; none is assigned to an exact model.
+const navyBeigeModels = new Set(["WT1410NHEN", "WT2520NHEN"]);
+const navyBeigePhotos: ReviewPhoto[] = [
+  {
+    src: "/images/reviews/wash-tower/navy-beige-customer-home.webp",
+    alt: "LG WashTower สีกรมท่าและเบจสองเครื่องในพื้นที่ใช้งานของลูกค้า",
+  },
+  {
+    src: "/images/reviews/wash-tower/wash-tower-delivery-396.webp",
+    alt: "ทีมงานขนย้ายกล่อง LG WashTower เข้าพื้นที่จัดส่ง",
+  },
+  {
+    src: "/images/reviews/wash-tower/wash-tower-delivery-401.webp",
+    alt: "ทีมงานนำกล่อง LG WashTower ลงจากรถขนส่ง",
+  },
+];
+
 export function WashTowerReviews({ model }: { model: string }) {
-  const photos = reviewPhotosByModel[model];
+  const verifiedPhotos = reviewPhotosByModel[model];
+  const colorMatched = !verifiedPhotos && navyBeigeModels.has(model);
+  const photos = verifiedPhotos ?? (colorMatched ? navyBeigePhotos : undefined);
   if (!photos?.length) return null;
 
   return (
@@ -46,7 +66,14 @@ export function WashTowerReviews({ model }: { model: string }) {
           </h2>
         </div>
 
-        <div id="wash-tower-review-gallery" className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+        <div
+          id="wash-tower-review-gallery"
+          className={
+            colorMatched
+              ? "grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5"
+              : "grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"
+          }
+        >
           {photos.map((photo) => (
             <figure
               key={photo.src}
@@ -57,7 +84,7 @@ export function WashTowerReviews({ model }: { model: string }) {
                 alt={photo.alt}
                 fill
                 loading="lazy"
-                sizes="(max-width: 1024px) 50vw, 25vw"
+                sizes={colorMatched ? "(max-width: 640px) 50vw, 33vw" : "(max-width: 1024px) 50vw, 25vw"}
                 className="object-cover"
               />
             </figure>

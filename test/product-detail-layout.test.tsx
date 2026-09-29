@@ -114,6 +114,27 @@ describe("product detail spacing", () => {
     expect(screen.queryByRole("heading", { name: "WashTower", level: 2 })).not.toBeInTheDocument();
   });
 
+  it.each(["lg-wt1410nhen", "lg-wt2520nhen"])(
+    "shows the navy/beige customer photo and generic WashTower delivery on %s",
+    async (slug) => {
+      render(await ProductDetailPage({ params: Promise.resolve({ slug }) }));
+
+      const reviews = screen.getByRole("heading", { name: "WashTower", level: 2 }).closest("section");
+      expect(within(reviews!).getAllByRole("img")).toHaveLength(3);
+      expect(within(reviews!).getAllByRole("img")[0]).toHaveAttribute(
+        "alt",
+        "LG WashTower สีกรมท่าและเบจสองเครื่องในพื้นที่ใช้งานของลูกค้า",
+      );
+      expect(
+        within(reviews!).getByRole("img", { name: "ทีมงานขนย้ายกล่อง LG WashTower เข้าพื้นที่จัดส่ง" }),
+      ).toBeVisible();
+      expect(
+        within(reviews!).getByRole("img", { name: "ทีมงานนำกล่อง LG WashTower ลงจากรถขนส่ง" }),
+      ).toBeVisible();
+      expect(within(reviews!).queryByText(/ยังไม่ยืนยันรหัสรุ่นในภาพ/)).not.toBeInTheDocument();
+    },
+  );
+
   it("does not show generated customer reviews on a product page", async () => {
     render(
       await ProductDetailPage({
