@@ -7,6 +7,7 @@ import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { ProductGallery } from "@/feature/public/products/components/product-gallery";
 import { ProductSpecifications } from "@/feature/public/products/components/product-specifications";
+import { WashTowerReviews } from "@/feature/public/products/components/wash-tower-reviews";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -209,6 +210,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           </div>
         </div>
       </section>
+
+      {product.slug === "lg-washtower-wt1410nheg" ? <WashTowerReviews /> : null}
 
       {specificationRecord ? (
         <ProductSpecifications model={product.model} record={specificationRecord} />
