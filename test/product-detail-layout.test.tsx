@@ -3,13 +3,18 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import PublicLayout from "@/app/(public)/layout";
 import ProductDetailPage from "@/feature/public/products/components/product-detail-page";
 
+const navigation = vi.hoisted(() => ({ searchParams: new URLSearchParams() }));
+
 vi.mock("next/navigation", () => ({
   usePathname: () => "/products/lg-siq11b/",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => navigation.searchParams,
 }));
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  navigation.searchParams = new URLSearchParams();
+});
 
 describe("product detail spacing", () => {
   it("shows the promotion still first in the gallery when this model has one", async () => {
@@ -80,6 +85,33 @@ describe("product detail spacing", () => {
 
     const galleryColumn = screen.getByText("Product overview").parentElement?.parentElement;
     expect(galleryColumn).toHaveClass("lg:sticky", "lg:top-[132px]");
+  });
+
+  it("returns to the same search and category from a product detail page", async () => {
+    navigation.searchParams = new URLSearchParams("q=WT1410NHEG&category=เครื่องซักและอบผ้า");
+    render(await ProductDetailPage({ params: Promise.resolve({ slug: "lg-washtower-wt1410nheg" }) }));
+
+    const backHref = screen.getByRole("link", { name: /สินค้าทั้งหมด/ }).getAttribute("href");
+    const backUrl = new URL(backHref ?? "", "http://localhost");
+    expect(backUrl.pathname).toBe("/products");
+    expect(backUrl.searchParams.get("q")).toBe("WT1410NHEG");
+    expect(backUrl.searchParams.get("category")).toBe("เครื่องซักและอบผ้า");
+  });
+
+  it("shows only the verified WT1410NHEG review album on that model", async () => {
+    render(await ProductDetailPage({ params: Promise.resolve({ slug: "lg-washtower-wt1410nheg" }) }));
+
+    const reviews = screen.getByRole("heading", { name: "WashTower", level: 2 }).closest("section");
+    expect(within(reviews!).getAllByRole("img")).toHaveLength(4);
+    expect(within(reviews!).getAllByRole("img")[0]).toHaveAttribute(
+      "alt",
+      "LG WashTower WT1410NHEG ก่อนติดตั้งในบ้านลูกค้า",
+    );
+    expect(within(reviews!).queryByRole("button", { name: "ดูรีวิวเพิ่มเติม" })).not.toBeInTheDocument();
+
+    cleanup();
+    render(await ProductDetailPage({ params: Promise.resolve({ slug: "lg-wt2116sheg" }) }));
+    expect(screen.queryByRole("heading", { name: "WashTower", level: 2 })).not.toBeInTheDocument();
   });
 
   it("does not show generated customer reviews on a product page", async () => {

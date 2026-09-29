@@ -5,7 +5,12 @@ export function normalizeSearchValue(value: string) {
   return value.trim().toLocaleLowerCase("th-TH");
 }
 
-export { isProductsSection, isProductsIndex, buildProductsSearchHref } from "./catalog-routes";
+export {
+  isProductsSection,
+  isProductsIndex,
+  buildProductsSearchHref,
+  buildProductDetailHref,
+} from "./catalog-routes";
 
 export function filterCatalogProducts(query: string, category = "all"): Product[] {
   const normalizedQuery = normalizeSearchValue(query);

@@ -7,12 +7,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import type { Product } from "@/lib/site";
 
-export function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
+export function ProductCard({
+  product,
+  eager = false,
+  detailHref,
+}: {
+  product: Product;
+  eager?: boolean;
+  detailHref?: string;
+}) {
   const hasPromotion = Boolean(product.promotionImage);
+  const href = detailHref ?? `/products/${product.slug}/`;
 
   return (
     <Card className="group isolate h-full overflow-hidden border-black/10 bg-white shadow-none transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <Link href={`/products/${product.slug}/`} className="relative block">
+      <Link href={href} className="relative block">
         <ImageFallback
           label={`${hasPromotion ? "ภาพโปรโมชัน" : "ภาพสินค้า"} ${product.name}`}
           src={product.promotionImage ?? product.image}
@@ -37,7 +46,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
       </div>
       <CardContent className="grid flex-1 gap-3 p-6">
         <h3 className="line-clamp-2 min-h-0 text-xl font-bold leading-8 text-neutral-950 sm:min-h-14">
-          <Link href={`/products/${product.slug}/`} className="hover:text-red-700">
+          <Link href={href} className="hover:text-red-700">
             {product.name}
           </Link>
         </h3>
@@ -63,7 +72,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
       </CardContent>
       <CardFooter className="mt-auto p-6 pt-0">
         <Button asChild variant="outline" className="w-full border-neutral-300">
-          <Link href={`/products/${product.slug}/`}>
+          <Link href={href}>
             ดูรายละเอียด
             <ArrowRight className="text-primary" aria-hidden="true" />
           </Link>

@@ -8,6 +8,7 @@ import { ProductCard } from "@/components/product-card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { catalogProducts } from "@/lib/catalog-products";
 import { filterCatalogProducts, normalizeSearchValue } from "@/lib/catalog-search";
+import { buildProductDetailHref, buildProductsSearchHref } from "@/lib/catalog-routes";
 import { productKnowledgeGuides } from "@/lib/product-knowledge";
 
 function prefersReducedMotion() {
@@ -40,6 +41,15 @@ export function ProductCatalogBrowser() {
     setQuery(nextQuery);
     setActiveCategory(nextCategory);
   }, []);
+
+  function updateFilters(nextQuery: string, nextCategory: string) {
+    setQuery(nextQuery);
+    setActiveCategory(nextCategory);
+    const href = buildProductsSearchHref(nextQuery, nextCategory);
+    if (`${window.location.pathname}${window.location.search}` !== href) {
+      window.history.replaceState(window.history.state, "", href);
+    }
+  }
 
   const normalizedQuery = normalizeSearchValue(query);
   const hasActiveFilter = activeCategory !== "all" || normalizedQuery.length > 0;
@@ -78,8 +88,7 @@ export function ProductCatalogBrowser() {
       }));
 
   function clearCatalogFilters() {
-    setQuery("");
-    setActiveCategory("all");
+    updateFilters("", "all");
   }
 
   return (
@@ -106,7 +115,7 @@ export function ProductCatalogBrowser() {
               <input
                 type="search"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => updateFilters(event.target.value, activeCategory)}
                 placeholder="ค้นหาชื่อสินค้า หมวด หรือรหัสรุ่น"
                 className="h-14 w-full rounded-2xl border border-black/15 bg-[#faf9f7] pl-12 pr-12 text-base font-semibold text-neutral-950 outline-none transition placeholder:text-sm placeholder:font-normal placeholder:text-neutral-400 focus:border-red-700 focus:bg-white focus:ring-4 focus:ring-red-700/10 [&::-webkit-search-cancel-button]:appearance-none"
               />
@@ -114,7 +123,7 @@ export function ProductCatalogBrowser() {
                 <button
                   type="button"
                   aria-label="ล้างคำค้นหา"
-                  onClick={() => setQuery("")}
+                  onClick={() => updateFilters("", activeCategory)}
                   className="absolute right-2 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-xl text-neutral-600 transition hover:bg-black/5 hover:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
                 >
                   <X className="size-4" aria-hidden="true" />
@@ -123,7 +132,7 @@ export function ProductCatalogBrowser() {
             </label>
 
             <div className="w-[11.25rem] shrink-0 sm:w-60 lg:w-72">
-              <Select value={activeCategory} onValueChange={setActiveCategory}>
+              <Select value={activeCategory} onValueChange={(category) => updateFilters(query, category)}>
                 <SelectTrigger
                   aria-label="กรองตามหมวดสินค้า"
                   data-testid="category-filter"
@@ -192,7 +201,11 @@ export function ProductCatalogBrowser() {
               <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {group.products.map((product, index) => (
                   <div key={product.slug} data-testid="catalog-model-card" className="h-full min-w-0">
-                    <ProductCard product={product} eager={groupIndex === 0 && index === 0} />
+                    <ProductCard
+                      product={product}
+                      eager={groupIndex === 0 && index === 0}
+                      detailHref={buildProductDetailHref(product.slug, query, activeCategory)}
+                    />
                   </div>
                 ))}
               </div>

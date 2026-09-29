@@ -23,6 +23,7 @@ async function chooseCategory(optionName: string | RegExp) {
 
 beforeEach(() => {
   navigation.searchParams = new URLSearchParams();
+  window.history.replaceState(null, "", "/products/");
   vi.spyOn(window, "scrollTo").mockImplementation(() => {});
 });
 
@@ -144,6 +145,26 @@ describe("ProductsPage knowledge visibility", () => {
     });
     expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(1);
     expect(screen.getAllByText("AS60GHWG0")[0]).toBeVisible();
+  });
+
+  it("keeps a search in the URL and product links so returning restores the finder", () => {
+    const { unmount } = render(<ProductsPage />);
+    fireEvent.change(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), {
+      target: { value: "WT1410NHEG" },
+    });
+
+    expect(window.location.search).toBe("?q=WT1410NHEG");
+    const card = screen.getByTestId("catalog-model-card");
+    expect(within(card).getByRole("link", { name: "ดูรายละเอียด" })).toHaveAttribute(
+      "href",
+      "/products/lg-washtower-wt1410nheg?q=WT1410NHEG",
+    );
+
+    unmount();
+    navigation.searchParams = new URLSearchParams(window.location.search);
+    render(<ProductsPage />);
+    expect(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" })).toHaveValue("WT1410NHEG");
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(1);
   });
 
   it("does not show LG source-conflict notes on the catalog", () => {

@@ -12,9 +12,15 @@ export function buildProductsSearchHref(query: string, category = "all") {
   const params = new URLSearchParams();
   const trimmedQuery = query.trim();
 
-  if (trimmedQuery) params.set("q", trimmedQuery);
+  if (trimmedQuery) params.set("q", query);
   if (category && category !== "all") params.set("category", category);
 
   const qs = params.toString();
   return qs ? `/products/?${qs}` : "/products/";
+}
+
+export function buildProductDetailHref(slug: string, query: string, category = "all") {
+  const listingHref = buildProductsSearchHref(query, category);
+  const search = listingHref.split("?")[1];
+  return `/products/${slug}/${search ? `?${search}` : ""}`;
 }

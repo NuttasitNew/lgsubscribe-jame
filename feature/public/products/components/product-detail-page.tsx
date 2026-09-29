@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { ContactCta } from "@/components/contact-cta";
 import { ProductOrderCount } from "@/components/live-view-count";
 import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { ProductGallery } from "@/feature/public/products/components/product-gallery";
+import { ProductCatalogBackLink } from "@/feature/public/products/components/product-catalog-back-link";
 import { ProductSpecifications } from "@/feature/public/products/components/product-specifications";
 import { WashTowerReviews } from "@/feature/public/products/components/wash-tower-reviews";
 import { Badge } from "@/components/ui/badge";
@@ -113,12 +115,17 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         className="sticky top-[76px] z-30 border-b border-black/[0.07] bg-white/95 backdrop-blur-xl"
       >
         <div className="container-page flex h-14 items-center justify-between gap-3 sm:gap-4">
-          <Button asChild variant="ghost" className="-ml-3 shrink-0 text-muted-foreground">
-            <Link href="/products/">
-              <span aria-hidden="true">←</span>
-              สินค้าทั้งหมด
-            </Link>
-          </Button>
+          <Suspense
+            fallback={
+              <Button asChild variant="ghost" className="-ml-3 shrink-0 text-muted-foreground">
+                <Link href="/products/">
+                  <span aria-hidden="true">←</span>สินค้าทั้งหมด
+                </Link>
+              </Button>
+            }
+          >
+            <ProductCatalogBackLink />
+          </Suspense>
           <p
             title={product.name}
             className="min-w-0 truncate text-right text-sm font-semibold text-neutral-950 sm:text-base"
@@ -211,7 +218,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         </div>
       </section>
 
-      {product.slug === "lg-washtower-wt1410nheg" ? <WashTowerReviews /> : null}
+      <WashTowerReviews model={product.model} />
 
       {specificationRecord ? (
         <ProductSpecifications model={product.model} record={specificationRecord} />

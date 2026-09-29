@@ -17,12 +17,22 @@ vi.mock("next/navigation", () => ({
 
 afterEach(() => {
   cleanup();
+  window.history.replaceState(null, "", "/products/");
   navigation.pathname = "/products/";
   navigation.replace.mockReset();
   navigation.push.mockReset();
 });
 
 describe("MobileDock product search", () => {
+  it("restores the search in the mobile finder when returning to the listing", async () => {
+    window.history.replaceState(null, "", "/products/?q=WT1410NHEG");
+    const user = userEvent.setup();
+    render(<MobileDock />);
+
+    await user.click(await screen.findByRole("button", { name: /ค้นหาสินค้า LG/ }));
+    expect(screen.getByRole("searchbox", { name: /ค้นหาสินค้า LG/ })).toHaveValue("WT1410NHEG");
+  });
+
   it("opens search and category from the floating dock on the products listing", async () => {
     const user = userEvent.setup();
     render(<MobileDock />);
@@ -37,7 +47,7 @@ describe("MobileDock product search", () => {
     const results = screen.getAllByTestId("product-search-result");
     expect(results).toHaveLength(1);
     expect(within(results[0]).getByText("AS60GHWG0")).toBeVisible();
-    expect(results[0]).toHaveAttribute("href", "/products/lg-as60ghwg0");
+    expect(results[0]).toHaveAttribute("href", "/products/lg-as60ghwg0?q=AS60GHWG0");
   });
 
   it("lets a product detail page search the catalog from the same dock", async () => {

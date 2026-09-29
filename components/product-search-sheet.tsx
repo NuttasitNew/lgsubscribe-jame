@@ -15,7 +15,12 @@ import {
 } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { catalogProducts } from "@/lib/catalog-products";
-import { buildProductsSearchHref, filterCatalogProducts, isProductsIndex } from "@/lib/catalog-search";
+import {
+  buildProductDetailHref,
+  buildProductsSearchHref,
+  filterCatalogProducts,
+  isProductsIndex,
+} from "@/lib/catalog-search";
 import { productKnowledgeGuides } from "@/lib/product-knowledge";
 
 export function ProductSearchSheet({ children }: { children?: ReactNode }) {
@@ -45,7 +50,12 @@ export function ProductSearchSheet({ children }: { children?: ReactNode }) {
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen(nextOpen);
-        if (nextOpen) return;
+        if (nextOpen) {
+          const params = new URLSearchParams(window.location.search);
+          setQuery(params.get("q") ?? "");
+          setCategory(params.get("category") ?? "all");
+          return;
+        }
         if (onListing) router.replace(buildProductsSearchHref(query, category));
       }}
     >
@@ -155,7 +165,7 @@ export function ProductSearchSheet({ children }: { children?: ReactNode }) {
               {filteredProducts.map((product) => (
                 <Link
                   key={product.slug}
-                  href={`/products/${product.slug}/`}
+                  href={buildProductDetailHref(product.slug, query, category)}
                   onClick={() => setOpen(false)}
                   data-testid="product-search-result"
                   className="grid grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-black/[0.08] bg-white p-2.5"
