@@ -17,8 +17,8 @@ describe("catalog search helpers", () => {
   });
 
   it("filters by model code and category", () => {
-    expect(filterCatalogProducts("AS60GHWG0")).toHaveLength(1);
-    expect(filterCatalogProducts("", "เครื่องฟอกอากาศ")).toHaveLength(4);
+    expect(filterCatalogProducts("AS60GHWG0")).toHaveLength(0);
+    expect(filterCatalogProducts("", "เครื่องฟอกอากาศ")).toHaveLength(3);
     expect(filterCatalogProducts("ไม่มีรุ่นนี้เลย")).toHaveLength(0);
   });
 

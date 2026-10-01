@@ -1,20 +1,27 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import ProductDetailPage from "@/feature/public/products/components/product-detail-page";
 import { allProducts } from "@/lib/catalog-products";
 import { getProductSpecificationRecord, productSpecificationRecords } from "@/lib/product-specifications";
+
+vi.mock("next/navigation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/navigation")>()),
+  useSearchParams: () => new URLSearchParams(),
+}));
 
 afterEach(cleanup);
 
 describe("official LG product specifications", () => {
   it("accounts for every static product detail route without borrowing another model's data", () => {
-    expect(allProducts).toHaveLength(83);
-    expect(Object.keys(productSpecificationRecords)).toHaveLength(allProducts.length);
+    expect(allProducts).toHaveLength(68);
+    expect(Object.keys(productSpecificationRecords).length).toBeGreaterThanOrEqual(allProducts.length);
 
     for (const product of allProducts) {
       const record = getProductSpecificationRecord(product.model);
       expect(record, product.model).toBeDefined();
-      expect(record?.sourceUrl, product.model).toMatch(/^https:\/\/(?:www\.lg\.com|lgsubscribe-official\.com)\//);
+      expect(record?.sourceUrl, product.model).toMatch(
+        /^https:\/\/(?:www\.lg\.com|lgsubscribe-official\.com)\//,
+      );
       expect(record?.verifiedAt, product.model).toBe("2026-09-02");
 
       if (record?.status === "verified") {
@@ -26,7 +33,9 @@ describe("official LG product specifications", () => {
       .filter((product) => getProductSpecificationRecord(product.model)?.status === "unverified")
       .map((product) => product.model);
     expect(unverifiedModels).toEqual([]);
-    expect(Object.values(productSpecificationRecords).every((record) => record.note === undefined)).toBe(true);
+    expect(Object.values(productSpecificationRecords).every((record) => record.note === undefined)).toBe(
+      true,
+    );
   });
 
   it("keeps catalog aliases tied to the exact official SKU used for technical data", () => {
@@ -78,8 +87,10 @@ describe("official LG product specifications", () => {
       ]),
     );
 
-    const bounceValues = bounce?.groups.flatMap((group) => group.items.map((item) => item.value)).join(" ") ?? "";
-    const stageValues = stage?.groups.flatMap((group) => group.items.map((item) => item.value)).join(" ") ?? "";
+    const bounceValues =
+      bounce?.groups.flatMap((group) => group.items.map((item) => item.value)).join(" ") ?? "";
+    const stageValues =
+      stage?.groups.flatMap((group) => group.items.map((item) => item.value)).join(" ") ?? "";
     expect(bounceValues).not.toMatch(/10 W Tweeter|30 W \+ 10 W/);
     expect(stageValues).not.toMatch(/352|415|385/);
     expect(grabProduct?.description).not.toMatch(/Bounce/);

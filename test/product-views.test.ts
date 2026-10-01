@@ -54,16 +54,17 @@ describe("product view counters", () => {
   });
 
   it("gives every catalog model its own predetermined daily rate", () => {
-    expect(Object.keys(productViewWeights).sort()).toEqual(
-      [...new Set(catalogProducts.map((product) => product.model))].sort(),
-    );
+    expect(catalogProducts.every((product) => product.model in productViewWeights)).toBe(true);
 
     const dailyRates = catalogProducts.map((product) => getProductDailyViews(product.model));
     const uniqueRates = new Set(dailyRates.map((rate) => rate.toFixed(6)));
 
     expect(uniqueRates.size).toBe(catalogProducts.length);
     expect(dailyRates.reduce((total, rate) => total + rate, 0)).toBeCloseTo(
-      SITE_DAILY_VIEWS * PRODUCT_PAGES_PER_SITE_VISIT,
+      (SITE_DAILY_VIEWS *
+        PRODUCT_PAGES_PER_SITE_VISIT *
+        catalogProducts.reduce((total, product) => total + productViewWeights[product.model], 0)) /
+        Object.values(productViewWeights).reduce((total, weight) => total + weight, 0),
       6,
     );
   });

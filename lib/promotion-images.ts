@@ -1,8 +1,8 @@
 import { promotionImageAssets, type PromotionImageAsset } from "@/lib/promotion-image-assets";
 import type { Product, ProductGalleryImage } from "@/lib/site";
 
-export const PROMOTION_CAMPAIGN = "sep-v4";
-export const PROMOTION_SOURCE_DIRNAME = "Price list_Sep_V4";
+export const PROMOTION_CAMPAIGN = "oct-2026";
+export const PROMOTION_SOURCE_DIRNAME = "Price list_Oct";
 export const PROMOTION_PUBLIC_DIR = `/images/products/promotions/${PROMOTION_CAMPAIGN}`;
 
 const COMBINED_FOLDER_MODELS: Record<string, readonly string[]> = {

@@ -22,7 +22,7 @@ describe("ProductCard", () => {
     expect(image.closest("[data-image-slot=image]")).toHaveClass("aspect-square", "rounded-none", "border-0");
   });
 
-  it("shows the regular monthly price from the September price list", () => {
+  it("shows the regular monthly price from the October price list", () => {
     const product = catalogProducts.find((item) => item.model === "WD516AN");
     expect(product?.monthlyPrice).toBe(499);
 
@@ -71,9 +71,9 @@ describe("ProductCard", () => {
   it("pins the details button to the bottom of the card so a row of cards lines up", () => {
     render(<ProductCard product={products[0]} />);
 
-    expect(screen.getByRole("link", { name: /^ดูรายละเอียด$/ }).closest("[data-slot=card-footer]")).toHaveClass(
-      "mt-auto",
-    );
+    expect(
+      screen.getByRole("link", { name: /^ดูรายละเอียด$/ }).closest("[data-slot=card-footer]"),
+    ).toHaveClass("mt-auto");
     expect(screen.getByRole("link", { name: /^ดูรายละเอียด$/ }).closest("[data-slot=card]")).toHaveClass(
       "h-full",
       "flex",

@@ -1,7 +1,7 @@
 import { attachPromotionImage } from "@/lib/promotion-images";
 import { productKnowledgeGuides } from "@/lib/product-knowledge";
 import { products as featuredProducts, type Product } from "@/lib/site";
-import { getSubscriptionStartingPrice } from "@/lib/subscription-starting-prices";
+import { getSubscriptionStartingPrice, isCurrentSubscriptionModel } from "@/lib/subscription-starting-prices";
 
 type CatalogProductSource = {
   name: string;
@@ -89,7 +89,8 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     description:
       "แอร์ฝังฝ้า 4 ทิศทาง LG รุ่น ZT4Q18GPLA1 ขนาด 18,000 BTU กระจายลมสี่ทิศทาง ติดตั้งฝังฝ้าเพดาน สำหรับพื้นที่กว้าง",
     image: "/images/products/lg-catalog/zt4q18gpla1.jpg",
-    officialUrl: "https://www.lg.com/th/business/hvac/commercial-solutions/single-split/ceiling-mounted-cassette/",
+    officialUrl:
+      "https://www.lg.com/th/business/hvac/commercial-solutions/single-split/ceiling-mounted-cassette/",
     officialModel: "ZT4Q18GPLA1.EWGHATH",
   },
   ZT4Q24GPLA1: {
@@ -97,7 +98,8 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     description:
       "แอร์ฝังฝ้า 4 ทิศทาง LG รุ่น ZT4Q24GPLA1 ขนาด 24,500 BTU กระจายลมสี่ทิศทาง ติดตั้งฝังฝ้าเพดาน สำหรับพื้นที่กว้าง",
     image: "/images/products/lg-catalog/zt4q24gpla1.jpg",
-    officialUrl: "https://www.lg.com/th/business/hvac/commercial-solutions/single-split/ceiling-mounted-cassette/",
+    officialUrl:
+      "https://www.lg.com/th/business/hvac/commercial-solutions/single-split/ceiling-mounted-cassette/",
     officialModel: "ZT4Q24GPLA1.EWGHATH",
   },
   ZT4Q36GNLA1: {
@@ -105,7 +107,8 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     description:
       "แอร์ฝังฝ้า 4 ทิศทาง LG รุ่น ZT4Q36GNLA1 ขนาด 36,200 BTU ระบบ 220 โวลต์ กระจายลมสี่ทิศทาง ติดตั้งฝังฝ้าเพดาน",
     image: "/images/products/lg-catalog/zt4q36gnla1.jpg",
-    officialUrl: "https://www.lg.com/th/business/hvac/commercial-solutions/single-split/ceiling-mounted-cassette/",
+    officialUrl:
+      "https://www.lg.com/th/business/hvac/commercial-solutions/single-split/ceiling-mounted-cassette/",
     officialModel: "ZT4Q36GNLA1.EWGHATH",
   },
   ZT4Q48GMLA1: {
@@ -113,7 +116,8 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     description:
       "แอร์ฝังฝ้า 4 ทิศทาง LG รุ่น ZT4Q48GMLA1 ขนาด 48,000 BTU ระบบ 220 โวลต์ กระจายลมสี่ทิศทาง ติดตั้งฝังฝ้าเพดาน",
     image: "/images/products/lg-catalog/zt4q48gmla1.jpg",
-    officialUrl: "https://www.lg.com/th/business/hvac/commercial-solutions/single-split/ceiling-mounted-cassette/",
+    officialUrl:
+      "https://www.lg.com/th/business/hvac/commercial-solutions/single-split/ceiling-mounted-cassette/",
     officialModel: "ZT4Q48GMLA1.EWGHATH",
   },
   ZT1Q12GULA1: {
@@ -395,24 +399,21 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
   },
   "OLED77C6PSA.S80TY": {
     name: 'ทีวี 77" LG OLED evo C6 พร้อมซาวด์บาร์ S80TY',
-    description:
-      "ชุดทีวี OLED77C6PSA พร้อมซาวด์บาร์ S80TY กำลังขับ 480W สำหรับรับชมภาพและเสียงในชุดเดียว",
+    description: "ชุดทีวี OLED77C6PSA พร้อมซาวด์บาร์ S80TY กำลังขับ 480W สำหรับรับชมภาพและเสียงในชุดเดียว",
     image: "/images/products/lg-catalog/oled77c6psa-s80ty.jpg",
     officialUrl: "https://www.lg.com/th/tv-soundbars/oled-evo/oled77c6psa/",
     officialModel: "OLED77C6PSA.S80TY",
   },
   "OLED65C6PSA.S80TY": {
     name: 'ทีวี 65" LG OLED evo C6 พร้อมซาวด์บาร์ S80TY',
-    description:
-      "ชุดทีวี OLED65C6PSA พร้อมซาวด์บาร์ S80TY กำลังขับ 480W สำหรับรับชมภาพและเสียงในชุดเดียว",
+    description: "ชุดทีวี OLED65C6PSA พร้อมซาวด์บาร์ S80TY กำลังขับ 480W สำหรับรับชมภาพและเสียงในชุดเดียว",
     image: "/images/products/lg-catalog/oled65c6psa-s80ty.jpg",
     officialUrl: "https://www.lg.com/th/tv-soundbars/oled-evo/oled65c6psa/",
     officialModel: "OLED65C6PSA.S80TY",
   },
   "OLED55C6PSA.S30A": {
     name: 'ทีวี 55" LG OLED evo C6 พร้อมซาวด์บาร์ S30A',
-    description:
-      "ชุดทีวี OLED55C6PSA พร้อมซาวด์บาร์ S30A กำลังขับ 150W สำหรับรับชมภาพและเสียงในชุดเดียว",
+    description: "ชุดทีวี OLED55C6PSA พร้อมซาวด์บาร์ S30A กำลังขับ 150W สำหรับรับชมภาพและเสียงในชุดเดียว",
     image: "/images/products/lg-catalog/oled55c6psa-s30a.jpg",
     officialUrl: "https://www.lg.com/th/tv-soundbars/oled-evo/oled55c6psa/",
     officialModel: "OLED55C6PSA.S30A",
@@ -629,8 +630,7 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
   },
   "32U889.GRAB": {
     name: 'จอมอนิเตอร์ 31.5" Smart Monitor Swing พร้อมลำโพง xboom Grab',
-    description:
-      "ชุดจอมอนิเตอร์ 32U889SA-W พร้อมลำโพงพกพา LG xboom Grab สำหรับใช้งานจอและลำโพงในชุดเดียว",
+    description: "ชุดจอมอนิเตอร์ 32U889SA-W พร้อมลำโพงพกพา LG xboom Grab สำหรับใช้งานจอและลำโพงในชุดเดียว",
     image: "/images/products/lg-catalog/32u889sa.jpg",
     officialUrl: "https://www.lg.com/th/monitors/smart-monitors/32u889sa-w/",
     officialModel: "32U889.GRAB",
@@ -644,9 +644,8 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     officialModel: "45GX950A-B.ATM",
   },
   "52G930B-B": {
-    name: 'LG UltraGear evo G9 จอเกมมิ่ง 52” 5K2K 240Hz',
-    description:
-      "จอเกมมิ่ง UltraGear evo G9 ขนาด 52 นิ้ว ความละเอียด 5K2K รีเฟรช 240Hz อัตราส่วน 21:9",
+    name: "LG UltraGear evo G9 จอเกมมิ่ง 52” 5K2K 240Hz",
+    description: "จอเกมมิ่ง UltraGear evo G9 ขนาด 52 นิ้ว ความละเอียด 5K2K รีเฟรช 240Hz อัตราส่วน 21:9",
     image: "/images/products/lg-catalog/52g930b-b.jpg",
     officialUrl: "https://www.lg.com/th/monitors/gaming/52g930b-b/",
     officialModel: "52G930B-B.ATM",
@@ -660,7 +659,7 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
   },
   "34U650A-B": {
     name: 'จอมอนิเตอร์ 34" WQHD IPS 100Hz โค้ง 3800R รุ่น 34U650A-B',
-    description: 'จอมอนิเตอร์ 34 นิ้ว WQHD IPS 100Hz โค้ง 3800R รุ่น 34U650A-B สำหรับงานและมัลติทาสก์',
+    description: "จอมอนิเตอร์ 34 นิ้ว WQHD IPS 100Hz โค้ง 3800R รุ่น 34U650A-B สำหรับงานและมัลติทาสก์",
     image: "/images/products/lg-catalog/34u650a-b.jpg",
     officialUrl: "https://www.lg.com/th/monitors/",
     officialModel: "34U650A-B.ATM",
@@ -668,7 +667,7 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
 };
 
 export const catalogProducts: Product[] = productKnowledgeGuides.flatMap((guide) =>
-  guide.models.map((model) => {
+  guide.models.filter(isCurrentSubscriptionModel).map((model) => {
     const source = catalogProductSources[model];
     if (!source) throw new Error(`Missing official LG catalog data for ${model}`);
 
@@ -706,7 +705,7 @@ const catalogModelCodes = new Set(catalogProducts.map((product) => product.model
 export const allProducts = [
   ...catalogProducts,
   ...featuredProducts
-    .filter((product) => !catalogModelCodes.has(product.model))
+    .filter((product) => isCurrentSubscriptionModel(product.model) && !catalogModelCodes.has(product.model))
     .map((product) =>
       attachPromotionImage({
         ...product,
@@ -719,11 +718,7 @@ export function getCatalogProduct(slug: string) {
   return catalogProducts.find((product) => product.slug === slug);
 }
 
-export const bestSellerSlugs = [
-  "lg-washtower-wt1410nheg",
-  "lg-x257cmew",
-  "lg-saq11a",
-] as const;
+export const bestSellerSlugs = ["lg-washtower-wt1410nheg", "lg-x257cmew", "lg-saq11a"] as const;
 
 export const bestSellerProducts = bestSellerSlugs.map((slug) => {
   const product = catalogProducts.find((item) => item.slug === slug);

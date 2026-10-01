@@ -34,7 +34,7 @@ describe("product detail spacing", () => {
     expect(screen.getByText("2 / 2")).toBeInTheDocument();
   });
 
-  it("keeps the official packshot after the promotion still for every September model", async () => {
+  it("keeps the official packshot after the promotion still for every October model", async () => {
     render(
       await ProductDetailPage({
         params: Promise.resolve({ slug: "lg-siq11b" }),
@@ -114,7 +114,7 @@ describe("product detail spacing", () => {
     expect(screen.queryByRole("heading", { name: "WashTower", level: 2 })).not.toBeInTheDocument();
   });
 
-  it.each(["lg-wt1410nhen", "lg-wt2520nhen"])(
+  it.each(["lg-wt1410nhen"])(
     "shows the navy/beige customer photo and generic WashTower delivery on %s",
     async (slug) => {
       render(await ProductDetailPage({ params: Promise.resolve({ slug }) }));

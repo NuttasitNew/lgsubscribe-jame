@@ -17,7 +17,7 @@ import { ProductCard } from "@/components/product-card";
 import { SubscribeSteps } from "@/components/subscribe-steps";
 import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
-import { bestSellerProducts } from "@/lib/catalog-products";
+import { bestSellerProducts, catalogProducts } from "@/lib/catalog-products";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
 import { customerStories, faqs, products } from "@/lib/site";
 
@@ -37,8 +37,8 @@ const categoryCards = [
   {
     label: "เครื่องปรับอากาศ",
     category: "เครื่องปรับอากาศ",
-    model: "IXY18A",
-    image: "/images/products/official/air-conditioner-ixy18a.jpg",
+    model: "SAQ13A",
+    image: catalogProducts.find((product) => product.model === "SAQ13A")!.image,
   },
   {
     label: "เครื่องกรองน้ำ",
@@ -55,14 +55,14 @@ const categoryCards = [
   {
     label: "ทีวีและความบันเทิง",
     category: "ทีวีและเครื่องเสียง",
-    model: "OLED55C6PSA",
-    image: "/images/products/official/tv-oled55c6psa.jpg",
+    model: "OLED65C6PSA",
+    image: catalogProducts.find((product) => product.model === "OLED65C6PSA")!.image,
   },
   {
     label: "เครื่องฟอกอากาศ",
     category: "เครื่องฟอกอากาศ",
-    model: "AS60GHWG0",
-    image: "/images/products/lg-catalog/as60ghwg0.jpg",
+    model: "AS65GDBY0",
+    image: catalogProducts.find((product) => product.model === "AS65GDBY0")!.image,
   },
 ] as const;
 

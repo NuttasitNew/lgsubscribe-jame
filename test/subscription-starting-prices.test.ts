@@ -3,7 +3,7 @@ import { catalogProducts } from "@/lib/catalog-products";
 import { getSubscriptionStartingPrice, subscriptionStartingPrices } from "@/lib/subscription-starting-prices";
 
 describe("subscription starting prices", () => {
-  it("uses the regular monthly price from the September workbook", () => {
+  it("uses the regular monthly price from the October workbook", () => {
     expect(getSubscriptionStartingPrice("WD516AN")).toBe(499);
     expect(getSubscriptionStartingPrice("WD518AN")).toBe(499);
     expect(getSubscriptionStartingPrice("SAQ13A")).toBe(699);
@@ -11,9 +11,11 @@ describe("subscription starting prices", () => {
     expect(getSubscriptionStartingPrice("GRAB")).toBe(109);
     expect(getSubscriptionStartingPrice("DFC533FV")).toBe(549);
     expect(getSubscriptionStartingPrice("ZT1Q12GULA1")).toBe(1499);
-    expect(getSubscriptionStartingPrice("ZTRQ48GYLA1")).toBe(2799);
-    expect(getSubscriptionStartingPrice("RV10VHP2B")).toBe(599);
+    expect(getSubscriptionStartingPrice("ZTRQ48GYLA1")).toBeNull();
+    expect(getSubscriptionStartingPrice("RV10VHP2B")).toBeNull();
     expect(getSubscriptionStartingPrice("TX2726ST5J")).toBe(549);
+    expect(getSubscriptionStartingPrice("OLED83C6PSA")).toBe(2699);
+    expect(getSubscriptionStartingPrice("32U889.GRAB")).toBe(649);
   });
 
   it("copies those starting prices onto matching catalog cards", () => {

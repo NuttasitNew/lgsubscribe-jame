@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ProductsPage from "@/feature/public/products/components/products-page";
 import { allProducts, catalogProducts } from "@/lib/catalog-products";
-import { knowledgeInventory, productKnowledgeGuides } from "@/lib/product-knowledge";
+import { productKnowledgeGuides } from "@/lib/product-knowledge";
 
 const navigation = vi.hoisted(() => ({
   searchParams: new URLSearchParams(),
@@ -33,24 +33,24 @@ afterEach(() => {
 });
 
 describe("ProductsPage knowledge visibility", () => {
-  it("renders every extracted model as a visible catalog card", () => {
+  it("renders every current October model as a visible catalog card", () => {
     render(<ProductsPage />);
 
-    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(knowledgeInventory.modelCount);
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(catalogProducts.length);
     expect(screen.getAllByText("AS10GDBY0")[0]).toBeVisible();
     expect(screen.getAllByText("32U889SA")[0]).toBeVisible();
 
     const itemListJson = document.querySelector('script[type="application/ld+json"]')?.textContent;
     expect(itemListJson).toBeTruthy();
-    expect(JSON.parse(itemListJson ?? "{}").itemListElement).toHaveLength(knowledgeInventory.modelCount);
+    expect(JSON.parse(itemListJson ?? "{}").itemListElement).toHaveLength(catalogProducts.length);
   });
 
   it("renders the catalog models as real product cards with local artwork and detail links", () => {
     render(<ProductsPage />);
 
-    expect(catalogProducts).toHaveLength(knowledgeInventory.modelCount);
+    expect(catalogProducts).toHaveLength(68);
     expect(
-      screen.queryByRole("heading", { name: `สินค้า LG ทั้ง ${knowledgeInventory.modelCount} รุ่น` }),
+      screen.queryByRole("heading", { name: `สินค้า LG ทั้ง ${catalogProducts.length} รุ่น` }),
     ).not.toBeInTheDocument();
 
     const cards = screen.getAllByTestId("catalog-model-card");
@@ -107,9 +107,7 @@ describe("ProductsPage knowledge visibility", () => {
     expect(screen.queryByRole("link", { name: /ดูสินค้าทั้ง 47 รุ่น/ })).not.toBeInTheDocument();
     expect(screen.queryByText("พบ 47 รุ่น")).not.toBeInTheDocument();
 
-    expect(screen.getByTestId("category-filter")).toHaveTextContent(
-      `ทั้งหมด (${knowledgeInventory.modelCount})`,
-    );
+    expect(screen.getByTestId("category-filter")).toHaveTextContent(`ทั้งหมด (${catalogProducts.length})`);
 
     const catalogRegion = screen.getByRole("region", { name: "รายการสินค้าจากเอกสาร" });
     expect(catalogRegion).toHaveAttribute("id", "product-knowledge");
@@ -119,9 +117,7 @@ describe("ProductsPage knowledge visibility", () => {
       "sticky",
       "top-[76px]",
     );
-    expect(within(catalogRegion).getAllByTestId("catalog-model-card")).toHaveLength(
-      knowledgeInventory.modelCount,
-    );
+    expect(within(catalogRegion).getAllByTestId("catalog-model-card")).toHaveLength(catalogProducts.length);
     expect(screen.queryByText("Product knowledge library")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /ดูเพิ่มอีก/ })).not.toBeInTheDocument();
   });
@@ -134,17 +130,17 @@ describe("ProductsPage knowledge visibility", () => {
     expect(screen.getAllByRole("option")).toHaveLength(productKnowledgeGuides.length + 1);
     await user.click(screen.getByRole("option", { name: /เครื่องฟอกอากาศ/ }));
 
-    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(4);
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(3);
     expect(screen.getByRole("heading", { name: "เครื่องฟอกอากาศ", level: 2 })).toBeInTheDocument();
     expect(screen.getByText("หมวด 02")).toBeVisible();
     expect(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" })).toHaveAttribute("href", "/products");
     expect(screen.queryByText("SAQ13A")).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), {
-      target: { value: "AS60GHWG0" },
+      target: { value: "AS65GDBY0" },
     });
     expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(1);
-    expect(screen.getAllByText("AS60GHWG0")[0]).toBeVisible();
+    expect(screen.getAllByText("AS65GDBY0")[0]).toBeVisible();
   });
 
   it("keeps a search in the URL and product links so returning restores the finder", () => {
@@ -182,7 +178,7 @@ describe("ProductsPage knowledge visibility", () => {
     expect(window.scrollTo).not.toHaveBeenCalled();
 
     fireEvent.change(screen.getByRole("searchbox", { name: "ค้นหาสินค้า LG" }), {
-      target: { value: "AS60GHWG0" },
+      target: { value: "AS65GDBY0" },
     });
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "smooth" });
 
@@ -222,10 +218,10 @@ describe("ProductsPage knowledge visibility", () => {
     navigation.searchParams = new URLSearchParams("category=เครื่องฟอกอากาศ");
     render(<ProductsPage />);
 
-    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(4);
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(3);
     expect(screen.getByRole("heading", { name: "เครื่องฟอกอากาศ", level: 2 })).toBeVisible();
     expect(screen.getByText("หมวด 02")).toBeVisible();
-    expect(screen.getByText("4 รุ่น")).toBeVisible();
+    expect(screen.getByText("3 รุ่น")).toBeVisible();
     expect(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" })).toHaveAttribute("href", "/products");
     expect(screen.queryByRole("heading", { name: "ตู้เย็น", level: 2 })).not.toBeInTheDocument();
   });
@@ -235,11 +231,11 @@ describe("ProductsPage knowledge visibility", () => {
     render(<ProductsPage />);
     await chooseCategory(/เครื่องฟอกอากาศ/);
 
-    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(4);
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(3);
 
     await user.click(screen.getByRole("link", { name: "ดูสินค้าทั้งหมด →" }));
 
-    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(knowledgeInventory.modelCount);
+    expect(screen.getAllByTestId("catalog-model-card")).toHaveLength(catalogProducts.length);
     expect(screen.queryByRole("link", { name: "ดูสินค้าทั้งหมด →" })).not.toBeInTheDocument();
   });
 });

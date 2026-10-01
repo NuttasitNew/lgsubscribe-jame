@@ -1,4 +1,4 @@
-import { sepSubscriptionCampaignProducts } from "@/lib/sep-subscription-campaign";
+import { octSubscriptionCampaignProducts } from "@/lib/oct-subscription-campaign";
 
 /** Catalog aliases whose public model label intentionally differs from the price-list SKU. */
 const campaignModelAliases: Record<string, string> = {
@@ -20,18 +20,16 @@ function normalizedCampaignKey(value: string): string {
 
 function findCampaignProduct(model: string) {
   if (model === "WD516AN" || model === "WD518AN") {
-    return sepSubscriptionCampaignProducts.find((product) => product.model === "WD516AN / WD518AN");
+    return octSubscriptionCampaignProducts.find((product) => product.model === "WD516AN / WD518AN");
   }
 
   const campaignModel = campaignModelAliases[model] ?? model;
   const key = normalizedCampaignKey(campaignModel);
-  return sepSubscriptionCampaignProducts.find(
-    (product) => normalizedCampaignKey(product.model) === key,
-  );
+  return octSubscriptionCampaignProducts.find((product) => normalizedCampaignKey(product.model) === key);
 }
 
 export const subscriptionStartingPrices = Object.fromEntries(
-  sepSubscriptionCampaignProducts.map((product) => [product.model, product.monthlyPrice]),
+  octSubscriptionCampaignProducts.map((product) => [product.model, product.monthlyPrice]),
 ) as Readonly<Record<string, number>>;
 
 /** Campaign entry price used only when the exact model is unknown. */
@@ -56,4 +54,9 @@ export function getSubscriptionStartingPrice(model: string, category?: string): 
   if (matched) return matched.monthlyPrice;
   if (!category) return null;
   return categoryStartingFallbacks[category] ?? null;
+}
+
+/** Unmatched, withdrawn and paused models must not fall back into the sales catalog. */
+export function isCurrentSubscriptionModel(model: string): boolean {
+  return findCampaignProduct(model) !== undefined;
 }
