@@ -45,10 +45,6 @@ export default async function AnalyticsPage({
       databaseError = true;
     }
   }
-  const months = Array.from({ length: 6 }, (_, offset) => {
-    const [year, month] = today.slice(0, 7).split("-").map(Number);
-    return new Date(Date.UTC(year, month - 1 - offset, 1)).toISOString().slice(0, 7);
-  });
   const max = Math.max(1, ...(report?.rows.map((row) => row.visitors) ?? []));
   const firstDay = report?.firstTrackedAt ? bangkokToday(report.firstTrackedAt) : null;
   const websiteAvailable = Boolean(firstDay && range.end >= firstDay && range.start <= today);
@@ -65,47 +61,24 @@ export default async function AnalyticsPage({
               ข้อมูลเว็บไซต์และรายงาน Google · เก็บในฐานข้อมูล · เวลาไทย (Asia/Bangkok)
             </p>
           </div>
-
         </header>
-        <section
-          aria-label="เลือกช่วงเวลา"
-          className="space-y-4 rounded-xl border border-[#d4d7da] bg-white p-4"
-        >
-          <div className="flex flex-wrap gap-2">
-            {months.map((month, index) => (
-              <Button
-                key={month}
-                asChild
-                size="sm"
-                variant={range.start === `${month}-01` ? "default" : "outline"}
-              >
-                <Link href={`?month=${month}`}>
-                  {index === 0
-                    ? "เดือนนี้"
-                    : index === 1
-                      ? "เดือนก่อน"
-                      : new Intl.DateTimeFormat("th-TH", {
-                          month: "short",
-                          year: "numeric",
-                          timeZone: "UTC",
-                        }).format(new Date(`${month}-01T00:00:00Z`))}
-                </Link>
-              </Button>
-            ))}
-          </div>
+        <section aria-label="เลือกช่วงเวลา" className="rounded-xl border border-[#d4d7da] bg-white p-4">
           <AnalyticsDateFilters
             key={`${range.start}:${range.end}`}
             start={range.start}
             end={range.end}
             today={today}
           />
-          <p className="text-xs text-[#666b70]">เลือกได้ไม่เกิน 366 วันต่อครั้ง · วันสิ้นสุดรวมทั้งวัน</p>
         </section>
         <nav aria-label="เลือกชุดข้อมูล" className="flex flex-wrap gap-2">
           <Button asChild size="sm" variant="outline">
             <a href="#website-traffic">ข้อมูลเว็บไซต์</a>
           </Button>
-          {canAccess(user, "google.view") && <Button asChild size="sm" variant="outline"><Link href="/backoffice/google/">Google Ads / GA4 ย้อนหลัง</Link></Button>}
+          {canAccess(user, "google.view") && (
+            <Button asChild size="sm" variant="outline">
+              <Link href="/backoffice/google/">Google Ads / GA4 ย้อนหลัง</Link>
+            </Button>
+          )}
         </nav>
         {error && (
           <p role="alert" className="rounded-lg border border-red-200 bg-white p-4 text-sm text-red-700">
@@ -235,7 +208,6 @@ export default async function AnalyticsPage({
             {websiteAvailable && <TrafficBreakdown report={report} />}
           </>
         )}
-
       </div>
     </main>
   );

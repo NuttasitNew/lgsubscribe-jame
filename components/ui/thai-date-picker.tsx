@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThaiCalendar } from "@/components/ui/thai-calendar";
@@ -39,7 +39,7 @@ export function ThaiDatePicker({ label, name, value, onChange, today, min }: Pic
             type="button"
             variant="outline"
             size="sm"
-            className="min-w-0 justify-start font-normal"
+            className="min-w-0 justify-start px-2 font-normal"
           >
             <CalendarDays className="size-4 shrink-0" />
             <span>{thaiCalendarDate(selected)}</span>
@@ -92,7 +92,14 @@ export function ThaiDatePicker({ label, name, value, onChange, today, min }: Pic
   );
 }
 
-export function ThaiMonthPicker({ label, name, value, onChange, today }: PickerProps) {
+export function ThaiMonthPicker({
+  label,
+  name,
+  value,
+  onChange,
+  today,
+  quickActions,
+}: PickerProps & { quickActions?: ReactNode }) {
   const id = useId();
   const [open, setOpen] = useState(false);
   const [year, setYear] = useState(Number(value.slice(0, 4)));
@@ -116,7 +123,7 @@ export function ThaiMonthPicker({ label, name, value, onChange, today }: PickerP
             type="button"
             variant="outline"
             size="sm"
-            className="min-w-0 justify-start font-normal"
+            className="min-w-0 justify-start px-2 font-normal"
           >
             <CalendarDays className="size-4 shrink-0" />
             {thaiCalendarMonth(calendarDate(value))}
@@ -128,6 +135,16 @@ export function ThaiMonthPicker({ label, name, value, onChange, today }: PickerP
           className="w-72 max-w-[calc(100vw-24px)] p-3"
           aria-label="ปฏิทินเลือกเดือน"
         >
+          {quickActions && (
+            <div
+              className="mb-3 border-b pb-3"
+              onClick={(event) => {
+                if (event.target instanceof Element && event.target.closest("a")) setOpen(false);
+              }}
+            >
+              {quickActions}
+            </div>
+          )}
           <Select value={String(year)} onValueChange={(value) => setYear(Number(value))}>
             <SelectTrigger aria-label="เลือกปีสำหรับเดือน">
               <SelectValue />
