@@ -1,27 +1,12 @@
 import {
-  CalendarDays,
   Check,
   Circle,
   Clock3,
-  FileText,
   Inbox,
-  LayoutDashboard,
   LockKeyhole,
-  MessageCircle,
-  Search,
-  Settings,
   Sparkles,
 } from "lucide-react";
 import type { BackofficeLineOverview } from "@/feature/backoffice/get-line-dashboard";
-
-const navItems = [
-  { label: "ภาพรวม", icon: LayoutDashboard, active: true },
-  { label: "ผู้ใช้ LINE", icon: MessageCircle, active: false },
-  { label: "ข้อความ LINE", icon: Inbox, active: false },
-  { label: "บทความ", icon: FileText, active: false },
-  { label: "คำค้นหา", icon: Search, active: false },
-  { label: "ตั้งค่าระบบ", icon: Settings, active: false },
-] as const;
 
 const bangkokDateTime = new Intl.DateTimeFormat("th-TH", {
   timeZone: "Asia/Bangkok",
@@ -49,7 +34,7 @@ function SectionHeading({
     <div className="flex flex-col gap-2 border-b border-[#d9dcdf] pb-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[#a80f28]">{eyebrow}</p>
-        <h2 id={id} className="mt-2 text-xl font-semibold tracking-[-0.025em] text-[#181a1d] sm:text-2xl">
+        <h2 id={id} className="scroll-mt-24 mt-2 text-xl font-semibold tracking-[-0.025em] text-[#181a1d] sm:text-2xl">
           {title}
         </h2>
       </div>
@@ -77,87 +62,17 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
   ] as const;
 
   return (
-    <div className="min-h-screen bg-[#eef0f2] text-[#1d1f22]">
-      <div className="mx-auto grid min-h-screen w-full max-w-[1600px] lg:grid-cols-[248px_minmax(0,1fr)]">
-        <aside className="hidden border-r border-[#d4d7da] bg-[#e5e7e9] px-5 py-6 lg:flex lg:flex-col">
-          <div className="flex items-center gap-3 border-b border-[#cfd2d5] pb-6">
-            <div className="grid size-9 place-items-center rounded-[0.65rem] bg-[#c4142e] text-sm font-bold text-white">
-              LG
-            </div>
-            <div>
-              <p className="text-sm font-semibold leading-none">Content Desk</p>
-              <p className="mt-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-[#73777c]">Backoffice</p>
-            </div>
-          </div>
-
-          <nav className="mt-7 space-y-1" aria-label="เมนู Backoffice">
-            {navItems.map(({ label, icon: Icon, active }) => (
-              <div
-                key={label}
-                aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
-                  active ? "bg-[#1c1e21] text-white" : "text-[#5d6267]"
-                }`}
-              >
-                <Icon className="size-4" strokeWidth={1.8} />
-                {label}
-              </div>
-            ))}
-          </nav>
-
-          <div className="mt-auto rounded-2xl border border-[#cfd2d5] bg-[#eceeef] p-4">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#303338]">
-              <LockKeyhole className="size-3.5 text-[#a80f28]" />
-              ปิดการเข้าถึงอยู่
-            </div>
-            <p className="mt-2 text-xs leading-5 text-[#6f7479]">
-              เชื่อมข้อมูล Neon แล้ว แต่ยังเปิดเฉพาะ local preview จนกว่าจะมีระบบ Auth จริง
-            </p>
-          </div>
-        </aside>
-
-        <main id="backoffice-main" className="min-w-0 px-4 py-4 sm:px-6 sm:py-6 xl:px-10 xl:py-8">
-          <div className="mb-4 flex items-center justify-between rounded-2xl border border-[#d5d8db] bg-[#f7f8f8] px-4 py-3 lg:hidden">
-            <div className="flex items-center gap-2.5">
-              <div className="grid size-8 place-items-center rounded-lg bg-[#c4142e] text-xs font-bold text-white">
-                LG
-              </div>
-              <div>
-                <p className="text-sm font-semibold">Content Desk</p>
-                <p className="text-[0.65rem] text-[#74797e]">หน้าออกแบบภายใน</p>
-              </div>
-            </div>
-            <LockKeyhole className="size-4 text-[#a80f28]" />
-          </div>
-
-          <header className="overflow-hidden rounded-[1.6rem] bg-[#1b1d20] text-white">
-            <div className="grid gap-8 px-5 py-7 sm:px-8 sm:py-9 xl:grid-cols-[1fr_auto] xl:items-end">
-              <div>
-                <div className="flex flex-wrap items-center gap-2 text-xs text-white/60">
-                  <span className="rounded-full border border-white/15 px-3 py-1">
-                    ข้อมูลจริงจาก Neon Development
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Circle className="size-2 fill-[#4fc38a] text-[#4fc38a]" /> ฐานข้อมูลเชื่อมต่อแล้ว
-                  </span>
-                </div>
-                <p className="mt-8 text-xs font-semibold uppercase tracking-[0.22em] text-[#ef7184]">
-                  Daily content operations
-                </p>
-                <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-[-0.045em] sm:text-4xl xl:text-[2.8rem] xl:leading-[1.12]">
-                  เปลี่ยนคำถามของลูกค้า
-                  <br className="hidden sm:block" /> ให้เป็นบทความที่ตอบได้จริง
-                </h1>
-              </div>
-              <div className="flex items-center gap-3 border-t border-white/10 pt-5 xl:border-l xl:border-t-0 xl:pl-8 xl:pt-0">
-                <CalendarDays className="size-5 text-[#ef7184]" strokeWidth={1.7} />
-                <div>
-                  <p className="text-xs text-white/50">รอบข้อมูลประจำวัน</p>
-                  <p className="mt-1 text-sm font-medium">{bangkokDate.format(new Date())} · กรุงเทพฯ</p>
-                </div>
-              </div>
-            </div>
-          </header>
+    <main className="mx-auto min-w-0 max-w-6xl px-4 py-6 text-[#1d1f22] sm:px-6 lg:py-8">
+      <nav aria-label="ส่วนข้อมูล LINE" className="mb-4 flex flex-wrap gap-2">
+        {[['signals-title', 'ข้อความล่าสุด'], ['articles-title', 'ผู้ใช้ LINE'], ['readiness-title', 'สถานะระบบ']].map(([id, label]) => (
+          <a key={id} href={`#${id}`} className="rounded-lg border bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50">{label}</a>
+        ))}
+      </nav>
+      <header className="rounded-xl border bg-white p-5 sm:p-6">
+        <p className="text-xs font-semibold text-primary">LG Subscribe · ข้อมูล LINE</p>
+        <h1 className="mt-2 text-2xl font-semibold sm:text-3xl">ข้อมูลผู้ใช้และข้อความ LINE</h1>
+        <p className="mt-2 text-sm text-slate-500">ข้อมูลจากฐานข้อมูล Development · {bangkokDate.format(new Date())}</p>
+      </header>
 
           <section
             className="mt-4 rounded-[1.6rem] border border-[#d8dbde] bg-[#f8f9f9] p-5 sm:p-7"
@@ -203,7 +118,7 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
             />
             <div className="mt-6 grid gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(250px,0.7fr)]">
               <div className="overflow-hidden rounded-2xl border border-[#dcdee0] bg-white">
-                <div className="flex items-center justify-between border-b border-[#e0e2e4] px-5 py-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e0e2e4] px-5 py-4">
                   <div className="flex items-center gap-2 text-sm font-semibold">
                     <Inbox className="size-4 text-[#a80f28]" /> ข้อความที่รับเข้าระบบ
                   </div>
@@ -215,10 +130,10 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
                   {lineOverview.recentMessages.map((message) => (
                     <article
                       key={message.id}
-                      className="grid gap-3 px-5 py-5 sm:grid-cols-[1fr_auto] sm:items-center"
+                      className="grid min-w-0 gap-3 px-5 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
                     >
                       <div>
-                        <p className="text-sm font-medium leading-6 text-[#25282c]">{message.text}</p>
+                        <p className="break-words [overflow-wrap:anywhere] text-sm font-medium leading-6 text-[#25282c]">{message.text}</p>
                         <p className="mt-1.5 text-xs text-[#7b8085]">{message.displayName}</p>
                       </div>
                       <span className="text-xs text-[#6f7479]">
@@ -272,13 +187,13 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
                     {String(index + 1).padStart(2, "0")}
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold leading-6 text-[#24272a] sm:text-base">
+                    <h3 className="break-words text-sm font-semibold leading-6 text-[#24272a] sm:text-base">
                       {user.displayName}
                     </h3>
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#777c81]">
-                      <span className="max-w-[20rem] truncate">LINE ID: {user.userLineId}</span>
+                      <span className="min-w-0 max-w-full break-all">LINE ID: {user.userLineId}</span>
                       <span aria-hidden="true">•</span>
-                      <span>{user.lastMessage ?? "ยังไม่มีข้อความ"}</span>
+                      <span className="break-words [overflow-wrap:anywhere]">{user.lastMessage ?? "ยังไม่มีข้อความ"}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 justify-self-start rounded-full border border-[#dddfe1] px-3 py-1.5 text-xs font-medium text-[#5e6368] lg:justify-self-end">
@@ -339,10 +254,8 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
 
           <footer className="flex flex-col gap-2 px-1 pb-4 pt-6 text-xs text-[#777c81] sm:flex-row sm:items-center sm:justify-between">
             <p>LG Subscribe Content Desk · Neon Development</p>
-            <p>หน้า local preview เท่านั้น · ห้ามเปิด production ก่อนมี Auth</p>
+            <p>ข้อมูล LINE เปิดเฉพาะเครื่องพัฒนา · ต้องเข้าสู่ระบบผู้ดูแล</p>
           </footer>
-        </main>
-      </div>
-    </div>
+    </main>
   );
 }

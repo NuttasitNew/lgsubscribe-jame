@@ -53,7 +53,7 @@ export default async function AnalyticsPage({
   const firstDay = report?.firstTrackedAt ? bangkokToday(report.firstTrackedAt) : null;
   const websiteAvailable = Boolean(firstDay && range.end >= firstDay && range.start <= today);
   return (
-    <main className="min-h-screen bg-[#eef0f2] px-4 py-6 text-[#1d1f22] sm:px-6 lg:py-8">
+    <main className="bg-[#eef0f2] px-4 py-6 text-[#1d1f22] sm:px-6 lg:py-8">
       <div className="mx-auto max-w-6xl space-y-5">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -65,11 +65,7 @@ export default async function AnalyticsPage({
               ข้อมูลเว็บไซต์และรายงาน Google · เก็บในฐานข้อมูล · เวลาไทย (Asia/Bangkok)
             </p>
           </div>
-          <form action="/api/backoffice/logout/" method="POST">
-            <Button type="submit" size="sm" variant="outline">
-              ออกจากระบบ
-            </Button>
-          </form>
+
         </header>
         <section
           aria-label="เลือกช่วงเวลา"
@@ -125,7 +121,7 @@ export default async function AnalyticsPage({
         )}
         {report && (
           <>
-            <p id="website-traffic" className="scroll-mt-4 text-sm text-[#666b70]">
+            <p id="website-traffic" className="scroll-mt-24 text-sm text-[#666b70]">
               {thaiDate(range.start)} – {thaiDate(range.end)}
               <span className="mt-1 block text-xs">
                 สถิติที่เว็บไซต์เก็บเอง{firstDay ? ` · เริ่ม ${thaiDate(firstDay)}` : " · ยังไม่มีการบันทึก"}

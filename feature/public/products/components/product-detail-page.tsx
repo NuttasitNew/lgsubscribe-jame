@@ -136,8 +136,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       </nav>
       <section className="bg-white pb-16 pt-6 sm:pb-20 sm:pt-8 lg:pb-24 lg:pt-10">
         <div className="container-page">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
-            <div className="grid min-w-0 gap-4 lg:sticky lg:top-[132px] lg:self-start">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
+            <div className="grid min-w-0 grid-cols-1 gap-4 lg:sticky lg:top-[132px] lg:self-start">
               <ProductGallery
                 images={gallery}
                 productName={product.name}
@@ -146,26 +146,26 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               />
               <div className="rounded-2xl border border-black/10 bg-neutral-950 p-7 text-white">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-400">Product overview</p>
-                <p className="mt-8 text-5xl font-bold tracking-[-0.06em] text-white/60">{product.model}</p>
+                <p className="mt-8 break-words [overflow-wrap:anywhere] text-3xl font-bold tracking-[-0.06em] text-white/60 sm:text-5xl">{product.model}</p>
                 <dl className="mt-10 divide-y divide-white/10 border-y border-white/10 text-sm">
                   <div className="flex justify-between gap-4 py-4">
-                    <dt className="text-white/60">หมวดสินค้า</dt>
-                    <dd className="font-semibold">{product.category}</dd>
+                    <dt className="shrink-0 text-white/60">หมวดสินค้า</dt>
+                    <dd className="min-w-0 break-words [overflow-wrap:anywhere] text-right font-semibold">{product.category}</dd>
                   </div>
                   <div className="flex justify-between gap-4 py-4">
-                    <dt className="text-white/60">รุ่น</dt>
-                    <dd className="font-semibold">{product.model}</dd>
+                    <dt className="shrink-0 text-white/60">รุ่น</dt>
+                    <dd className="min-w-0 break-words [overflow-wrap:anywhere] text-right font-semibold">{product.model}</dd>
                   </div>
                   <div className="flex justify-between gap-4 py-4">
-                    <dt className="text-white/60">ระยะสัญญา</dt>
-                    <dd className="font-semibold">
+                    <dt className="shrink-0 text-white/60">ระยะสัญญา</dt>
+                    <dd className="min-w-0 break-words [overflow-wrap:anywhere] text-right font-semibold">
                       {product.contractMonths ? `${product.contractMonths} งวด` : "สอบถามล่าสุด"}
                     </dd>
                   </div>
                 </dl>
               </div>
             </div>
-            <div>
+            <div className="min-w-0 break-words [overflow-wrap:anywhere]">
               <Badge className="bg-neutral-950">{product.category}</Badge>
               <p className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-red-700">
                 {product.model}
@@ -178,7 +178,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               {product.monthlyPrice !== null ? (
                 <div className="mt-8 rounded-2xl border border-red-100 bg-red-50 p-6">
                   <p className="text-sm text-red-800">เริ่มต้น</p>
-                  <div className="mt-1 flex items-end justify-between gap-4">
+                  <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
                     <p className="text-4xl font-bold leading-none text-red-700">
                       ฿{product.monthlyPrice.toLocaleString("th-TH")}
                       <span className="text-base font-medium">/เดือน</span>

@@ -82,7 +82,7 @@ export async function GoogleReports({ range }: { range: ReturnType<typeof dateRa
   const historyParams = new URLSearchParams({ start: range.start, end: historyEnd }).toString();
   return (
     <>
-      <section id="google-history" className="scroll-mt-4 rounded-xl border border-[#d4d7da] bg-white p-4">
+      <section id="google-history" className="scroll-mt-24 rounded-xl border border-[#d4d7da] bg-white p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-semibold">Google Ads และ Google Analytics 4</h2>
           {configured && (

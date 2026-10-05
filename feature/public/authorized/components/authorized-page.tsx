@@ -96,7 +96,7 @@ export default function AuthorizedPage() {
                 </div>
               </figure>
 
-              <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+              <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
                 <div>
                   <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
                     Authorized Sale Agent
@@ -113,7 +113,7 @@ export default function AuthorizedPage() {
                 </div>
                 <div className="rounded-2xl border border-black/10 bg-[#f7f5f2] p-6 text-center">
                   <p className="text-sm font-semibold text-neutral-600">รหัสตัวแทนขาย</p>
-                  <p className="mt-2 text-4xl font-bold tracking-[0.14em] text-neutral-950 sm:text-5xl">
+                  <p className="mt-2 break-words text-3xl font-bold tracking-[0.08em] text-neutral-950 sm:text-5xl sm:tracking-[0.14em]">
                     {authorizedAgent.code}
                   </p>
                   <p className="mt-3 text-sm leading-6 text-neutral-600">

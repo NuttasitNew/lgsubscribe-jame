@@ -45,7 +45,7 @@ export function ThaiCalendar(props: ComponentProps<typeof Calendar>) {
       locale={th}
       timeZone={calendarTimeZone}
       lang="th"
-      className={cn("[--cell-size:2.25rem]", className)}
+      className={cn("bg-white [--cell-size:2.25rem]", className)}
       captionLayout="dropdown"
       labels={{
         labelNav: () => "เปลี่ยนเดือน",
