@@ -1,3 +1,4 @@
+import { canAccess } from "@/lib/backoffice/permissions";
 import { Button } from "@/components/ui/button";
 import { getPrisma } from "@/lib/db/prisma";
 import { bangkokToday, type dateRange } from "@/lib/analytics/date-range";
@@ -13,7 +14,7 @@ const time = new Intl.DateTimeFormat("th-TH", {
 });
 const money = new Intl.NumberFormat("th-TH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export async function GoogleReports({ range }: { range: ReturnType<typeof dateRange> }) {
-  await requireBackofficeSession();
+  const user = await requireBackofficeSession("google.view");
   let snapshots;
   let latest;
   try {
@@ -72,7 +73,7 @@ export async function GoogleReports({ range }: { range: ReturnType<typeof dateRa
       value.contacts += row.contactClicks ?? 0;
       channels.set(row.label, value);
     }
-  const configured = Boolean(
+  const configured = canAccess(user, "google.manage") && Boolean(
     process.env.GOOGLE_REPORT_SYNC_SECRET &&
     process.env.GOOGLE_ADS_CUSTOMER_ID &&
     process.env.GA4_PROPERTY_ID,

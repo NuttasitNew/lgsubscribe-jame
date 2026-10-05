@@ -22,7 +22,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## LINE webhook and backoffice
 
-The LINE webhook stores raw events, LINE profiles, messages, chat summaries, and daily activity in Neon Postgres. The analytics backoffice uses password authentication; the legacy LINE design dashboard at `/backoffice/line/` remains local-only.
+The LINE webhook stores raw events, LINE profiles, messages, chat summaries, and daily activity in Neon Postgres. The backoffice uses password authentication and database-backed per-user permissions; LINE overview, users and messages are protected by the `line.view` permission.
 
 1. Pull the Vercel Development environment after connecting the Neon Marketplace resource:
 
@@ -88,3 +88,10 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### Backoffice users and permissions
+
+- Run `prisma migrate deploy` against the intended database, then run `node scripts/seed-backoffice-owner.mjs` with that environment loaded before deploying this version. The seed creates the owner from `BACKOFFICE_USERNAME` and `BACKOFFICE_PASSWORD_HASH` only when absent; it never resets an existing owner. Existing admin password and 24-hour sessions remain usable after the migration. The environment hash is now bootstrap material; subsequent user password changes are stored as scrypt hashes in `BackofficeUser`.
+- `/backoffice/users/` creates users and edits display name, password, permission checkboxes and active status. Five permissions cover website statistics, Google reports, Google connection scripts, LINE data and user management. Menus include six backoffice routes only. Every page/API enforces its corresponding permission; Google sync secret downloads require `google.manage`.
+- New login sessions bind the user ID, password hash and `sessionVersion`. Status/permissions are read from the database on each request. Saving a user increments the version so previous sessions stop working, including on password reset or disabling. Existing owner sessions are accepted only while the database owner remains active and has the original password hash.
+- The owner always has all permissions and cannot be disabled; only the owner can edit its own record. Other user managers cannot remove their own user-management permission or disable themselves. User changes are recorded in `BackofficeUserAudit` without passwords or password hashes. No public sign-up or user deletion is exposed.

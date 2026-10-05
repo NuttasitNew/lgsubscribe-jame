@@ -1,14 +1,12 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 
 export function BackofficeLogin({ configured }: { configured: boolean }) {
   const router = useRouter();
-  const passwordId = useId();
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   async function login(event: FormEvent<HTMLFormElement>) {
@@ -26,7 +24,7 @@ export function BackofficeLogin({ configured }: { configured: boolean }) {
         const data = await response.json();
         setError(data.error ?? "เข้าสู่ระบบไม่สำเร็จ");
       } else {
-        router.push("/backoffice/analytics/");
+        router.push("/backoffice/");
         router.refresh();
       }
     } catch {
@@ -65,32 +63,8 @@ export function BackofficeLogin({ configured }: { configured: boolean }) {
             />
           </label>
           <div>
-            <label htmlFor={passwordId} className="block text-sm font-medium">รหัสผ่าน</label>
-            <div className="relative mt-2">
-              <input
-                id={passwordId}
-                name="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                required
-                maxLength={256}
-                disabled={!configured || pending}
-                className="h-11 w-full rounded-md border border-[#d4d7da] bg-white pl-3 pr-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                className="absolute right-0 top-0 size-11"
-                aria-label={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
-                aria-pressed={showPassword}
-                aria-controls={passwordId}
-                disabled={!configured || pending}
-                onClick={() => setShowPassword((visible) => !visible)}
-              >
-                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-              </Button>
-            </div>
+            <label htmlFor="login-password" className="mb-2 block text-sm font-medium">รหัสผ่าน</label>
+            <PasswordInput id="login-password" name="password" autoComplete="current-password" required maxLength={256} disabled={!configured || pending} />
           </div>
           {error && (
             <p role="alert" className="text-sm text-red-700">

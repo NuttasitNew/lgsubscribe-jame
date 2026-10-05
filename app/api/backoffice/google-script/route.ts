@@ -1,5 +1,5 @@
-import { cookies } from "next/headers";
-import { validSession, sessionCookie } from "@/lib/backoffice/auth";
+import { getBackofficeSession } from "@/lib/backoffice/auth";
+import { canAccess } from "@/lib/backoffice/permissions";
 import { bangkokToday, dateRange } from "@/lib/analytics/date-range";
 import {
   buildGoogleReportScript,
@@ -8,7 +8,9 @@ import {
 } from "@/lib/analytics/google-ads-script";
 
 export async function GET(request: Request) {
-  if (!validSession((await cookies()).get(sessionCookie)?.value)) return new Response(null, { status: 401 });
+  const user = await getBackofficeSession();
+  if (!user) return new Response(null, { status: 401 });
+  if (!canAccess(user, "google.manage")) return new Response(null, { status: 403 });
   const secret = process.env.GOOGLE_REPORT_SYNC_SECRET;
   const customerId = process.env.GOOGLE_ADS_CUSTOMER_ID;
   const propertyId = process.env.GA4_PROPERTY_ID;

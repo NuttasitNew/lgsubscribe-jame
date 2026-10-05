@@ -64,14 +64,14 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
   return (
     <main className="mx-auto min-w-0 max-w-6xl px-4 py-6 text-[#1d1f22] sm:px-6 lg:py-8">
       <nav aria-label="ส่วนข้อมูล LINE" className="mb-4 flex flex-wrap gap-2">
-        {[['signals-title', 'ข้อความล่าสุด'], ['articles-title', 'ผู้ใช้ LINE'], ['readiness-title', 'สถานะระบบ']].map(([id, label]) => (
-          <a key={id} href={`#${id}`} className="rounded-lg border bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50">{label}</a>
+        {[['/backoffice/line/messages/', 'ข้อความทั้งหมด'], ['/backoffice/line/users/', 'ผู้ใช้ LINE'], ['#readiness-title', 'สถานะระบบ']].map(([id, label]) => (
+          <a key={id} href={id} className="rounded-lg border bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50">{label}</a>
         ))}
       </nav>
       <header className="rounded-xl border bg-white p-5 sm:p-6">
         <p className="text-xs font-semibold text-primary">LG Subscribe · ข้อมูล LINE</p>
         <h1 className="mt-2 text-2xl font-semibold sm:text-3xl">ข้อมูลผู้ใช้และข้อความ LINE</h1>
-        <p className="mt-2 text-sm text-slate-500">ข้อมูลจากฐานข้อมูล Development · {bangkokDate.format(new Date())}</p>
+        <p className="mt-2 text-sm text-slate-500">ข้อมูลจากฐานข้อมูล · {bangkokDate.format(new Date())}</p>
       </header>
 
           <section
@@ -233,7 +233,7 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
                   lineOverview.lineConfigured,
                 ],
                 ["OpenAI API", "ยังไม่ตั้งค่า", false],
-                ["สิทธิ์การเข้าถึง", "จำกัดเฉพาะ local", true],
+                ["สิทธิ์การเข้าถึง", "ตรวจสอบสิทธิ์ผู้ใช้", true],
               ].map(([label, status, safe]) => (
                 <div key={String(label)} className="rounded-2xl border border-[#dcdee0] bg-white p-4">
                   <div className="flex items-center justify-between gap-3">
@@ -253,8 +253,8 @@ export function BackofficeDashboard({ lineOverview }: { lineOverview: Backoffice
           </section>
 
           <footer className="flex flex-col gap-2 px-1 pb-4 pt-6 text-xs text-[#777c81] sm:flex-row sm:items-center sm:justify-between">
-            <p>LG Subscribe Content Desk · Neon Development</p>
-            <p>ข้อมูล LINE เปิดเฉพาะเครื่องพัฒนา · ต้องเข้าสู่ระบบผู้ดูแล</p>
+            <p>LG Subscribe · LINE</p>
+            <p>ข้อมูลนี้แสดงเฉพาะผู้ดูแลที่มีสิทธิ์ LINE</p>
           </footer>
     </main>
   );

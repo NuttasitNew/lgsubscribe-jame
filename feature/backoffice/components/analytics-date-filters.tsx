@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ThaiDatePicker, ThaiMonthPicker } from "@/components/ui/thai-date-picker";
 import { dateRange } from "@/lib/analytics/date-range";
 
-export function AnalyticsDateFilters({ start, end, today }: { start: string; end: string; today: string }) {
+export function AnalyticsDateFilters({ start, end, today, action = "/backoffice/analytics/" }: { start: string; end: string; today: string; action?: string }) {
   const [from, setFrom] = useState(start);
   const [until, setUntil] = useState(end);
   const [month, setMonth] = useState(start.slice(0, 7));
@@ -22,13 +22,13 @@ export function AnalyticsDateFilters({ start, end, today }: { start: string; end
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-end gap-4">
-        <form className="flex flex-wrap items-end gap-2" action="/backoffice/analytics/">
+        <form className="flex flex-wrap items-end gap-2" action={action}>
           <ThaiMonthPicker label="เลือกเดือน" name="month" value={month} onChange={setMonth} today={today} />
           <Button type="submit" size="sm" variant="outline">
             ดูรายเดือน
           </Button>
         </form>
-        <form className="flex flex-wrap items-end gap-2" action="/backoffice/analytics/" onSubmit={validate}>
+        <form className="flex flex-wrap items-end gap-2" action={action} onSubmit={validate}>
           <ThaiDatePicker
             label="วันเริ่มต้น"
             name="start"

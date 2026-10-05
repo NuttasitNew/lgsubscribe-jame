@@ -1,10 +1,10 @@
+import { canAccess } from "@/lib/backoffice/permissions";
 import Link from "next/link";
 import { AnalyticsDateFilters } from "@/feature/backoffice/components/analytics-date-filters";
 import { Button } from "@/components/ui/button";
 import { requireBackofficeSession } from "@/lib/backoffice/auth";
 import { bangkokToday, dateRange, monthRange } from "@/lib/analytics/date-range";
 import { getTrafficReport } from "@/lib/analytics/report";
-import { GoogleReports } from "@/feature/backoffice/components/google-reports";
 import { ReportTable } from "@/feature/backoffice/components/report-table";
 import { TrafficBreakdown } from "@/feature/backoffice/components/traffic-breakdown";
 
@@ -20,7 +20,7 @@ export default async function AnalyticsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  await requireBackofficeSession();
+  const user = await requireBackofficeSession("analytics.view");
   const params = await searchParams;
   const today = bangkokToday();
   const defaultRange = monthRange(today.slice(0, 7));
@@ -105,9 +105,7 @@ export default async function AnalyticsPage({
           <Button asChild size="sm" variant="outline">
             <a href="#website-traffic">ข้อมูลเว็บไซต์</a>
           </Button>
-          <Button asChild size="sm" variant="outline">
-            <a href="#google-history">Google Ads / GA4 ย้อนหลัง</a>
-          </Button>
+          {canAccess(user, "google.view") && <Button asChild size="sm" variant="outline"><Link href="/backoffice/google/">Google Ads / GA4 ย้อนหลัง</Link></Button>}
         </nav>
         {error && (
           <p role="alert" className="rounded-lg border border-red-200 bg-white p-4 text-sm text-red-700">
@@ -237,7 +235,7 @@ export default async function AnalyticsPage({
             {websiteAvailable && <TrafficBreakdown report={report} />}
           </>
         )}
-        {!error && <GoogleReports range={range} />}
+
       </div>
     </main>
   );

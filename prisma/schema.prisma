@@ -45,6 +45,30 @@ model GoogleDailySnapshot {
   @@index([provider, day])
 }
 
+model BackofficeUser {
+  id             String   @id @default(uuid()) @db.Uuid
+  username       String   @unique @db.VarChar(80)
+  displayName    String   @db.VarChar(150)
+  passwordHash   String   @db.VarChar(200)
+  permissions    String[] @default([])
+  isActive       Boolean  @default(true)
+  isOwner        Boolean  @default(false)
+  sessionVersion Int      @default(1)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model BackofficeUserAudit {
+  id        String   @id @default(uuid()) @db.Uuid
+  actorId   String   @db.Uuid
+  targetId  String   @db.Uuid
+  action    String   @db.VarChar(30)
+  changes   Json
+  createdAt DateTime @default(now())
+
+  @@index([targetId, createdAt])
+}
+
 // Shared across serverless instances; hashes replace raw client addresses.
 model BackofficeLoginAttempt {
   key       String   @id

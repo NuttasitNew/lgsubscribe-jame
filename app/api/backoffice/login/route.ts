@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import {
   authConfigured,
-  createSession,
+  createUserSession,
   digest,
-  passwordMatches,
+
   sameOrigin,
   sessionCookie,
   sessionMaxAge,
 } from "@/lib/backoffice/auth";
+import { verifyPassword } from "@/lib/backoffice/passwords";
 import { getPrisma } from "@/lib/db/prisma";
 
 export async function POST(request: Request) {
@@ -30,16 +31,19 @@ export async function POST(request: Request) {
     if (attempt.attempts > 10)
       return Response.json({ error: "ลองเข้าสู่ระบบมากเกินไป กรุณารอ 15 นาที" }, { status: 429 });
     const data = await request.json();
+    const username = typeof data?.username === "string" ? data.username.trim().toLowerCase() : "";
+    const user = /^[a-z0-9][a-z0-9._-]{2,79}$/.test(username) ? await prisma.backofficeUser.findUnique({ where: { username } }) : null;
     if (
       !data ||
       typeof data.username !== "string" ||
       typeof data.password !== "string" ||
-      !passwordMatches(data.username, data.password)
+      !user?.isActive ||
+      !verifyPassword(data.password, user.passwordHash)
     ) {
       return Response.json({ error: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" }, { status: 401 });
     }
     const response = NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
-    response.cookies.set(sessionCookie, createSession(), {
+    response.cookies.set(sessionCookie, createUserSession(user!), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",

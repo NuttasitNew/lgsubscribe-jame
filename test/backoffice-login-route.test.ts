@@ -1,7 +1,8 @@
 import { scryptSync } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+const users = vi.hoisted(() => ({ findUnique: vi.fn() }));
 const attempts = vi.hoisted(() => ({ upsert: vi.fn(), deleteMany: vi.fn().mockResolvedValue({ count: 0 }) }));
-vi.mock("@/lib/db/prisma", () => ({ getPrisma: () => ({ backofficeLoginAttempt: attempts }) }));
+vi.mock("@/lib/db/prisma", () => ({ getPrisma: () => ({ backofficeLoginAttempt: attempts, backofficeUser: users }) }));
 import { POST } from "@/app/api/backoffice/login/route";
 import { POST as logout } from "@/app/api/backoffice/logout/route";
 
@@ -22,6 +23,7 @@ beforeEach(() => {
   vi.stubEnv("BACKOFFICE_USERNAME", "admin");
   vi.stubEnv("NODE_ENV", "production");
   attempts.upsert.mockResolvedValue({ attempts: 1 });
+  users.findUnique.mockResolvedValue({ id: "11111111-1111-4111-8111-111111111111", username: "admin", displayName: "Admin", permissions: [], isOwner: true, isActive: true, sessionVersion: 1, passwordHash: process.env.BACKOFFICE_PASSWORD_HASH });
 });
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -44,6 +46,10 @@ describe("login and logout handlers", () => {
     vi.clearAllMocks();
     expect((await POST(request({}, "https://other.test"))).status).toBe(403);
     expect(attempts.upsert).not.toHaveBeenCalled();
+  });
+  it("denies disabled users", async () => {
+    users.findUnique.mockResolvedValue({ isActive: false });
+    expect((await POST(request({ username: "admin", password: "test-password" }))).status).toBe(401);
   });
   it("limits repeated attempts before validating a password", async () => {
     attempts.upsert.mockResolvedValue({ attempts: 11 });
