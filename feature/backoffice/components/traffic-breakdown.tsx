@@ -68,11 +68,9 @@ export function TrafficBreakdown({ report }: { report: Awaited<ReturnType<typeof
           </tr>
         ))}
       </ReportTable>
-      <p className="text-xs leading-6 text-[#666b70]">
-        แหล่งที่มาจาก UTM, Google click ID และ referrer เป็นสัญญาณที่ตรวจพบในเว็บไซต์ Direct
-        อาจรวมผู้เข้าชมที่ไม่มี referrer ผู้ใช้คนเดียวอาจอยู่หลายแหล่งที่มา คลิกติดต่อยังไม่ยืนยันการสนทนา
-        การสมัคร หรือยอดขาย
-      </p>
+      {/* UTM/click-ID/referrer are attribution signals. Direct can include missing
+          referrers; the same visitor may appear in several sources. Contact
+          clicks do not establish a conversation, subscription or sale. */}
     </>
   );
 }

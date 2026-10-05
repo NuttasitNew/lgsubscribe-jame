@@ -69,6 +69,31 @@ model BackofficeUserAudit {
   @@index([targetId, createdAt])
 }
 
+// Aggregated Vercel reports retain Vercel's UTC day boundaries and never mix
+// with consent-gated first-party visitor identities or Google snapshots.
+model VercelTrafficDay {
+  projectId String   @db.VarChar(100)
+  day       DateTime @db.Date
+  visitors  Int
+  pageviews Int
+  asOf      DateTime
+  updatedAt DateTime @updatedAt
+
+  @@id([projectId, day])
+}
+
+model VercelTrafficPeriod {
+  projectId String   @db.VarChar(100)
+  start     DateTime @db.Date
+  end       DateTime @db.Date
+  visitors  Int
+  pageviews Int
+  asOf      DateTime
+  updatedAt DateTime @updatedAt
+
+  @@id([projectId, start, end])
+}
+
 // Shared across serverless instances; hashes replace raw client addresses.
 model BackofficeLoginAttempt {
   key       String   @id
