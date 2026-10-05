@@ -24,7 +24,9 @@ describe("backoffice session boundary", () => {
     const now = Date.now();
     const token = createSession(now);
     expect(validSession(token, now)).toBe(true);
-    expect(validSession(token, now + 8 * 3600000)).toBe(false);
+    expect(validSession(token, now + 8 * 3600000)).toBe(true);
+    expect(validSession(token, now + 24 * 3600000 - 1)).toBe(true);
+    expect(validSession(token, now + 24 * 3600000)).toBe(false);
     expect(validSession(token + "0", now)).toBe(false);
     expect(validSession("garbage", now)).toBe(false);
     expect(validSession(undefined, now)).toBe(false);

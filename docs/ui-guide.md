@@ -25,3 +25,5 @@ Backoffice navigation: `feature/backoffice/components/backoffice-shell.tsx` is t
 Responsive review (development): login, analytics and LINE checked at 320, 390, 768 and 1280px. No page-level horizontal overflow in the rendered data/empty states; LINE free-text fields wrap long messages and identifiers. Section anchors leave space for the sticky header.
 
 Public mobile review: all eight static/public pages and all 68 published product detail routes checked at 320px. Product detail single-column grids use `grid-cols-1` (minmax(0,1fr)); model/title text can wrap and the price row wraps. `feature/public/authorized/components/authorized-page.tsx` uses a constrained single-column profile grid and smaller mobile agent code. Both fixes preserve desktop layouts and were visually checked with gallery navigation.
+
+Login password field: shared Button eye toggle with Thai accessible labels, pressed state and 44px touch target; password stays masked initially. Signed session and cookie last 24 hours from login.

@@ -34,6 +34,7 @@ describe("login and logout handlers", () => {
     expect(response.headers.get("set-cookie")).toContain("HttpOnly");
     expect(response.headers.get("set-cookie")).toContain("Secure");
     expect(response.headers.get("set-cookie")).toContain("SameSite=strict");
+    expect(response.headers.get("set-cookie")).toContain("Max-Age=86400");
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(attempts.upsert.mock.calls[0][0].where.key).toMatch(/^[a-f0-9]{64}$/);
   });

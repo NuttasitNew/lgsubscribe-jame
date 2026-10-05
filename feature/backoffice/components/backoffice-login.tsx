@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useId, useState, type FormEvent } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export function BackofficeLogin({ configured }: { configured: boolean }) {
   const router = useRouter();
+  const passwordId = useId();
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   async function login(event: FormEvent<HTMLFormElement>) {
@@ -61,18 +64,34 @@ export function BackofficeLogin({ configured }: { configured: boolean }) {
               className="mt-2 h-10 w-full rounded-md border border-[#d4d7da] bg-white px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             />
           </label>
-          <label className="block text-sm font-medium">
-            รหัสผ่าน
-            <input
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              maxLength={256}
-              disabled={!configured || pending}
-              className="mt-2 h-10 w-full rounded-md border border-[#d4d7da] bg-white px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            />
-          </label>
+          <div>
+            <label htmlFor={passwordId} className="block text-sm font-medium">รหัสผ่าน</label>
+            <div className="relative mt-2">
+              <input
+                id={passwordId}
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                required
+                maxLength={256}
+                disabled={!configured || pending}
+                className="h-11 w-full rounded-md border border-[#d4d7da] bg-white pl-3 pr-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="absolute right-0 top-0 size-11"
+                aria-label={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
+                aria-pressed={showPassword}
+                aria-controls={passwordId}
+                disabled={!configured || pending}
+                onClick={() => setShowPassword((visible) => !visible)}
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </Button>
+            </div>
+          </div>
           {error && (
             <p role="alert" className="text-sm text-red-700">
               {error}
@@ -82,7 +101,7 @@ export function BackofficeLogin({ configured }: { configured: boolean }) {
             {pending ? "กำลังเข้าสู่ระบบ…" : "เข้าสู่ระบบ"}
           </Button>
         </form>
-        <p className="mt-6 text-xs text-[#74797e]">ระบบจะออกจากบัญชีเมื่อครบ 8 ชั่วโมง</p>
+        <p className="mt-6 text-xs text-[#74797e]">ระบบจะออกจากบัญชีเมื่อครบ 24 ชั่วโมง</p>
       </section>
     </main>
   );

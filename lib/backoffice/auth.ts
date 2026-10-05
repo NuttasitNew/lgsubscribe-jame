@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const sessionCookie = "lg_backoffice_session";
-export const sessionMaxAge = 8 * 60 * 60;
+export const sessionMaxAge = 24 * 60 * 60;
 
 export function authConfigured() {
   return (
