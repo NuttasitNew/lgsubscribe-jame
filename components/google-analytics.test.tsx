@@ -1,19 +1,23 @@
 // @vitest-environment-options {"url":"https://www.lgthailand-subscribe.com/contact/"}
 import { fireEvent, render, cleanup } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
+import { setTrackingConsent } from "@/lib/analytics/consent";
 import { GoogleAnalytics } from "./google-analytics";
 
+vi.mock("next/navigation", () => ({ usePathname: () => "/contact/" }));
 vi.mock("next/script", () => ({ default: () => null }));
 
 afterEach(() => {
   cleanup();
   vi.unstubAllEnvs();
+  localStorage.clear();
   Reflect.deleteProperty(window, "gtag");
   Reflect.deleteProperty(window, "dataLayer");
 });
 
 it("tracks nested contact clicks once, without sending addresses or query strings", () => {
   vi.stubEnv("NEXT_PUBLIC_GA_MEASUREMENT_ID", "G-1P70VTZQZH");
+  setTrackingConsent("analytics");
   const view = render(
     <>
       <GoogleAnalytics />
@@ -32,7 +36,9 @@ it("tracks nested contact clicks once, without sending addresses or query string
   for (const label of ["LINE", "Phone", "Email", "Products", "LG verification hotline"]) {
     fireEvent.click(view.getByText(label));
   }
-  const events = layer.map((entry) => Array.from(entry)).filter((entry) => entry[0] === "event");
+  const events = layer
+    .map((entry) => Array.from(entry))
+    .filter((entry) => entry[0] === "event" && entry[1] === "contact_click");
   expect(events).toEqual(
     ["line", "phone", "email"].map((method) => [
       "event",
@@ -40,6 +46,7 @@ it("tracks nested contact clicks once, without sending addresses or query string
       {
         contact_method: method,
         page_path: "/contact/",
+        page_location: "https://www.lgthailand-subscribe.com/contact/",
         transport_type: "beacon",
       },
     ]),

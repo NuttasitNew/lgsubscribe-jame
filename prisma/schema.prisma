@@ -6,6 +6,54 @@ datasource db {
   provider = "postgresql"
 }
 
+// Anonymous first-party traffic. Never store IPs, query strings or full referrers.
+model WebPageView {
+  eventId     String   @id @db.Uuid
+  visitorHash String   @db.VarChar(64)
+  path        String   @db.VarChar(500)
+  occurredAt  DateTime @default(now())
+  eventType   String   @default("page_view") @db.VarChar(20)
+  contactMethod String? @db.VarChar(10)
+  sessionHash String? @db.VarChar(64)
+  source      String   @default("unknown") @db.VarChar(150)
+  medium      String   @default("unknown") @db.VarChar(50)
+  channel     String   @default("unknown") @db.VarChar(30)
+  campaign    String?  @db.VarChar(150)
+  attributionMethod String @default("unknown") @db.VarChar(20)
+  referrerHost String? @db.VarChar(253)
+  clickIdHash String? @db.VarChar(64)
+  device      String   @default("unknown") @db.VarChar(10)
+  country     String?  @db.VarChar(2)
+
+  @@index([occurredAt, visitorHash])
+}
+
+// Complete replaceable daily snapshots; sources stay separate from site events.
+model GoogleDailySnapshot {
+  id         String   @id @default(uuid())
+  provider   String   @db.VarChar(20)
+  externalId String   @db.VarChar(20)
+  day        DateTime @db.Date
+  currency   String   @db.VarChar(3)
+  timeZone   String   @db.VarChar(50)
+  quality    String   @default("reported") @db.VarChar(20)
+  asOf       DateTime
+  syncedAt   DateTime @default(now())
+  rows       Json
+
+  @@unique([provider, externalId, day])
+  @@index([provider, day])
+}
+
+// Shared across serverless instances; hashes replace raw client addresses.
+model BackofficeLoginAttempt {
+  key       String   @id
+  attempts  Int      @default(1)
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
+
 enum LineWebhookStatus {
   PENDING
   PROCESSED

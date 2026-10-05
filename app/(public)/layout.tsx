@@ -1,3 +1,6 @@
+import { WebAnalytics } from "@/components/web-analytics";
+import { GoogleAnalytics } from "@/components/google-analytics";
+import { TrackingConsent } from "@/components/tracking-consent";
 import { FloatingLineContact } from "@/components/floating-line-contact";
 import { JsonLd } from "@/components/json-ld";
 import { MobileDock } from "@/components/mobile-dock";
@@ -29,6 +32,9 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
   return (
     <>
       <JsonLd data={organizationSchema} />
+      <WebAnalytics />
+      <GoogleAnalytics />
+      <TrackingConsent />
       <a
         href="#main-content"
         className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
