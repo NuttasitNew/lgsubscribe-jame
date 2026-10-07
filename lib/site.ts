@@ -12,8 +12,8 @@ export const siteConfig = {
   lineId: "@lgsubscribe",
   lineUrl: "https://line.me/R/ti/p/%40lgsubscribe",
   phoneNumbers: [
-    { label: "084-974-8429", href: "tel:+66849748429" },
     { label: "086-551-5949", href: "tel:+66865515949" },
+    { label: "084-974-8429", href: "tel:+66849748429" },
   ],
   email: "lgsubscribe.th@gmail.com",
   offerReviewedAt: "9 สิงหาคม 2569",

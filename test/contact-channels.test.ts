@@ -8,8 +8,8 @@ describe("sales contact channels", () => {
     expect(siteConfig.lineUrl).toBe("https://line.me/R/ti/p/%40lgsubscribe");
     expect(siteConfig.email).toBe("lgsubscribe.th@gmail.com");
     expect(siteConfig.phoneNumbers).toEqual([
-      { label: "084-974-8429", href: "tel:+66849748429" },
       { label: "086-551-5949", href: "tel:+66865515949" },
+      { label: "084-974-8429", href: "tel:+66849748429" },
     ]);
   });
 
