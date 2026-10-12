@@ -1,6 +1,7 @@
+import { FloatingSubscribeDay } from "@/components/floating-subscribe-day";
 import { WebAnalytics } from "@/components/web-analytics";
-import { GoogleAnalytics } from "@/components/google-analytics";
 import { TrackingConsent } from "@/components/tracking-consent";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { FloatingLineContact } from "@/components/floating-line-contact";
 import { JsonLd } from "@/components/json-ld";
 import { MobileDock } from "@/components/mobile-dock";
@@ -46,6 +47,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
       <SiteFooter />
       <FloatingLineContact />
       <MobileDock />
+      <FloatingSubscribeDay />
     </>
   );
 }

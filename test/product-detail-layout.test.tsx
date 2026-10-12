@@ -3,6 +3,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import PublicLayout from "@/app/(public)/layout";
 import ProductDetailPage from "@/feature/public/products/components/product-detail-page";
 
+// Campaign popup behavior is tested separately; spacing must not depend on today's date.
+vi.mock("@/components/floating-subscribe-day", () => ({
+  FloatingSubscribeDay: () => null,
+}));
+
 const navigation = vi.hoisted(() => ({ searchParams: new URLSearchParams() }));
 
 vi.mock("next/navigation", () => ({

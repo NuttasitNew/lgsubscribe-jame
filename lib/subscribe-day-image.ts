@@ -1,8 +1,6 @@
-import image from "./subscribe-day-image.json";
+import { subscribeDayCampaign } from "./subscribe-day";
 
-// Versioned, pre-compressed images avoid a cold image-optimizer request for the popup.
+// Serve the original campaign JPEG without resizing, re-encoding, or stale variants.
 export const subscribeDayImage = {
-  src: image.images[1].src,
-  srcSet: image.images.map(({ src, width }) => `${src} ${width}w`).join(", "),
-  sizes: "(min-width: 640px) 512px, calc(100vw - 24px)",
+  src: subscribeDayCampaign.image,
 };

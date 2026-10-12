@@ -1,115 +1,157 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { subscribeDayImage } from "@/lib/subscribe-day-image";
+import * as Dialog from "@radix-ui/react-dialog";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { LineMark } from "@/components/line-mark";
+import { subscribeDayImage } from "@/lib/subscribe-day-image";
 import {
   isSubscribeDayActive,
   markSubscribeDayPopupDismissed,
   subscribeDayCampaign,
   SUBSCRIBE_DAY_END,
+  SUBSCRIBE_DAY_START,
   wasSubscribeDayPopupDismissed,
 } from "@/lib/subscribe-day";
 import { siteConfig } from "@/lib/site";
 
-export function FloatingSubscribeDay({
-  initialActive = false,
-  image,
-}: {
-  initialActive?: boolean;
-  image?: ReactNode;
-}) {
-  const [isActive, setIsActive] = useState(initialActive);
-  const [isOpen, setIsOpen] = useState(initialActive);
+export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
+  // Cached/server HTML stays closed; only the browser's current time can open it.
+  const [isOpen, setIsOpen] = useState(false);
+  const dismissed = useRef(false);
+  const previousFocus = useRef<HTMLElement | null>(null);
+  const closeButton = useRef<HTMLButtonElement | null>(null);
+  const background = useRef<Array<{ element: HTMLElement; inert: boolean }>>([]);
+
+  const restoreBackground = useCallback(() => {
+    for (const { element, inert } of background.current) element.toggleAttribute("inert", inert);
+    background.current = [];
+  }, []);
+
+  useEffect(() => restoreBackground, [restoreBackground]);
 
   useEffect(() => {
+    let timeout: number | undefined;
+    const start = new Date(SUBSCRIBE_DAY_START).getTime();
+    const end = new Date(SUBSCRIBE_DAY_END).getTime();
+
     function updateVisibility() {
-      const active = isSubscribeDayActive();
-      setIsActive(active);
-      setIsOpen(active && !wasSubscribeDayPopupDismissed());
+      window.clearTimeout(timeout);
+      const now = Date.now();
+      const active = isSubscribeDayActive(new Date(now));
+      setIsOpen(active && !dismissed.current && !wasSubscribeDayPopupDismissed());
+
+      const nextBoundary = now < start ? start : now < end ? end : undefined;
+      if (nextBoundary !== undefined) {
+        timeout = window.setTimeout(updateVisibility, Math.min(nextBoundary - now, 2_147_483_647));
+      }
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState === "visible") updateVisibility();
     }
 
     updateVisibility();
+    window.addEventListener("focus", updateVisibility);
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
-    const msUntilEnd = new Date(SUBSCRIBE_DAY_END).getTime() - Date.now();
-    if (msUntilEnd <= 0) return;
-
-    const timeout = window.setTimeout(updateVisibility, Math.min(msUntilEnd + 50, 2_147_483_647));
-    return () => window.clearTimeout(timeout);
+    return () => {
+      window.clearTimeout(timeout);
+      window.removeEventListener("focus", updateVisibility);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
   }, []);
 
   const dismiss = useCallback(() => {
+    dismissed.current = true;
     markSubscribeDayPopupDismissed();
     setIsOpen(false);
   }, []);
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") dismiss();
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [dismiss, isOpen]);
-
-  if (!isActive || !isOpen) return null;
-
   return (
-    <div
-      className="subscribe-day-popup fixed inset-0 z-[80] flex items-center justify-center bg-black/65 p-3 sm:p-6"
-      onClick={dismiss}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label={subscribeDayCampaign.dialogLabel}
-        className="relative box-content aspect-square w-full max-w-[min(100%,28rem)] pb-[52px] sm:max-w-[32rem] sm:pb-14"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <button
-          type="button"
-          onClick={dismiss}
-          aria-label={subscribeDayCampaign.closeLabel}
-          className="absolute right-2 top-2 z-10 grid size-8 place-items-center rounded-full bg-neutral-800 text-white shadow-lg ring-2 ring-white transition-colors hover:bg-neutral-950 sm:-right-3 sm:-top-3 sm:ring-0"
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && dismiss()}>
+      <Dialog.Portal>
+        <Dialog.Overlay data-promotion-overlay="" className="fixed inset-0 z-[80] bg-black/65" />
+        <Dialog.Content
+          aria-modal="true"
+          className="subscribe-day-popup fixed left-1/2 top-1/2 z-[81] w-[min(32rem,calc(100vw-24px),calc(100dvh-100px))] -translate-x-1/2 -translate-y-1/2 outline-none"
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            previousFocus.current =
+              document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            // Live counters can keep background sections exposed by aria-hidden. Native
+            // inert also removes those sections from assistive technology and interaction.
+            const content = closeButton.current?.closest('[role="dialog"]');
+            if (content) {
+              background.current = Array.from(document.body.children)
+                .filter(
+                  (element): element is HTMLElement =>
+                    element instanceof HTMLElement &&
+                    !element.contains(content) &&
+                    !element.hasAttribute("data-promotion-overlay") &&
+                    !element.hasAttribute("data-radix-focus-guard") &&
+                    !["SCRIPT", "STYLE", "LINK"].includes(element.tagName),
+                )
+                .map((element) => ({ element, inert: element.hasAttribute("inert") }));
+              for (const { element } of background.current) element.setAttribute("inert", "");
+            }
+            closeButton.current?.focus();
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            restoreBackground();
+            if (previousFocus.current?.isConnected) previousFocus.current.focus({ preventScroll: true });
+          }}
         >
-          <X className="size-4" strokeWidth={3} aria-hidden="true" />
-        </button>
-        <div className="absolute inset-0 overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-1 ring-black/10">
-          <a className="block aspect-square" href={siteConfig.lineUrl} target="_blank" rel="noreferrer" onClick={dismiss}>
-            {image ?? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                {...subscribeDayImage}
-                alt={subscribeDayCampaign.alt}
-                width={1254}
-                height={1254}
-                loading="eager"
-                fetchPriority="high"
-                className="h-auto w-full"
-              />
-            )}
-          </a>
-          <a
-            href={siteConfig.lineUrl}
-            target="_blank"
-            rel="noreferrer"
-            onClick={dismiss}
-            className="flex items-center justify-center gap-2 bg-[#06C755] px-4 py-3.5 text-[15px] font-bold text-neutral-950 transition-colors hover:bg-[#06C755]/90 sm:py-4 sm:text-base"
-          >
-            <LineMark className="size-6 text-white" />
-            {subscribeDayCampaign.ctaLabel}
-          </a>
-        </div>
-      </div>
-    </div>
+          <Dialog.Title className="sr-only">{subscribeDayCampaign.dialogLabel}</Dialog.Title>
+          <Dialog.Description className="sr-only">
+            โปรโมชั่น 3–18 ตุลาคม 2569 ตามเวลาไทย สอบถามรายละเอียดและเงื่อนไขผ่าน LINE
+          </Dialog.Description>
+          <Dialog.Close asChild>
+            <button
+              ref={closeButton}
+              type="button"
+              aria-label={subscribeDayCampaign.closeLabel}
+              className="absolute right-2 top-2 z-10 grid size-11 place-items-center rounded-full bg-neutral-800 text-white shadow-lg ring-2 ring-white transition-colors hover:bg-neutral-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:-right-3 sm:-top-3"
+            >
+              <X className="size-5" strokeWidth={3} aria-hidden="true" />
+            </button>
+          </Dialog.Close>
+          <div className="overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-1 ring-black/10">
+            <a
+              className="block aspect-square"
+              href={siteConfig.lineUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={dismiss}
+            >
+              {image ?? (
+                <Image
+                  {...subscribeDayImage}
+                  unoptimized
+                  alt={subscribeDayCampaign.alt}
+                  width={1280}
+                  height={1280}
+                  loading="eager"
+                  fetchPriority="high"
+                  className="h-auto w-full"
+                />
+              )}
+            </a>
+            <a
+              href={siteConfig.lineUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={dismiss}
+              className="flex items-center justify-center gap-2 bg-[#06C755] px-4 py-3.5 text-[15px] font-bold text-neutral-950 transition-colors hover:bg-[#06C755]/90 sm:py-4 sm:text-base"
+            >
+              <LineMark className="size-6 shrink-0 text-white" />
+              {subscribeDayCampaign.ctaLabel}
+            </a>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
