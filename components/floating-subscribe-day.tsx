@@ -15,10 +15,13 @@ import {
   wasSubscribeDayPopupDismissed,
 } from "@/lib/subscribe-day";
 import { siteConfig } from "@/lib/site";
+import { useTrackingConsent } from "@/lib/analytics/consent";
 
 export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
   // Cached/server HTML stays closed; only the browser's current time can open it.
   const [isOpen, setIsOpen] = useState(false);
+  // The modal makes the page inert, so it must wait until the cookie banner has been answered.
+  const consent = useTrackingConsent();
   const dismissed = useRef(false);
   const previousFocus = useRef<HTMLElement | null>(null);
   const closeButton = useRef<HTMLButtonElement | null>(null);
@@ -70,7 +73,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
   }, []);
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && dismiss()}>
+    <Dialog.Root open={isOpen && consent !== "pending"} onOpenChange={(open) => !open && dismiss()}>
       <Dialog.Portal>
         <Dialog.Overlay data-promotion-overlay="" className="fixed inset-0 z-[80] bg-black/65" />
         <Dialog.Content

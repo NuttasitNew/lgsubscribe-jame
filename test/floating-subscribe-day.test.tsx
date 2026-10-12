@@ -7,7 +7,7 @@ import {
   screen,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FloatingSubscribeDay } from "@/components/floating-subscribe-day";
 import {
   subscribeDayCampaign,
@@ -15,11 +15,16 @@ import {
   SUBSCRIBE_DAY_END,
   SUBSCRIBE_DAY_START,
 } from "@/lib/subscribe-day";
+import { setTrackingConsent } from "@/lib/analytics/consent";
 import { siteConfig } from "@/lib/site";
 
 const dialogName = "โปรโมชัน LG Subscribe Day";
 const closeName = "ปิดโปรโมชัน LG Subscribe Day";
 const duringCampaign = "2026-10-03T11:26:00+07:00";
+
+beforeEach(() => {
+  window.localStorage.setItem("lg_tracking_consent_v1", "necessary");
+});
 
 afterEach(() => {
   cleanup();
@@ -40,6 +45,19 @@ describe("FloatingSubscribeDay", () => {
     const html = renderToString(<FloatingSubscribeDay />);
     expect(html).not.toContain('role="dialog"');
     expect(html).not.toContain(subscribeDayCampaign.image);
+  });
+
+  it("waits for the cookie banner to be answered before opening", async () => {
+    setDate(duringCampaign);
+    window.localStorage.removeItem("lg_tracking_consent_v1");
+    render(<FloatingSubscribeDay />);
+    await act(async () => {});
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    await act(async () => {
+      setTrackingConsent("necessary");
+    });
+    expect(await screen.findByRole("dialog", { name: dialogName })).toBeInTheDocument();
   });
 
   it("opens with the original artwork and existing LINE contact links", async () => {
