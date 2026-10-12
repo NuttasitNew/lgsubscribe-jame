@@ -14,11 +14,13 @@ import {
 } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { ProductCard } from "@/components/product-card";
+import { WaterPurifierPromo } from "@/components/water-purifier-promo";
 import { SubscribeSteps } from "@/components/subscribe-steps";
 import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
 import { bestSellerProducts, catalogProducts } from "@/lib/catalog-products";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
+import { isWaterPurifierPromoActive } from "@/lib/water-purifier-promo";
 import { customerStories, faqs, products } from "@/lib/site";
 
 const categoryCards = [
@@ -165,6 +167,8 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {isWaterPurifierPromoActive() ? <WaterPurifierPromo /> : null}
 
       <section className="bg-white py-10 sm:py-12">
         <div className="container-page">
