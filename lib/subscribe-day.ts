@@ -1,15 +1,15 @@
-/** Thailand campaign: 3–18 October 2569 (2026), ending at midnight on 19 October. */
+/** Thailand campaign (extended): 3–27 October 2569 (2026), ending at midnight on 28 October. */
 export const SUBSCRIBE_DAY_START = "2026-10-03T00:00:00+07:00";
-export const SUBSCRIBE_DAY_END = "2026-10-19T00:00:00+07:00";
+export const SUBSCRIBE_DAY_END = "2026-10-28T00:00:00+07:00";
 
 export const subscribeDayCampaign = {
-  image: "/images/campaigns/lg-subscribe-day-2026-10.jpg",
+  image: "/images/campaigns/lg-subscribe-day-extended-2026-10.webp",
   maxDiscountPercent: 20,
-  dateLabel: "3 ต.ค.69 – 18 ต.ค.69",
+  dateLabel: "3 ต.ค.69 – 27 ต.ค.69",
   ctaLabel: "กดปุ่มนี้เพื่อแอดไลน์รับโปรโมชั่น",
   dialogLabel: "โปรโมชัน LG Subscribe Day",
   closeLabel: "ปิดโปรโมชัน LG Subscribe Day",
-  alt: "LG Subscribe Day ฉลองครบรอบ 2 ปี 3–18 ตุลาคม 2569 ลดสูงสุด 20% ลูกค้าใหม่ Subscribe 2 เครื่อง ลด 15% ลูกค้าเดิม Subscribe 1 เครื่อง ลด 15% เฉพาะเครื่องกรองน้ำ ลด 20% เงื่อนไขเป็นไปตามที่บริษัทกำหนด สอบถามใน LINE",
+  alt: "LG Subscribe Day ขยายเวลาซับสุดคุ้ม ฉลองครบรอบ 2 ปี 3–27 ตุลาคม 2569 ลดสูงสุด 20% ลูกค้าใหม่ Subscribe 2 เครื่อง ลด 15% ลูกค้าเดิม Subscribe 1 เครื่อง ลด 15% เฉพาะเครื่องกรองน้ำ ลด 20% เงื่อนไขเป็นไปตามที่บริษัทกำหนด สอบถามใน LINE",
 } as const;
 
 export const subscribeDayPopupStorageKey = `lg-subscribe-day-popup:${SUBSCRIBE_DAY_END}`;

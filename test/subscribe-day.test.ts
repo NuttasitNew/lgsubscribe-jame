@@ -22,32 +22,33 @@ describe("October LG Subscribe Day window", () => {
     ["2026-10-02T23:59:59.999+07:00", false],
     ["2026-10-03T00:00:00+07:00", true],
     ["2026-10-03T11:26:00+07:00", true],
-    ["2026-10-18T23:59:59.999+07:00", true],
-    ["2026-10-19T00:00:00+07:00", false],
+    ["2026-10-19T19:56:00+07:00", true],
+    ["2026-10-27T23:59:59.999+07:00", true],
+    ["2026-10-28T00:00:00+07:00", false],
   ])("has the expected visibility at %s", (timestamp, active) => {
     expect(isSubscribeDayActive(new Date(timestamp))).toBe(active);
   });
 
   it("uses Thailand offsets independent of the visitor's local timezone", () => {
     expect(SUBSCRIBE_DAY_START).toBe("2026-10-03T00:00:00+07:00");
-    expect(SUBSCRIBE_DAY_END).toBe("2026-10-19T00:00:00+07:00");
+    expect(SUBSCRIBE_DAY_END).toBe("2026-10-28T00:00:00+07:00");
     expect(isSubscribeDayActive(new Date("2026-10-02T17:00:00.000Z"))).toBe(
       true,
     );
-    expect(isSubscribeDayActive(new Date("2026-10-18T17:00:00.000Z"))).toBe(
+    expect(isSubscribeDayActive(new Date("2026-10-27T17:00:00.000Z"))).toBe(
       false,
     );
   });
 
   it("keeps the original October artwork on a campaign-specific public path", () => {
     expect(subscribeDayCampaign.image).toBe(
-      "/images/campaigns/lg-subscribe-day-2026-10.jpg",
+      "/images/campaigns/lg-subscribe-day-extended-2026-10.webp",
     );
     expect(
       existsSync(join(process.cwd(), "public", subscribeDayCampaign.image)),
     ).toBe(true);
     expect(subscribeDayCampaign.maxDiscountPercent).toBe(20);
-    expect(subscribeDayCampaign.dateLabel).toBe("3 ต.ค.69 – 18 ต.ค.69");
+    expect(subscribeDayCampaign.dateLabel).toBe("3 ต.ค.69 – 27 ต.ค.69");
     expect(subscribeDayCampaign.alt).toContain("ลดสูงสุด 20%");
     expect(subscribeDayCampaign.alt).toContain("เฉพาะเครื่องกรองน้ำ ลด 20%");
   });
