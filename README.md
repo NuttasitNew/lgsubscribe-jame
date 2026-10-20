@@ -30,7 +30,7 @@ The LINE webhook stores raw events, LINE profiles, messages, chat summaries, and
    npx vercel@latest env pull .env.local --environment=development --yes
    ```
 
-2. Add `LINE_CHANNEL_SECRET`, `LINE_CHANNEL_ACCESS_TOKEN`, and `BACKOFFICE_DESIGN_PREVIEW=true` to `.env.local`. Never commit their values.
+2. Add `SETTINGS_ENCRYPTION_KEY` (`openssl rand -base64 32`) and `BACKOFFICE_DESIGN_PREVIEW=true` to `.env.local`. Never commit their values. Enter the LINE Channel secret and Channel access token at `/backoffice/line/settings/` (permission `line.manage`); `LINE_CHANNEL_SECRET`/`LINE_CHANNEL_ACCESS_TOKEN` env vars are only a fallback while nothing is saved.
 
 3. Apply database migrations and start the app:
 
@@ -46,6 +46,8 @@ The LINE webhook stores raw events, LINE profiles, messages, chat summaries, and
    ```
 
 The trailing slash is intentional because this project uses trailing-slash routes.
+
+LINE credentials saved in the backoffice are AES-256-GCM encrypted with `SETTINGS_ENCRYPTION_KEY` (the key name is authenticated data, so rows cannot be swapped), stored in `IntegrationSecret` with only the last four characters in clear for identification, and every set/clear is written to `IntegrationSecretAudit`. The browser never receives saved values back. A new access token is verified against LINE's bot info API before it replaces the old one. `lib/settings/integration-secrets.ts` loads all secrets in one query and keeps the decrypted values in server memory for 5 minutes (concurrent misses share one query; the last values are kept through a database outage), so webhooks do not query Neon per request. Saving clears the cache on that instance; other instances use the new value within 5 minutes.
 
 ### Website traffic and backoffice login
 

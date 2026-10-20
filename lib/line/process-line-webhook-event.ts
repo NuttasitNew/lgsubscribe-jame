@@ -1,6 +1,7 @@
 import { messagingApi, type webhook } from "@line/bot-sdk";
 import { Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/db/prisma";
+import { getIntegrationSecret } from "@/lib/settings/integration-secrets";
 import {
   prepareLineWebhookEvent,
   type LineProfile,
@@ -13,7 +14,7 @@ function errorMessage(error: unknown) {
 }
 
 async function fetchLineProfileFromApi(event: webhook.Event, userLineId: string): Promise<LineProfile> {
-  const channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+  const channelAccessToken = await getIntegrationSecret("LINE_CHANNEL_ACCESS_TOKEN");
 
   if (!channelAccessToken) {
     return { userId: userLineId, displayName: "LINE User" };
