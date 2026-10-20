@@ -8,22 +8,22 @@ datasource db {
 
 // Anonymous first-party traffic. Never store IPs, query strings or full referrers.
 model WebPageView {
-  eventId     String   @id @db.Uuid
-  visitorHash String   @db.VarChar(64)
-  path        String   @db.VarChar(500)
-  occurredAt  DateTime @default(now())
-  eventType   String   @default("page_view") @db.VarChar(20)
-  contactMethod String? @db.VarChar(10)
-  sessionHash String? @db.VarChar(64)
-  source      String   @default("unknown") @db.VarChar(150)
-  medium      String   @default("unknown") @db.VarChar(50)
-  channel     String   @default("unknown") @db.VarChar(30)
-  campaign    String?  @db.VarChar(150)
-  attributionMethod String @default("unknown") @db.VarChar(20)
-  referrerHost String? @db.VarChar(253)
-  clickIdHash String? @db.VarChar(64)
-  device      String   @default("unknown") @db.VarChar(10)
-  country     String?  @db.VarChar(2)
+  eventId           String   @id @db.Uuid
+  visitorHash       String   @db.VarChar(64)
+  path              String   @db.VarChar(500)
+  occurredAt        DateTime @default(now())
+  eventType         String   @default("page_view") @db.VarChar(20)
+  contactMethod     String?  @db.VarChar(10)
+  sessionHash       String?  @db.VarChar(64)
+  source            String   @default("unknown") @db.VarChar(150)
+  medium            String   @default("unknown") @db.VarChar(50)
+  channel           String   @default("unknown") @db.VarChar(30)
+  campaign          String?  @db.VarChar(150)
+  attributionMethod String   @default("unknown") @db.VarChar(20)
+  referrerHost      String?  @db.VarChar(253)
+  clickIdHash       String?  @db.VarChar(64)
+  device            String   @default("unknown") @db.VarChar(10)
+  country           String?  @db.VarChar(2)
 
   @@index([occurredAt, visitorHash])
 }
@@ -239,4 +239,25 @@ model LineDailyActivity {
 
   @@unique([activityDate, userLineId])
   @@index([activityDate(sort: Desc)])
+}
+
+// Integration credentials entered in the backoffice. Values are AES-256-GCM
+// ciphertext (lib/settings/secret-crypto.ts); the key never lives in the database.
+model IntegrationSecret {
+  key           String   @id @db.VarChar(80)
+  ciphertext    String
+  last4         String   @db.VarChar(4)
+  updatedById   String?  @db.Uuid
+  updatedByName String?  @db.VarChar(150)
+  updatedAt     DateTime @updatedAt
+}
+
+model IntegrationSecretAudit {
+  id        String   @id @default(uuid()) @db.Uuid
+  key       String   @db.VarChar(80)
+  action    String   @db.VarChar(20)
+  actorId   String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  @@index([key, createdAt])
 }
