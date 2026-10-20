@@ -43,7 +43,10 @@ describe("database backoffice identities and permissions", () => {
     const reader = user();
     expect(allowedPages(reader).map((p) => p.href)).toEqual(["/backoffice/analytics/"]);
     expect(canAccess(reader, "users.manage")).toBe(false);
-    expect(allowedPages(owner)).toHaveLength(6);
+    expect(allowedPages(owner)).toHaveLength(7);
+    expect(allowedPages({ permissions: ["line.view"], isOwner: false }).map((p) => p.href)).not.toContain(
+      "/backoffice/line/settings/",
+    );
     expect(allowedPages({ permissions: [], isOwner: false })).toEqual([]);
   });
   it("binds a 24 hour token to the user, password, active status and current version", async () => {

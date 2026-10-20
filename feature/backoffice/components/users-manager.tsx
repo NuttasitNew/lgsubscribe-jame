@@ -12,6 +12,11 @@ export type ManagedUser = {
   isActive: boolean;
   isOwner: boolean;
 };
+// Managing a connection implies viewing its data; unticking the view also drops the manage right.
+const impliedPermission: Record<string, string> = {
+  "google.manage": "google.view",
+  "line.manage": "line.view",
+};
 const field =
   "mt-1 h-11 w-full rounded-md border bg-white px-3 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
 function UserForm({
@@ -130,10 +135,14 @@ function UserForm({
                 onChange={(event) =>
                   setSelected((prev) =>
                     event.target.checked
-                      ? [...new Set([...prev, key, ...(key === "google.manage" ? ["google.view"] : [])])]
-                      : prev.filter(
-                          (value) => value !== key && !(key === "google.view" && value === "google.manage"),
-                        ),
+                      ? [
+                          ...new Set([
+                            ...prev,
+                            key,
+                            ...(impliedPermission[key] ? [impliedPermission[key]] : []),
+                          ]),
+                        ]
+                      : prev.filter((value) => value !== key && impliedPermission[value] !== key),
                   )
                 }
                 className="size-4 shrink-0 accent-red-700"

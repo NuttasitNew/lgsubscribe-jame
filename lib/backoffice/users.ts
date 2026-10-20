@@ -49,6 +49,8 @@ function input(body: unknown, creating: boolean) {
   const permissions = [...new Set(value.permissions as string[])];
   if (permissions.includes("google.manage") && !permissions.includes("google.view"))
     permissions.push("google.view");
+  if (permissions.includes("line.manage") && !permissions.includes("line.view"))
+    permissions.push("line.view");
   if (value.password !== undefined && typeof value.password !== "string")
     throw new UserInputError("รหัสผ่านไม่ถูกต้อง");
   const password = value.password as string | undefined;
