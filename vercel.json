@@ -4,6 +4,7 @@
   "crons": [
     { "path": "/api/cron/google-sync/", "schedule": "0 20 * * *" },
     { "path": "/api/cron/vercel-traffic/", "schedule": "30 0 * * *" },
-    { "path": "/api/cron/seo-gsc-sync/", "schedule": "30 2 * * *" }
+    { "path": "/api/cron/seo-gsc-sync/", "schedule": "30 2 * * *" },
+    { "path": "/api/cron/seo-keyword-ideas/", "schedule": "0 3 1 * *" }
   ]
 }
