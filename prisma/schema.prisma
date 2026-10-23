@@ -261,3 +261,249 @@ model IntegrationSecretAudit {
 
   @@index([key, createdAt])
 }
+
+// ============================================================================
+// SEO article system (ported from hmp-frontend). AI drafts articles, a
+// backoffice user reviews/edits/publishes them to /blog/<slug>, and Google
+// Search Console metrics (SeoSearchQueryDaily) show how each article performs.
+// Code: feature/backoffice/seo/, lib/gsc/, lib/google-ads/, lib/ai/
+// ============================================================================
+model SeoArticle {
+  seoArticleId        Int              @id @default(autoincrement())
+  status              SeoArticleStatus @default(DRAFT)
+  slug                String           @unique // path /blog/<slug>
+  title               String
+  metaDescription     String
+  keywords            String[]
+  targetKeyword       String? // primary keyword compared against SeoSearchQueryDaily
+  titleEn             String?
+  metaDescriptionEn   String?
+  keywordsEn          String[]         @default([])
+  contentEnSourceHash String?
+  contentJsonEn       Json?
+  contentJson         Json // block v2 { version: 2, coverImage?, category, blocks, faq }
+  contentUpdatedAt    DateTime         @default(now())
+  draftJson           Json? // in-progress edit snapshot (autosave)
+  draftSavedAt        DateTime?
+  draftSavedBy        String?
+  origin              SeoArticleOrigin @default(MANUAL)
+  promptBrief         String?
+  sourceDate          String // yyyy-MM-dd (Bangkok)
+  sourceTopics        Json
+  aiModel             String
+  approvedBy          String?
+  publishedAt         DateTime?
+  publishedCommitSha  String? // unused in lg-jame (articles are served from the database)
+  rejectedReason      String?
+  deletedAt           DateTime? // soft delete only: the slug stays reserved
+  deletedBy           String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  images SeoArticleImage[]
+
+  @@index([status, createdAt])
+  @@index([deletedAt])
+  @@index([sourceDate, origin])
+}
+
+enum SeoArticleStatus {
+  DRAFT
+  APPROVED
+  PUBLISHED
+  REJECTED
+}
+
+enum SeoArticleOrigin {
+  CHAT
+  MANUAL
+  CATEGORY // written from a catalog product category
+  LEGACY
+}
+
+model SeoArticleJob {
+  seoArticleJobId Int                 @id @default(autoincrement())
+  jobType         SeoArticleJobType   @default(WRITE_CATEGORY)
+  status          SeoArticleJobStatus @default(QUEUED)
+  categoryCode    String?
+  categoryName    String?
+  topic           String
+  targetKeyword   String?
+  tone            String?
+  generateImages  Boolean             @default(false)
+  payload         Json?
+  resultJson      Json?
+  requestedBy     String
+  seoArticleId    Int?
+  errorMessage    String?
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([status, createdAt])
+  @@index([seoArticleId, status])
+  @@index([createdAt])
+}
+
+enum SeoArticleJobType {
+  WRITE_CATEGORY
+  WRITE_NOW
+  GENERATE_IMAGES
+  TRANSLATE_EN
+  SINGLE_IMAGE
+  WRITE_FAQ
+  TRANSLATE_FAQ_EN
+}
+
+enum SeoArticleJobStatus {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+}
+
+// Google Search Console rows for /blog/ pages: one query per page per day.
+model SeoSearchQueryDaily {
+  id          BigInt   @id @default(autoincrement())
+  date        DateTime @db.Date
+  page        String
+  query       String
+  clicks      Int      @default(0)
+  impressions Int      @default(0)
+  position    Float
+  syncedAt    DateTime
+
+  @@unique([date, page, query])
+  @@index([page, date])
+  @@index([query, date])
+}
+
+model SeoArticleImage {
+  seoArticleImageId Int                      @id @default(autoincrement())
+  seoArticleId      Int
+  url               String
+  alt               String
+  prompt            String
+  placement         SeoArticleImagePlacement
+  style             SeoArticleImageStyle
+  createdBy         String
+  lastUsedAt        DateTime?
+  createdAt         DateTime                 @default(now())
+
+  seoArticle SeoArticle @relation(fields: [seoArticleId], references: [seoArticleId], onDelete: Cascade)
+
+  @@index([seoArticleId, createdAt])
+  @@index([placement, createdAt])
+}
+
+enum SeoArticleImagePlacement {
+  COVER
+  INLINE
+}
+
+enum SeoArticleImageStyle {
+  PHOTO
+  INFOGRAPHIC
+}
+
+// Google Ads Keyword Planner volumes, seeded per catalog category.
+model SeoKeywordIdea {
+  seoKeywordIdeaId     Int      @id @default(autoincrement())
+  keyword              String   @unique
+  avgMonthlySearches   Int      @default(0)
+  competition          String   @default("UNSPECIFIED")
+  competitionIndex     Int?
+  lowTopOfPageBidBaht  Float?
+  highTopOfPageBidBaht Float?
+  monthlyVolumes       Json?
+  categoryCodes        String[]
+  syncedAt             DateTime
+  createdAt            DateTime @default(now())
+
+  @@index([avgMonthlySearches(sort: Desc)])
+  @@index([syncedAt])
+  @@index([categoryCodes], type: Gin)
+}
+
+// AI-proposed FAQ entries shown on /faq after a backoffice user publishes them.
+model AskAnswerFaq {
+  askAnswerFaqId     Int                @id @default(autoincrement())
+  faqKey             String             @unique
+  question           String
+  answer             String
+  questionEn         String?
+  answerEn           String?
+  status             AskAnswerFaqStatus @default(DRAFT)
+  targetKeyword      String?
+  reason             String?
+  proofNote          String?
+  relatedSlug        String?
+  requestedBy        String
+  seoArticleJobId    Int?
+  publishedBy        String?
+  publishedAt        DateTime?
+  publishedCommitSha String?
+  rejectedReason     String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([status, createdAt])
+}
+
+enum AskAnswerFaqStatus {
+  DRAFT
+  PUBLISHED
+  REJECTED
+}
+
+// Singleton brand guidance + reference photos for AI article images.
+model SeoBrandProfile {
+  id           String   @id
+  systemPrompt String
+  references   Json
+  revision     Int      @default(1)
+  updatedBy    String
+  updatedAt    DateTime @updatedAt
+}
+
+// One row per LLM call (tokens + estimated USD cost).
+model AiUsageLog {
+  id                Int             @id @default(autoincrement())
+  createdAt         DateTime        @default(now())
+  provider          AiUsageProvider
+  model             String
+  feature           AiUsageFeature
+  operation         String?
+  inputTokens       Int             @default(0)
+  cachedInputTokens Int             @default(0)
+  outputTokens      Int             @default(0)
+  reasoningTokens   Int             @default(0)
+  estimatedCostUsd  Float           @default(0)
+  durationMs        Int?
+  success           Boolean         @default(true)
+  errorCode         String?
+  refId             String?
+  actorName         String?
+
+  @@index([createdAt])
+  @@index([feature, createdAt])
+  @@index([provider, createdAt])
+  @@index([model, createdAt])
+}
+
+enum AiUsageProvider {
+  OPENAI
+  ANTHROPIC
+}
+
+enum AiUsageFeature {
+  SEO_ARTICLE_WRITE
+  SEO_ARTICLE_TRANSLATE
+  SEO_ARTICLE_IMAGE_BRIEF
+  SEO_ARTICLE_TOPIC
+  SEO_ARTICLE_NORMALIZE
+  ASK_ANSWER_FAQ_WRITE
+  ASK_ANSWER_FAQ_TRANSLATE
+  OTHER
+}
