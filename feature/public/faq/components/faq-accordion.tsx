@@ -7,15 +7,18 @@ import {
 import { faqs } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-export function FaqAccordion({ className }: { className?: string }) {
+type FaqItem = { question: string; answer: string };
+
+// `items` defaults to the fixed FAQ list; the /faq page appends the AI-proposed entries published from the backoffice.
+export function FaqAccordion({ className, items = faqs }: { className?: string; items?: readonly FaqItem[] }) {
   return (
     <Accordion type="single" collapsible className={cn("rounded-2xl border bg-white px-6 sm:px-8", className)}>
-      {faqs.map((faq, index) => (
+      {items.map((faq, index) => (
         <AccordionItem key={faq.question} value={`question-${index}`}>
           <AccordionTrigger className="text-left text-base font-bold leading-7 hover:text-red-700 sm:text-lg">
             {faq.question}
           </AccordionTrigger>
-          <AccordionContent className="text-sm leading-8 text-muted-foreground sm:text-base">
+          <AccordionContent className="whitespace-pre-line text-sm leading-8 text-muted-foreground sm:text-base">
             {faq.answer}
           </AccordionContent>
         </AccordionItem>

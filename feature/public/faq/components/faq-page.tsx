@@ -3,6 +3,7 @@ import { ContactCta } from "@/components/contact-cta";
 import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
+import { listPublishedFaqs } from "@/feature/public/faq/lib/published-faqs";
 import { createPageMetadata, faqs } from "@/lib/site";
 
 export const metadata: Metadata = createPageMetadata({
@@ -12,11 +13,12 @@ export const metadata: Metadata = createPageMetadata({
   path: "/faq/",
 });
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const items = [...faqs, ...(await listPublishedFaqs())];
   const schema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
+    mainEntity: items.map((faq) => ({
       "@type": "Question",
       name: faq.question,
       acceptedAnswer: { "@type": "Answer", text: faq.answer },
@@ -40,7 +42,7 @@ export default function FaqPage() {
       <section className="section-space">
         <div className="container-page">
           <h2 className="sr-only">คำถามและคำตอบเกี่ยวกับบริการ LG Subscribe</h2>
-          <FaqAccordion />
+          <FaqAccordion items={items} />
         </div>
       </section>
       <ContactCta />
