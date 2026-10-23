@@ -10,6 +10,7 @@ const footerNavigation = [
   { href: "/products/", label: "สินค้าทั้งหมด" },
   { href: authorizedAgent.path, label: "ความน่าเชื่อถือ" },
   { href: "/faq/", label: "คำถามที่พบบ่อย" },
+  { href: "/blog/", label: "บทความ" },
 ] as const;
 
 export function SiteFooter() {

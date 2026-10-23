@@ -27,19 +27,19 @@ const removedModels = [
 ];
 
 describe("October sales catalog", () => {
-  it("publishes the reviewed 67 artworks for 68 products, sharing the water-purifier artwork", () => {
+  it("publishes the reviewed 67 artworks for 68 products, sharing the water-purifier artwork", async () => {
     expect(octSubscriptionCampaignProducts).toHaveLength(67);
     expect(promotionImageAssets).toHaveLength(67);
     expect(catalogProducts).toHaveLength(68);
     expect(allProducts.every((product) => product.promotionImage?.includes("/oct-2026/"))).toBe(true);
   });
 
-  it.each(removedModels)("removes %s from listings, search, static detail routes and sitemap", (model) => {
+  it.each(removedModels)("removes %s from listings, search, static detail routes and sitemap", async (model) => {
     expect(allProducts.some((product) => product.model === model)).toBe(false);
     expect(filterCatalogProducts(model)).toEqual([]);
     const slug = `lg-${model.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
     expect(generateStaticParams()).not.toContainEqual({ slug });
-    expect(sitemap().some((entry) => entry.url.endsWith(`/products/${slug}/`))).toBe(false);
+    expect((await sitemap()).some((entry) => entry.url.endsWith(`/products/${slug}/`))).toBe(false);
   });
 
   it.each(["lg-wt2520nhen", "lg-as60ghwg0", "lg-oled55c6psa", "lg-l257sfzw"])(
@@ -49,7 +49,7 @@ describe("October sales catalog", () => {
     },
   );
 
-  it("keeps the revised October prices and the TV bundle distinct from the standalone model", () => {
+  it("keeps the revised October prices and the TV bundle distinct from the standalone model", async () => {
     const price = (model: string) => catalogProducts.find((product) => product.model === model)?.monthlyPrice;
     expect(price("OLED83C6PSA")).toBe(2699);
     expect(price("32U889.GRAB")).toBe(649);

@@ -12,35 +12,35 @@ function listSourceFiles(dir: string): string[] {
 }
 
 describe("backoffice SEO boundary", () => {
-  it("never exposes an internal route through sitemap", () => {
-    expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/backoffice"))).toBe(false);
+  it("never exposes an internal route through sitemap", async () => {
+    expect((await sitemap()).some((entry) => new URL(entry.url).pathname.startsWith("/backoffice"))).toBe(false);
   });
 
-  it("does not list the retired cancel-contract page", () => {
+  it("does not list the retired cancel-contract page", async () => {
     expect(
-      sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/cancel-contract")),
+      (await sitemap()).some((entry) => new URL(entry.url).pathname.startsWith("/cancel-contract")),
     ).toBe(false);
   });
 
-  it("does not list the retired price page", () => {
-    expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/price"))).toBe(false);
+  it("does not list the retired price page", async () => {
+    expect((await sitemap()).some((entry) => new URL(entry.url).pathname.startsWith("/price"))).toBe(false);
   });
 
-  it("lists the public authorized credibility page", () => {
-    expect(sitemap().some((entry) => new URL(entry.url).pathname === "/authorized/")).toBe(true);
+  it("lists the public authorized credibility page", async () => {
+    expect((await sitemap()).some((entry) => new URL(entry.url).pathname === "/authorized/")).toBe(true);
   });
 
-  it("does not list the retired payment-options page", () => {
-    expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/payment-options"))).toBe(
+  it("does not list the retired payment-options page", async () => {
+    expect((await sitemap()).some((entry) => new URL(entry.url).pathname.startsWith("/payment-options"))).toBe(
       false,
     );
   });
 
-  it("does not list the retired terms page", () => {
-    expect(sitemap().some((entry) => new URL(entry.url).pathname.startsWith("/terms"))).toBe(false);
+  it("does not list the retired terms page", async () => {
+    expect((await sitemap()).some((entry) => new URL(entry.url).pathname.startsWith("/terms"))).toBe(false);
   });
 
-  it("does not keep public website copy about contract cancellation", () => {
+  it("does not keep public website copy about contract cancellation", async () => {
     const files = [
       ...listSourceFiles("app/(public)"),
       ...listSourceFiles("feature/public"),
@@ -54,7 +54,7 @@ describe("backoffice SEO boundary", () => {
     }
   });
 
-  it("does not keep public website links to the retired price page", () => {
+  it("does not keep public website links to the retired price page", async () => {
     const files = [
       ...listSourceFiles("app/(public)"),
       ...listSourceFiles("feature/public"),
@@ -68,7 +68,7 @@ describe("backoffice SEO boundary", () => {
     }
   });
 
-  it("does not keep public website links to the retired payment-options page", () => {
+  it("does not keep public website links to the retired payment-options page", async () => {
     const files = [
       ...listSourceFiles("app/(public)"),
       ...listSourceFiles("feature/public"),
@@ -82,7 +82,7 @@ describe("backoffice SEO boundary", () => {
     }
   });
 
-  it("does not keep public website links to the retired terms page", () => {
+  it("does not keep public website links to the retired terms page", async () => {
     const files = [
       ...listSourceFiles("app/(public)"),
       ...listSourceFiles("feature/public"),
@@ -96,7 +96,7 @@ describe("backoffice SEO boundary", () => {
     }
   });
 
-  it("blocks crawlers from the entire backoffice subtree", () => {
+  it("blocks crawlers from the entire backoffice subtree", async () => {
     const rules = robots().rules;
     const normalizedRules = Array.isArray(rules) ? rules : [rules];
 
