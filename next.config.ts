@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [50, 75],
+    // SEO article images (cover + inline) live in the R2 bucket lg-jame-media.
+    remotePatterns: [{ protocol: "https", hostname: "pub-cae070486a8a4b428b7435de2511207f.r2.dev" }],
   },
   poweredByHeader: false,
   async headers() {
