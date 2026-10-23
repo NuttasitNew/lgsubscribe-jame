@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { allProducts, catalogProducts } from "@/lib/catalog-products";
 import { filterCatalogProducts } from "@/lib/catalog-search";
 import { octSubscriptionCampaignProducts } from "@/lib/oct-subscription-campaign";
@@ -7,6 +7,10 @@ import ProductDetailPage, {
   generateStaticParams,
 } from "@/feature/public/products/components/product-detail-page";
 import sitemap from "@/app/sitemap";
+
+vi.mock("@/feature/backoffice/seo/seo-article/server/public-blog-article.helper", () => ({
+  listPublishedBlogArticlesForCachedPage: async () => [],
+}));
 
 const removedModels = [
   "TX2315DT5G",

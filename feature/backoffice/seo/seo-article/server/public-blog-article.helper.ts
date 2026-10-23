@@ -106,6 +106,21 @@ export async function listPublishedBlogArticles() {
   });
 }
 
+/**
+ * Article list for pages cached until the next publish (`revalidate = false`).
+ * At runtime a database error is rethrown so Next keeps serving the last good page instead of
+ * caching an empty list forever; only during `next build` (no prior page exists) it falls back to [].
+ */
+export async function listPublishedBlogArticlesForCachedPage(label: string) {
+  try {
+    return await listPublishedBlogArticles();
+  } catch (error) {
+    if (process.env.NEXT_PHASE !== "phase-production-build") throw error;
+    console.error(`${label}: blog articles unavailable during build`, error instanceof Error ? error.message : error);
+    return [];
+  }
+}
+
 /** Refreshes the cached public pages after publish / edit / delete. */
 export function revalidateBlog(slug?: string) {
   revalidatePath("/blog/");

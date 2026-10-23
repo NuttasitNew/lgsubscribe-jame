@@ -1,8 +1,12 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
+
+vi.mock("@/feature/backoffice/seo/seo-article/server/public-blog-article.helper", () => ({
+  listPublishedBlogArticlesForCachedPage: async () => [],
+}));
 
 function listSourceFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {

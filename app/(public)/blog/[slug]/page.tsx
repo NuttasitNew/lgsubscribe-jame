@@ -4,8 +4,8 @@ import { BlogArticlePage } from "@/feature/public/blog/components/blog-article-p
 import { findPublishedBlogArticle } from "@/feature/backoffice/seo/seo-article/server/public-blog-article.helper";
 import { createPageMetadata } from "@/lib/site";
 
-// Rendered on first request and cached; publish/edit/delete in the backoffice revalidates the path.
-export const revalidate = 3600;
+// Rendered on first request and cached until publish / edit / delete in the backoffice revalidates the path.
+export const revalidate = false;
 export const dynamicParams = true;
 
 export function generateStaticParams() {
