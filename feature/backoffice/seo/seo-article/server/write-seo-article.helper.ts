@@ -1,0 +1,233 @@
+import "server-only";
+import { generateObject } from "ai";
+import { z } from "zod";
+import { AiUsageFeature } from "@prisma/client";
+import { trackAiUsage } from "@/lib/ai/usage/track-ai-usage";
+import { getSeoArticleAi } from "./seo-article-ai-model";
+import { buildGroundingMessage } from "./build-grounding-message.helper";
+import type { SeoCategoryGrounding } from "../type/category-grounding.type";
+import { aiArticleBlockSchema, normalizeAiBlocks } from "./normalize-ai-blocks.helper";
+import { detectAiToneSignals } from "./detect-ai-tone-signals.helper";
+import { getSeoArticleTonePromptHint, type SeoArticleTone } from "../constant/seo-article-tone";
+import type { SeoArticleCategory, SeoArticleFaq, SeoSourceTopic } from "../type/seo-article-content.type";
+import type { SeoArticleBlock } from "../type/seo-article-block.type";
+
+/**
+ * schema ที่ส่งเข้า structured output ของ Anthropic
+ *
+ * ⚠️ ข้อจำกัดที่เคยเจอจริง: Anthropic ไม่รองรับ `minItems` > 1 → **ห้ามใช้ `.min(n)` ที่ n > 1 บน array ในไฟล์นี้**
+ * จำนวนหัวข้อ / faq / keyword ทั้งหมดคุมผ่าน `.describe()` + system prompt เท่านั้น
+ */
+const articleSchema = z.object({
+  slug: z
+    .string()
+    .describe(
+      "slug ภาษาอังกฤษ kebab-case สื่อความหมายกับหัวข้อ เช่น curtain-mold-removal-guide (a-z 0-9 และ - เท่านั้น)"
+    ),
+  title: z.string().describe("ชื่อบทความภาษาไทย ดึงดูด + มีคำค้นหลัก ยาว 40-65 ตัวอักษร"),
+  metaDescription: z.string().describe("meta description ภาษาไทย 120-155 ตัวอักษร มีคำค้นหลัก"),
+  keywords: z.array(z.string()).describe("คำค้นเป้าหมาย 4-6 คำ"),
+  category: z.enum(["productGuide", "buyingGuide", "careTips", "services"]).describe("หมวดบทความบนเว็บ: productGuide=รู้จัก/รีวิวสินค้า, buyingGuide=วิธีเลือกซื้อ/เปรียบเทียบ, careTips=ดูแลและใช้งาน, services=การเช่าใช้ LG Subscribe"),
+  blocks: z
+    .array(aiArticleBlockSchema)
+    .describe(
+      "เนื้อหาบทความเรียงจากบนลงล่างเป็นบล็อก ประมาณ 15-30 บล็อก โดยมีหัวข้อ (heading level 2) 3-6 หัวข้อ " +
+        "แกนหลักของบทความคือ paragraph — อย่างน้อย 70% ของบล็อกเนื้อหาต้องเป็น paragraph " +
+        "ใช้ bulletList/numberedList เฉพาะตอนเป็นขั้นตอนจริงหรือรายการของจริงเท่านั้น และห้ามวางรายการติดกัน 2 ชุด"
+    ),
+  faq: z
+    .array(z.object({ question: z.string(), answer: z.string().describe("คำตอบ plain text ไม่มี HTML") }))
+    .describe("คำถามพบบ่อยท้ายบทความ 2-4 ข้อ"),
+});
+
+/** โจทย์ที่ super-admin พิมพ์สั่งเขียนเอง (โหมด MANUAL) */
+export interface SeoArticleBriefInput {
+  /** ข้อความอิสระที่ผู้ใช้พิมพ์ว่าอยากได้บทความแบบไหน */
+  promptBrief: string;
+  /** primary keyword ที่ต้องการให้ติดอันดับ (ถ้าระบุ AI ต้องใส่ทั้งคำใน title/meta/heading) */
+  targetKeyword?: string;
+  /** บังคับหมวดบทความ (ไม่ระบุ = ให้ AI เลือกเอง) */
+  category?: SeoArticleCategory;
+  /** โทนการเขียน */
+  tone?: SeoArticleTone;
+  /**
+   * แฟ้มข้อมูลจริงของหมวดบริการ (โหมดสั่งเขียนตามหมวด) — มีค่าแล้วบทความจะอ้างบริการ/ราคา/พื้นที่จริงของเราได้
+   * ไม่มีค่า = โหมด brief ล้วน AI ห้ามแตะเรื่องราคาเลย
+   */
+  grounding?: SeoCategoryGrounding;
+}
+
+export interface WriteSeoArticleResult {
+  slug: string;
+  title: string;
+  metaDescription: string;
+  keywords: string[];
+  category: SeoArticleCategory;
+  blocks: SeoArticleBlock[];
+  faq: SeoArticleFaq[];
+  /** ปัญหาที่เจอตอนแปลงผลลัพธ์ AI (บล็อกเสียถูกทิ้ง) + สัญญาณ "เขียนแบบ AI" — เก็บไว้ log ให้คนรีวิวเห็น */
+  warnings: string[];
+}
+
+const SYSTEM_PROMPT = `คุณคือนักเขียนบทความ SEO ภาษาไทยของเว็บ LG Subscribe Thailand — บริการเช่าใช้เครื่องใช้ไฟฟ้า LG แบบชำระรายเดือน
+พร้อมบริการดูแลโดยช่าง LG ถึงบ้านตามเงื่อนไขสัญญา ติดต่อทาง LINE @lgsubscribe
+
+เขียนให้เข้าใจง่ายจากข้อมูลสินค้าและเงื่อนไขที่ยืนยันแล้ว ห้ามสวมบทเป็นพนักงาน LG หรืออ้างว่าเคยทดสอบสินค้าเองถ้าไม่มีหลักฐานแนบมา
+
+กติกาการเขียน:
+- เรื่องราคา: พูดถึงตัวเลขได้เฉพาะ "ราคาเช่าเริ่มต้นต่อเดือน" ที่อยู่ในบล็อกข้อมูลจริงที่แนบมาเท่านั้น ใช้ตัวเลขตรง ๆ ห้ามปัด
+  และต้องกำกับว่าราคา/ระยะสัญญา/โปรโมชันเป็นไปตามเงื่อนไขของ LG ณ วันที่สมัคร ห้ามเดาราคาเครื่องหรือค่างวดจากความรู้ของคุณเอง
+- สเปกสินค้า (BTU, ขนาด, ระบบกรอง, ฟีเจอร์): อ้างได้เฉพาะที่อยู่ในข้อมูลสินค้าที่แนบมา ถ้าไม่มีให้เขียนแบบหลักการทั่วไปโดยไม่ระบุตัวเลข
+- เงื่อนไขสัญญา การรับประกัน การดูแล และการโอนกรรมสิทธิ์: พูดได้ว่า "เป็นไปตามเงื่อนไขของสินค้าและสัญญา"
+  ห้ามรับรองระยะเวลาหรือความคุ้มครองที่ไม่ได้ระบุไว้ ห้ามบอกว่าอนุมัติแน่นอนหรือไม่ต้องตรวจสอบเครดิต
+- ห้ามแต่งรีวิว กรณีศึกษา คำพูดลูกค้า ตัวเลขสถิติ งานวิจัย หรือรางวัล ห้ามใส่ชื่อบุคคลหรือข้อมูลลูกค้า
+- อ้างลิงก์ภายในได้เฉพาะ URL ที่อยู่ในข้อมูลประกอบ (เช่น /products/<slug>/, /what-is-lg-subscribe/, /faq/) ห้ามเดา URL
+- เขียนเพื่อคนอ่านจริง: ตอบคำถามให้ครบ ภาษาเป็นกันเอง ให้วิธีเลือก/ใช้งาน/ดูแลที่ทำได้จริงก่อน แล้วค่อยเชื่อมเข้า LG Subscribe
+- **ให้รายละเอียดเฉพาะที่ตรวจสอบได้** — เช่น ขนาดห้องที่สัมพันธ์กับ BTU, รอบการเปลี่ยนไส้กรองตามคู่มือ,
+  จุดที่ต้องเตรียมก่อนติดตั้ง (ปลั๊ก, ท่อน้ำ, พื้นที่วาง) ห้ามเขียนคำแนะนำกว้าง ๆ ที่เอาไปใส่บทความไหนก็ได้
+- ห้ามโจมตีแบรนด์อื่นหรือร้านค้าอื่น และห้ามเคลมเกินจริงนอกเหนือจาก "ข้อมูลแบรนด์ที่อนุมัติ" ด้านล่าง
+- หัวข้อสุดท้าย: เชื่อมเรื่องเข้าบริการ LG Subscribe อย่างเป็นธรรมชาติ + ชวนสอบถามทาง LINE @lgsubscribe
+- ถ้ามี "primary keyword" ระบุมา: ต้องใส่คำนี้ทั้งคำใน title, metaDescription และ heading อย่างน้อย 1 อัน
+  เขียนภาษาไทยด้วยการเว้นวรรคตามธรรมชาติ และให้เป็นตัวแรกใน keywords
+
+หลักสร้างความไว้วางใจและช่วยให้คนตัดสินใจ:
+- ทุกบทความต้องตอบข้อกังวลก่อนตัดสินใจที่เกี่ยวกับหัวข้ออย่างเป็นรูปธรรม เช่น เช่าใช้ต่างจากซื้อ/ผ่อนอย่างไร,
+  ต้องใช้บัตรเครดิตหรือกันวงเงินไหม, เครื่องเสียระหว่างสัญญาทำอย่างไร, ครบสัญญาแล้วเครื่องเป็นของใคร, รุ่นไหนเหมาะกับบ้านแบบไหน
+- ใช้คำค้นเชิงตัดสินใจอย่างเป็นธรรมชาติเมื่อเกี่ยวข้อง เช่น "ดีไหม", "รุ่นไหนดี", "ผ่อน", "เช่า", "ไม่ใช้บัตรเครดิต", "ราคา"
+  แต่ primary keyword ที่โจทย์ให้มายังสำคัญที่สุด ห้ามยัดคำหรือเปลี่ยนบทความให้เป็นโฆษณาล้วน
+- ข้อมูลแบรนด์ที่อนุมัติให้อ้างได้ (เลือกใช้ 2-3 ข้อที่เกี่ยวกับหัวข้อ กระจายในเนื้อหา):
+  1. LG Subscribe คือการใช้เครื่องใช้ไฟฟ้า LG โดยชำระเป็นรายเดือนตามระยะเวลาในสัญญา ไม่ต้องจ่ายราคาเต็มก้อนเดียว
+  2. ไม่ใช่การผ่อนแบบกันวงเงินบัตรเครดิตเต็มมูลค่าสินค้า ช่องทางชำระขึ้นกับแพ็กเกจและเงื่อนไข
+  3. มีบริการดูแลสินค้าโดยช่าง LG ถึงบ้านและการรับประกันตามเงื่อนไขของสินค้าและสัญญา
+  4. เมื่อชำระครบตามสัญญา กรรมสิทธิ์ในสินค้าโอนให้ลูกค้าตามข้อกำหนดของสัญญา
+- ห้ามสร้างตัวเลขจำนวนลูกค้า ยอดขาย คะแนนรีวิว รางวัล หรือใบรับรองเพิ่มเอง
+
+โครงเนื้อหาเป็น "บล็อก" ไม่ใช่ HTML — ทุกบล็อกมี field \`type\` แล้วใส่เฉพาะ field ที่ชนิดนั้นใช้:
+- heading (มี level + runs): level 2 = หัวข้อหลัก, level 3 = หัวข้อซ้อนใต้หัวข้อหลัก
+  **ห้ามใช้ level 1 เด็ดขาด** เพราะ h1 สงวนไว้ให้ชื่อบทความ — บทความต้องเริ่มด้วย heading level 2 เสมอ
+- paragraph (มี runs): ย่อหน้าคำอธิบาย — **บล็อกหลักของบทความ** ยาวไม่เกิน 3-4 บรรทัดต่อย่อหน้า
+- bulletList / numberedList (มี items): ใช้ได้เฉพาะ 2 กรณีเท่านั้น คือ (ก) ขั้นตอนลงมือทำที่ต้องทำตามลำดับจริง
+  (ข) รายการของจริงที่นับได้ เช่น อุปกรณ์ที่ต้องเตรียม ชนิดผ้าที่รองรับ
+  **ห้ามใช้แทนการเรียบเรียง** — ถ้าเนื้อหาคือความคิดหรือคำอธิบายที่ร้อยเรียงกันได้ ต้องเขียนเป็นย่อหน้า
+- callout (มี variant + runs): กล่องเน้น — tip = เคล็ดลับ/ทางลัด, warn = ข้อห้าม/สิ่งที่ทำแล้วพัง, info = ข้อมูลเสริม
+- table (มี rows): ใช้เมื่อเปรียบเทียบตั้งแต่ 2 อย่างขึ้นไป แถวแรกเป็นหัวตาราง (ทุก cell ใส่ isHeader: true)
+- quote (มี runs) และ divider (ไม่มีเนื้อหา): ใช้เท่าที่จำเป็น
+
+สัดส่วนเนื้อหา (ข้อนี้สำคัญที่สุด — คนอ่านจับได้ทันทีว่าเครื่องเขียนถ้าผิด):
+- **อย่างน้อย 70% ของบล็อกเนื้อหาต้องเป็น paragraph** นับเฉพาะบล็อกเนื้อหา (paragraph/list/table/quote/callout)
+  ไม่นับ heading — เช่นมีบล็อกเนื้อหา 10 บล็อก ต้องเป็น paragraph อย่างน้อย 7 บล็อก
+- **ห้ามวางรายการติดกัน 2 ชุดรวด** ทุกรายการต้องมีย่อหน้าคั่นก่อนและหลัง และต้องมีย่อหน้าเกริ่นว่ารายการนี้คืออะไร
+- หัวข้อหนึ่ง ๆ ที่เป็นความรู้/คำอธิบาย เขียนเป็นย่อหน้าล้วนได้ ไม่ต้องฝืนใส่รายการให้ครบทุกหัวข้อ
+- ทั้งบทความมี callout ได้ไม่เกิน 2 กล่อง (เคล็ดลับ หรือข้อห้ามที่คนมักทำผิด) — ใส่เมื่อมีของจริงจะเน้นเท่านั้น
+- ใช้ table เฉพาะตอนเทียบตัวเลือก/วัสดุ/วิธี ที่เทียบเป็นตารางแล้วอ่านง่ายกว่าจริง สูงสุด 1 ตาราง
+
+สำนวน — ห้ามให้อ่านแล้วรู้ว่าเครื่องเขียน:
+- **สลับความยาวประโยค** ประโยคยาวตามด้วยประโยคสั้น ๆ ห้ามให้ทุกประโยคยาวเท่ากันเป็นจังหวะเดียวทั้งบทความ
+  ย่อหน้าก็เช่นกัน — บางย่อหน้า 4 บรรทัด บางย่อหน้า 1-2 บรรทัด
+- ห้ามขึ้นต้นย่อหน้าด้วยโครงสร้างเดิมซ้ำ ๆ (เช่น ขึ้นต้นด้วยคำเชื่อมทุกย่อหน้า)
+- **คำต้องห้าม**: "ไม่เพียงแต่...แต่ยัง", "ยิ่งไปกว่านั้น", "ในโลกปัจจุบัน", "ท้ายที่สุดนี้",
+  "หวังว่าบทความนี้จะเป็นประโยชน์" — ห้ามใช้เด็ดขาด
+  ส่วน "อย่างไรก็ตาม" กับ "นอกจากนี้" ใช้ได้รวมกันไม่เกินอย่างละ 2 ครั้งทั้งบทความ
+- ห้ามสรุปซ้ำสิ่งที่เพิ่งพูดจบไป และห้ามปิดย่อหน้าด้วยประโยคทวนใจความของย่อหน้าตัวเอง
+- หัวข้อปิดท้ายให้จบด้วยคำแนะนำที่ใช้ได้จริงแล้วชวนคุยทาง LINE ไม่ใช่ย่อหน้าสรุปภาพรวมทั้งบทความ
+
+กติกาบล็อกที่ห้ามผิด:
+- ข้อความทุกชิ้นอยู่ใน runs เป็น plain text — **ห้ามมี HTML tag ใด ๆ เด็ดขาด** ถ้าจะเน้นคำให้ใช้ bold: true
+- ห้ามส่งบล็อกชนิด image — ระบบแทรกรูปประกอบให้เองทีหลัง
+- ห้ามใส่ field id ให้บล็อก — ระบบสร้างให้เอง`;
+
+/**
+ * กติกาการใช้ "ข้อมูลจริงของหมวดบริการ" — ต่อท้ายบล็อกข้อมูลใน user message เสมอเมื่อมี grounding
+ *
+ * แยกออกมาจาก SYSTEM_PROMPT เพราะกติกาชุดนี้ **ปลดล็อกข้อห้ามเรื่องราคา** ที่ system prompt ตั้งไว้
+ * จึงต้องอยู่ติดกับข้อมูลที่ปลดล็อกให้ใช้ ไม่ใช่ลอยอยู่ใน system prompt ที่ใช้กับทุกโหมด
+ */
+const GROUNDING_USAGE_RULES = `กติกาการใช้ข้อมูลจริงข้างบน:
+- ข้อมูลชุดนี้คือรุ่นและราคาจริงในแคตตาล็อก LG Subscribe ให้เขียนโดยอ้างของจริงเหล่านี้ ไม่ใช่ความรู้ทั่วไปที่คุณมี
+- **ราคา**: อ้าง "ราคาเช่าเริ่มต้นต่อเดือน" จากบล็อก [ช่วงราคา] ได้ และควรอ้างถ้าหัวข้อเกี่ยวกับราคา
+  ใช้ตัวเลขตรง ๆ ห้ามปัด ห้ามแต่งราคาต่อรุ่นที่ไม่ได้ให้มา และต้องเขียนกำกับว่าราคาเป็นไปตามเงื่อนไข LG ณ วันที่สมัคร
+  ถ้าไม่มีบล็อก [ช่วงราคา] แนบมา **ห้ามพูดถึงตัวเลขราคาใด ๆ ทั้งสิ้น**
+- **รุ่นสินค้า**: อ้างได้เฉพาะรุ่นที่อยู่ในรายการที่ให้มา ห้ามเสนอรุ่นที่ไม่มีในแคตตาล็อก
+- ความรู้สินค้า (จุดเด่น วิธีเลือก การติดตั้ง การดูแล) ใช้เป็นแหล่งข้อเท็จจริงหลักของบทความ
+- ห้ามยกตัวเลขยอดค้นหา/อันดับ Google มาเขียนลงบทความ — ตัวเลขชุดนั้นให้ไว้เพื่อเลือกประเด็น ไม่ใช่เพื่อเผยแพร่`;
+
+/**
+ * @description AI ครั้งที่ 2 — เขียนบทความ SEO เต็มเป็นโครงบล็อก (1 หัวข้อ = 1 บทความ)
+ * @logic
+ * - รับได้ 2 โหมด: จากหัวข้อที่สกัดจากแชท (cron) หรือจาก brief ที่ super-admin พิมพ์เอง
+ * - ผลลัพธ์จาก AI เป็นบล็อกโครงแบน (ไม่มี id) → normalizeAiBlocks แปลงเป็น SeoArticleBlock[] จริง
+ *   พร้อมใส่ id, ดัด heading ให้เริ่มที่ level 2, ทิ้งบล็อกเสียพร้อม warning
+ * - system prompt บังคับ "ความเรียงเป็นหลัก" (paragraph ≥ 70% ของบล็อกเนื้อหา) เพราะบทความชุดแรก
+ *   ถูกเจ้าของธุรกิจติว่าอ่านแล้วรู้ว่า AI เขียน จากการซอยทุกความคิดเป็นหัวข้อย่อยขีดกลาง
+ * - หลัง normalize แล้วเดินผ่าน detectAiToneSignals อีกชั้น — เจอสัญญาณกลิ่น AI จะต่อท้าย warnings
+ *   (ไม่ปัดตกบทความ เพราะคนรีวิวแก้เองได้ และการปัดตกทำให้ cron วันนั้นไม่ได้บทความเลย)
+ * - โหมด cron ไม่มีข้อความแชทลูกค้าใน prompt (ส่งแค่หัวข้อที่สกัดแล้ว) → ไม่มีทางมีข้อมูลส่วนบุคคลหลุด
+ * @param params topic = หัวข้อตั้งต้น, brief = โจทย์ที่ผู้ใช้พิมพ์เอง (โหมด MANUAL), createId = inject เพื่อ test
+ * @returns บทความโครงบล็อกพร้อมบันทึก + warnings
+ * @used-by {@link ./generate-seo-article-drafts.helper.ts}
+ * @related {@link ./normalize-ai-blocks.helper.ts}, {@link ./detect-ai-tone-signals.helper.ts},
+ *          {@link ../type/seo-article-block.type.ts}
+ */
+export const writeSeoArticle = async (params: {
+  topic: SeoSourceTopic;
+  brief?: SeoArticleBriefInput;
+  createId?: () => string;
+}): Promise<WriteSeoArticleResult> => {
+  const { topic, brief, createId } = params;
+
+  const userMessage = brief
+    ? [
+        "เขียนบทความ SEO ตามโจทย์ที่ผู้ดูแลระบบสั่งมานี้:",
+        `โจทย์: ${brief.promptBrief}`,
+        brief.targetKeyword ? `primary keyword (บังคับ): ${brief.targetKeyword}` : "",
+        brief.category ? `หมวดบทความ (บังคับ): ${brief.category}` : "",
+        `โทนการเขียน: ${getSeoArticleTonePromptHint(brief.tone)}`,
+        topic.keywords.length > 0 ? `คำค้นที่เกี่ยวข้อง: ${topic.keywords.join(", ")}` : "",
+        brief.grounding ? `\n${buildGroundingMessage(brief.grounding)}\n${GROUNDING_USAGE_RULES}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n")
+    : [
+        "เขียนบทความ SEO จากหัวข้อนี้:",
+        `หัวข้อ: ${topic.topic}`,
+        topic.targetKeyword ? `primary keyword (บังคับ): ${topic.targetKeyword}` : "",
+        `คำค้นเป้าหมาย: ${topic.keywords.join(", ")}`,
+        `(มีลูกค้าถามเรื่องนี้ ${topic.count} ครั้งเมื่อวานนี้ — เป็นคำถามจริงจากตลาด)`,
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+  const resolvedModel = getSeoArticleAi("writeArticle");
+  const aiStartedAt = Date.now();
+  const { object, usage } = await generateObject({
+    model: resolvedModel.model,
+    schema: articleSchema,
+    providerOptions: resolvedModel.providerOptions,
+    system: SYSTEM_PROMPT,
+    messages: [{ role: "user", content: userMessage }],
+  });
+  void trackAiUsage({
+    feature: AiUsageFeature.SEO_ARTICLE_WRITE,
+    provider: resolvedModel.provider,
+    model: resolvedModel.modelId,
+    usage,
+    startedAt: aiStartedAt,
+  });
+
+  const normalized = normalizeAiBlocks(object.blocks, { createId });
+  // ตาข่ายรับท้าย: prompt สั่งให้เขียนเป็นความเรียงแล้ว แต่ถ้าโมเดลยังซอยเป็นรายการอยู่ ต้องให้คนรีวิวเห็น
+  // (เตือนอย่างเดียว ไม่ปัดตกบทความ — คนรีวิวเป็นคนตัดสินว่าจะแก้หรือสั่งเขียนใหม่)
+  const toneWarnings = detectAiToneSignals(normalized.blocks);
+
+  return {
+    slug: object.slug,
+    title: object.title,
+    metaDescription: object.metaDescription,
+    keywords: object.keywords,
+    // brief บังคับหมวดได้ — ผู้ใช้เลือกมาเองแล้วไม่ต้องให้ AI เดา
+    category: brief?.category ?? object.category,
+    blocks: normalized.blocks,
+    faq: object.faq,
+    warnings: [...normalized.warnings, ...toneWarnings],
+  };
+};

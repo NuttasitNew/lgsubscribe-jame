@@ -43,7 +43,7 @@ describe("database backoffice identities and permissions", () => {
     const reader = user();
     expect(allowedPages(reader).map((p) => p.href)).toEqual(["/backoffice/analytics/"]);
     expect(canAccess(reader, "users.manage")).toBe(false);
-    expect(allowedPages(owner)).toHaveLength(7);
+    expect(allowedPages(owner)).toHaveLength(8);
     expect(allowedPages({ permissions: ["line.view"], isOwner: false }).map((p) => p.href)).not.toContain(
       "/backoffice/line/settings/",
     );

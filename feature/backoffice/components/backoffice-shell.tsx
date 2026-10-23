@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Users, Menu, MessageCircle, X } from "lucide-react";
+import { BarChart3, Users, Menu, MessageCircle, Newspaper, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -22,7 +22,14 @@ export function BackofficeShell({ children, user }: { children: React.ReactNode;
   const [open, setOpen] = useState(false);
   const pages = allowedPages(user).map((page) => ({
     ...page,
-    icon: page.group === "LINE" ? MessageCircle : page.group === "ผู้ดูแลระบบ" ? Users : BarChart3,
+    icon:
+      page.group === "LINE"
+        ? MessageCircle
+        : page.group === "ผู้ดูแลระบบ"
+          ? Users
+          : page.group === "SEO"
+            ? Newspaper
+            : BarChart3,
   }));
   const current = pages.find((page) => pathname.replace(/\/$/, "") === page.href.replace(/\/$/, ""));
   function navigation(mobile = false) {

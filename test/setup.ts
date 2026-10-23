@@ -1,4 +1,5 @@
 import "@testing-library/jest-dom/vitest";
+import { vi } from "vitest";
 
 class ResizeObserverStub {
   observe() {}
@@ -50,3 +51,6 @@ if (typeof Element !== "undefined") {
     };
   }
 }
+
+// โมดูล server-only โยน error เมื่อถูก import นอก Server Component — ในเทสต์ให้เป็นโมดูลว่าง
+vi.mock("server-only", () => ({}));

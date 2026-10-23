@@ -1,0 +1,142 @@
+/* ============================================================================
+   ปรับฟอนต์/ขนาด/ระยะห่างของ BlockNote ให้ตรงกับบทความจริงบนเว็บ hurry-web
+   ----------------------------------------------------------------------------
+   ที่มาของตัวเลขทุกค่า (ห้ามเดา ถ้าเว็บเปลี่ยนต้องตามแก้ที่นี่ด้วย):
+   - ฟอนต์        : hurry-web lib/fonts.ts + app/[locale]/blog/layout.tsx
+                    เนื้อความ = Sarabun (400/600) / หัวข้อ = Kanit (สืบทอดจาก html ของเว็บ)
+                    ฝั่งนี้ Sarabun โหลดที่ app/(management-program)/super-admin/hurry-web/seo-article/layout.tsx
+                    ส่วน Kanit มาจาก app/layout.tsx (--font-kanit)
+   - หัวข้อ h2/h3 : .../block-renderer/heading-block.tsx
+                    h2 = text-lg (18px) font-semibold (600) text-gray-900, mt-5 (20px) mb-2 (8px)
+                    h3 = text-base (16px) font-semibold (600) text-gray-900, mt-4 (16px) mb-1.5 (6px)
+   - ย่อหน้า      : .../paragraph-block.tsx → font-sarabun text-gray-600 leading-relaxed (1.625) mb-3 (12px)
+   - รายการ       : .../bullet-list-block.tsx, numbered-list-block.tsx
+                    ก้อนละ mb-3 (12px) / แต่ละข้อ mb-1.5 (6px) / font-sarabun
+   - อ้างอิง      : .../quote-block.tsx → เส้นซ้ายสีเหลืองแบรนด์ ตัวเอียง text-gray-600 font-sarabun
+   - ตาราง        : .../table-block.tsx → text-sm (14px) font-sarabun หัวตารางพื้นเทา gray-50 ตัวหนา gray-900
+   - เส้นคั่น     : .../divider-block.tsx → เส้นเดี่ยว gray-200
+
+   วิธีแปลง margin ของเว็บ → padding ของ BlockNote:
+   BlockNote ใส่ padding 3px บน + 3px ล่าง ให้ทุกบล็อกอยู่แล้ว = ช่องว่างพื้นฐานระหว่างบล็อก 6px
+   บนเว็บ margin ของบล็อกที่ติดกันจะ collapse (เอาค่ามากสุด) แต่ใน BlockNote ค่า padding บวกกัน
+   จึงต้องคำนวณส่วนต่างเอง — ตัวเลข padding ด้านล่างมาจากการหักช่องว่างพื้นฐานนี้ออกแล้ว
+
+   ค่าเริ่มต้นของ BlockNote ให้ h2 = 2em (32px) ซึ่งใหญ่กว่าเว็บจริงเกือบเท่าตัว
+   ทำให้ตอนแก้มองไม่ออกว่าขึ้นเว็บจริงจะเล็กแค่ไหน — จึงเขียนทับผ่านตัวแปร --level
+   (BlockNote คำนวณ font-size ของหัวข้อจาก var(--level) ตัวนี้ตัวเดียว)
+   ============================================================================ */
+
+/* ============================================================================
+   ปุ่ม "+" กับหมุด 6 จุด ฝั่งซ้ายของบล็อก
+   ค่าเริ่มต้นของ BlockNote คือ #cfcfcf (≈ gray-300) ซึ่งจางจนแทบมองไม่เห็นบนการ์ดพื้นขาว
+   ตัวแปรนี้คุมทั้ง fill และ stroke ของไอคอน และอ่านจาก .bn-container ซึ่งมีคลาสนี้ติดอยู่
+   ============================================================================ */
+.seo-article-document {
+  --bn-colors-side-menu: #6b7280; /* gray-500 — เข้มพอให้เห็นชัดโดยไม่แย่งสายตาไปจากเนื้อหา */
+}
+
+/* พื้นหลังตอนชี้ ให้รู้ว่าเป็นปุ่มกดได้ ไม่ใช่ไอคอนประดับ */
+.seo-article-document .bn-side-menu > button:hover {
+  background-color: rgb(243 244 246); /* gray-100 */
+  border-radius: 4px;
+}
+
+/* ----------------------------------------------------------------------------
+   ซ่อนปุ่ม "+" ของแถบซ้าย เหลือไว้แค่หมุดลาก
+   เหตุผล: ปุ่มนี้เปิดเมนูรายการยาวซึ่งซ้ำกับการพิมพ์ลัด (## / ### / - / 1. / >) ที่เร็วกว่า
+   และเป็นต้นเหตุของบั๊ก "เมนูถูกบีบจนใช้ไม่ได้" ตอนจอเตี้ย — การพิมพ์ลัดไม่มีปัญหานั้น
+   วิธีพิมพ์ลัดทั้งหมดคาไว้ที่คอลัมน์ขวาแล้ว ดู {@link seo-article-shortcut-help.tsx}
+
+   หมายเหตุ: ทางที่ควรใช้กว่าคือส่ง children ให้ <SideMenu> ผ่าน SideMenuController ของตัวเอง
+   แต่ลองแล้ว controller ที่ประกอบเองไม่ยอม mount (แถบซ้ายหายทั้งแถบ) จึงเลือกซ่อนด้วย CSS
+   ซึ่งตรวจสอบผลได้ทันทีและไม่กระทบการลากสลับบล็อก
+   ---------------------------------------------------------------------------- */
+.seo-article-document .bn-side-menu > button:first-child:not(:last-child) {
+  display: none;
+}
+
+/* ----------------------------------------------------------------------------
+   ความสูงของแถบปุ่ม — ต้องตั้งเองทุกครั้งที่เปลี่ยนขนาดหัวข้อ
+   BlockNote ฮาร์ดโค้ดความสูงไว้ตามระดับหัวข้อ โดยอิงขนาดตัวอักษร default ของมันเอง
+   (@blocknote/react/src/editor/styles.css → h1 3em = 108px, h2 2em = 84px, h3 1.5em = 67px)
+   เราย่อหัวข้อเหลือ 18px/16px แถบจึงสูงเกินจริงหลายเท่า
+   และเพราะแถบนี้เป็น flex + align-items:center ปุ่มจะถูกจัดกึ่งกลาง "กรอบ" ไม่ใช่กลางบรรทัด
+   ผลคือปุ่มตกลงไปต่ำกว่าหัวข้อ ~25px (ย่อหน้า/รายการไม่เป็นเพราะใช้ค่า default 30px ที่พอดีอยู่แล้ว)
+
+   เกณฑ์ตั้งค่า: กึ่งกลางปุ่มต้องตรงกับกึ่งกลางบรรทัดแรก → height = (lineMid - blockTop) × 2
+   ⚠️ แถบนี้มี [data-level] ใช้ได้จริง ต่างจาก .bn-block-content ที่ไม่มี (ดูคำเตือนเรื่องหัวข้อด้านล่าง)
+   ---------------------------------------------------------------------------- */
+.seo-article-document .bn-side-menu[data-block-type="heading"][data-level="1"],
+.seo-article-document .bn-side-menu[data-block-type="heading"][data-level="2"] {
+  height: 36px;
+}
+.seo-article-document .bn-side-menu[data-block-type="heading"][data-level="3"] {
+  height: 33px;
+}
+
+.seo-article-document .bn-editor {
+  font-size: 16px;
+  color: rgb(75 85 99); /* text-gray-600 — สีเนื้อความบนเว็บจริง */
+  /* เนื้อความ = Sarabun เหมือนเว็บ (BlockNote default คือ Inter ซึ่งไม่มีในเว็บจริงเลย) */
+  font-family: var(--font-sarabun), sans-serif;
+}
+
+.seo-article-document .bn-block-outer {
+  line-height: 1.625; /* leading-relaxed */
+}
+
+/* เนื้อบทความเริ่มที่ h2 (h1 = ชื่อบทความบนแถบรูปปก) — เว็บ clamp level อื่นที่ไม่ใช่ 3 ให้เป็น h2 อยู่แล้ว
+   ----------------------------------------------------------------------------
+   ⚠️ ห้ามเขียนกฎหัวข้อโดยอิง [data-level] — BlockNote 0.51 **ไม่ใส่ attribute นี้** ลง DOM
+   ของจริงที่พ่นออกมาคือ:  <div class="bn-block-content" data-content-type="heading"><h2 class="bn-inline-content">
+   ระดับหัวข้อดูได้จาก **แท็กจริงข้างใน** (h2/h3) เท่านั้น จึงต้องใช้ :has() แยกระดับ
+   (เคยพลาดมาแล้ว: กฎที่อิง [data-level="2"] ไม่เคยแมตช์เลย หัวข้อทุกตัวจึงตกไปใช้ค่า default --level:3em = 48px)
+
+   ⚠️ specificity: กฎของ BlockNote คือ
+   `.bn-block-outer:not([data-prev-type])>.bn-block>.bn-block-content[data-content-type=heading]` = (0,5,0)
+   ตั้ง font-size:var(--level) + font-weight:700 ไว้ ถ้าเขียนทับด้วย selector ที่เบากว่านี้ font-weight จะไม่ติด
+   จึงต้องไล่ตามโครงเดียวกันแล้วบวก .seo-article-document เข้าไปให้ชนะ
+
+   ⚠️ ระยะเว้นด้านบนของหัวข้อต้องเป็น margin ที่ .bn-block-outer **ห้ามเป็น padding ที่ content**
+   เพราะแถบปุ่ม "+"/หมุด 6 จุด เกาะขอบบนของ .bn-block-outer เสมอ (วัดจริง: menuTop === blockTop ทุกบล็อก)
+   ถ้าดัน padding ที่ content ตัวหนังสือจะเลื่อนลงแต่ปุ่มไม่เลื่อนตาม → ปุ่มลอยเหนือหัวข้อ
+   margin อยู่นอก border-box ขอบบล็อกจึงขยับตามไปด้วย ปุ่มเลยตรงกับบรรทัดแรกเหมือนย่อหน้า
+   (เคยพลาดมาแล้ว: padding-top 8px ทำปุ่มเหลื่อมขึ้นไป 8px เฉพาะหัวข้อ)
+   ============================================================================ */
+
+/* ระยะเว้นบนของหัวข้อ — อยู่ที่บล็อกนอกเพื่อให้ปุ่มฝั่งซ้ายเลื่อนตาม (ดูคำเตือนด้านบน)
+   รวมกับ padding 3px ของ BlockNote แล้วได้ระยะเท่าเว็บจริง: h2 = 8px, h3 = 4px */
+.seo-article-document .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="heading"]) {
+  margin-top: 5px;
+}
+.seo-article-document .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="heading"]:has(> h3)) {
+  margin-top: 1px;
+}
+.seo-article-document .bn-block-outer .bn-block .bn-block-content[data-content-type="heading"] {
+  color: rgb(17 24 39); /* text-gray-900 */
+  font-weight: 600; /* font-semibold — เว็บใช้ 600 ไม่ใช่ 700 เพราะ Kanit โหลดแค่ 400/600 */
+  /* หัวข้อคง Kanit ไว้เป็นบุคลิกแบรนด์ ต่างจากเนื้อความที่เป็น Sarabun */
+  font-family: var(--font-kanit), sans-serif;
+  --level: 1.125em; /* text-lg = 18px — ค่าเริ่มต้นของหัวข้อในบทความคือ h2 */
+  padding-top: 3px; /* คงค่า default ของ BlockNote ไว้ ระยะเว้นจริงย้ายไปเป็น margin ที่บล็อกนอก */
+  padding-bottom: 2px; /* เว็บ mb-2 = 8px = 3px + 3px (default) + 2px */
+}
+
+/* h3 = หัวข้อย่อย — ดูจากแท็กจริงข้างใน ไม่ใช่ data-level */
+.seo-article-document .bn-block-outer .bn-block .bn-block-content[data-content-type="heading"]:has(> h3) {
+  --level: 1em; /* text-base = 16px — เท่าย่อหน้า ต่างกันที่น้ำหนักกับสี เหมือนเว็บ */
+  padding-top: 3px; /* เช่นเดียวกับ h2 ระยะเว้นจริงอยู่ที่ margin ของบล็อกนอก */
+  padding-bottom: 0; /* เว็บ mb-1.5 = 6px ซึ่งเท่ากับ default 3px + 3px พอดี */
+}
+
+/* ระยะห่างระหว่างย่อหน้า: เว็บ mb-3 = 12px = 3px + 3px (default) + 6px */
+.seo-article-document [data-content-type="paragraph"] {
+  padding-bottom: 6px;
+}
+
+/* เว็บให้แต่ละข้อ mb-1.5 = 6px ซึ่งตรงกับ default 3px+3px ของ BlockNote พอดี → ไม่ต้อง override */
+
+/* ตารางบนเว็บใช้ text-sm — ในผืนแก้ไขจึงต้องเล็กตามเพื่อไม่ให้ประเมินความกว้างคอลัมน์ผิด */
+.seo-article-document [data-content-type="table"] table {
+  font-size: 14px;
+}
