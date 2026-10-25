@@ -2,7 +2,7 @@ import "server-only";
 
 import { z } from "zod";
 import { AiUsageFeature } from "@prisma/client";
-import { buildSiteContext, describeSiteForPrompt } from "./build-site-context.helper";
+import { buildSiteContext, describeSiteForPrompt, resolveCatalogProduct } from "./build-site-context.helper";
 import { isVisitedUrl, runWebResearch } from "./run-web-research.helper";
 import type { SerpBrief, SerpWritingStyle } from "../type/seo-keyword.type";
 
@@ -94,7 +94,6 @@ export const analyzeSerp = async (keyword: string): Promise<SerpBrief> => {
     maxFetches: 6,
   });
 
-  const knownSlugs = new Set(products.map((p) => p.slug));
   const object = research.object;
   return {
     kind: "serp",
@@ -104,7 +103,9 @@ export const analyzeSerp = async (keyword: string): Promise<SerpBrief> => {
     facts: object.facts.filter((fact) => isVisitedUrl(fact.sourceUrl, research.visitedUrls)),
     outline: object.outline,
     questions: object.questions,
-    productSlugs: object.productSlugs.filter((slug) => knownSlugs.has(slug)).slice(0, 3),
+    productSlugs: [
+      ...new Set(object.productSlugs.map((slug) => resolveCatalogProduct(slug, products)?.slug).filter(Boolean)),
+    ].slice(0, 3) as string[],
     writingStyle: object.writingStyle,
     analyzedAt: new Date().toISOString(),
   };

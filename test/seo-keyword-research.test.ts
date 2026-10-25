@@ -114,3 +114,16 @@ describe("visited url guard", () => {
     expect(isVisitedUrl(null, visited)).toBe(false);
   });
 });
+
+describe("catalog product lookup", () => {
+  it("accepts the slug, the model name, or a model with a variant suffix", async () => {
+    const { resolveCatalogProduct } = await import("@/feature/backoffice/seo/keyword-research/server/build-site-context.helper");
+    const products = [
+      { slug: "lg-puricare-wd516", name: "", model: "WD516AN", category: "", monthlyPrice: 499, contractMonths: 84, image: "", officialUrl: null },
+    ];
+    expect(resolveCatalogProduct("lg-puricare-wd516", products)?.slug).toBe("lg-puricare-wd516");
+    expect(resolveCatalogProduct("wd516an", products)?.slug).toBe("lg-puricare-wd516");
+    expect(resolveCatalogProduct("WD516AN.ASLPLMT", products)?.slug).toBe("lg-puricare-wd516");
+    expect(resolveCatalogProduct("wd999", products)).toBeUndefined();
+  });
+});

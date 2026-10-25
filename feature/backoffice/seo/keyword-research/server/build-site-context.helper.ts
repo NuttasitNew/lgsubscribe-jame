@@ -57,6 +57,25 @@ export const buildSiteContext = (): { categories: SiteCategoryContext[]; product
   return { categories, products };
 };
 
+const normalizeProductKey = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+/**
+ * @description หาสินค้าในแคตตาล็อกจากสิ่งที่ AI ตอบมา — AI มักตอบเป็นชื่อรุ่น (wd516an) แทน slug (lg-puricare-wd516)
+ * @logic ตรง slug ก่อน → ตรงรุ่น (ไม่สนตัวพิมพ์/ขีด/จุด) → รุ่นที่ AI ตอบขึ้นต้นด้วยรุ่นในแคตตาล็อก (เช่น WD516AN.ASLPLMT)
+ */
+export const resolveCatalogProduct = (
+  value: string,
+  products: SiteProductContext[]
+): SiteProductContext | undefined => {
+  const key = normalizeProductKey(value);
+  if (!key) return undefined;
+  return (
+    products.find((p) => p.slug === value) ??
+    products.find((p) => normalizeProductKey(p.slug) === key || normalizeProductKey(p.model) === key) ??
+    products.find((p) => normalizeProductKey(p.model).length >= 5 && key.startsWith(normalizeProductKey(p.model)))
+  );
+};
+
 /** ข้อความสรุปธุรกิจสำหรับใส่ใน prompt */
 export const describeSiteForPrompt = (categories: SiteCategoryContext[]): string =>
   [

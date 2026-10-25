@@ -3,7 +3,12 @@ import "server-only";
 import { z } from "zod";
 import { AiUsageFeature } from "@prisma/client";
 import { siteConfig } from "@/lib/site";
-import { buildSiteContext, describeSiteForPrompt, type SiteProductContext } from "./build-site-context.helper";
+import {
+  buildSiteContext,
+  describeSiteForPrompt,
+  resolveCatalogProduct,
+  type SiteProductContext,
+} from "./build-site-context.helper";
 import { isVisitedUrl, runWebResearch } from "./run-web-research.helper";
 import type { BuyVsRentDataset, CompareDataset, SerpBrief } from "../type/seo-keyword.type";
 
@@ -172,7 +177,7 @@ const verifyBuyVsRent = (
   products: SiteProductContext[],
   visitedUrls: string[]
 ): BuyVsRentDataset | null => {
-  const product = products.find((p) => p.slug === raw.productSlug && p.monthlyPrice != null);
+  const product = resolveCatalogProduct(raw.productSlug, products);
   if (!product || product.monthlyPrice == null) return null;
 
   const buy =
