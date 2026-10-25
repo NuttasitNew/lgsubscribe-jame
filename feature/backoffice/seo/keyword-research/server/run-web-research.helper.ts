@@ -9,6 +9,8 @@ import { getSeoArticleAi, type SeoAiTask } from "../../seo-article/server/seo-ar
 
 /** pause_turn = server tool วนนานจน API พักเทิร์น ต้องส่งต่อให้ทำต่อ — จำกัดรอบไว้กันค่าใช้จ่ายบาน */
 const MAX_CONTINUATIONS = 3;
+/** Claude web search คิดแยก $10 ต่อ 1,000 ครั้ง (web fetch ไม่มีค่าเครื่องมือ จ่ายแค่ token ของเนื้อหา) */
+const WEB_SEARCH_FEE_USD = 0.01;
 /** บันทึกสั้นกว่านี้ = AI ยังไม่ได้เขียนสรุป (มีแค่ประโยคเกริ่น) */
 const MIN_NOTES_LENGTH = 800;
 const WRAP_UP_PROMPT =
@@ -84,6 +86,9 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
       providerOptions: ai.providerOptions,
       maxOutputTokens: 16000,
     });
+    const searches = result.steps
+      .flatMap((step) => step.content)
+      .filter((part) => part.type === "tool-call" && part.toolName === "web_search").length;
     void trackAiUsage({
       feature: params.feature,
       provider: ai.provider,
@@ -91,6 +96,7 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
       usage: result.totalUsage,
       startedAt,
       operation: `${params.task}:search`,
+      toolFeeUsd: searches * WEB_SEARCH_FEE_USD,
     });
 
     for (const step of result.steps) {

@@ -34,6 +34,8 @@ export interface TrackAiUsageParams {
   refId?: string;
   /** ชื่อผู้กดสั่ง (ถ้ามี) */
   actorName?: string;
+  /** ค่าเครื่องมือที่คิดแยกจาก token (เช่น Claude web search $10 / 1,000 ครั้ง) — บวกเข้ายอดประมาณการ */
+  toolFeeUsd?: number;
 }
 
 const toInt = (value: number | null | undefined): number => {
@@ -95,7 +97,7 @@ export const trackAiUsage = async (params: TrackAiUsageParams): Promise<void> =>
         cachedInputTokens,
         outputTokens,
         reasoningTokens,
-        estimatedCostUsd: costUsd,
+        estimatedCostUsd: costUsd + Math.max(0, params.toolFeeUsd ?? 0),
         durationMs: params.startedAt ? Math.max(0, Date.now() - params.startedAt) : null,
         success: params.success ?? true,
         errorCode: params.errorCode ?? null,
