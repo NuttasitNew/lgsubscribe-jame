@@ -32,7 +32,14 @@ const compareSchema = z.object({
   buyVsRent: z
     .object({
       productSlug: z.string().describe("slug สินค้าของเรา 1 รุ่นที่เป็นตัวแทนของคำค้นนี้ จากรายการที่ให้"),
-      buyPrice: z.number().nullable().describe("ราคาซื้อขาดของรุ่นเดียวกัน (บาท) ตามที่หน้าเว็บเขียน — ไม่เจอให้ null"),
+      buyPrice: z
+        .number()
+        .nullable()
+        .describe("ราคาซื้อขาด (บาท) ตามที่หน้าเว็บเขียน ของรุ่นเดียวกัน หรือรุ่นเทียบเคียงถ้ารุ่นเดียวกันไม่มีขายขาด — ไม่เจอให้ null"),
+      buyProductName: z
+        .string()
+        .nullable()
+        .describe("ชื่อรุ่นที่ใช้ราคาซื้อขาด ถ้าไม่ใช่รุ่นเดียวกับ productSlug (รุ่นเทียบเคียง) — รุ่นเดียวกันให้ null"),
       buyPriceSeller: z.string().nullable().describe("ร้าน/เว็บที่แสดงราคานั้น เช่น LG Thailand, Power Buy"),
       buyPriceSourceUrl: z.string().nullable().describe("URL หน้าที่เห็นราคาซื้อขาดจริง"),
       rows: z
@@ -59,7 +66,17 @@ const SYSTEM_PROMPT = `คุณคือนักวิจัยข้อมู
 5. เทียบ "เช่ากับ LG Subscribe" vs "ซื้อขาด": เลือกสินค้าของเรา 1 รุ่นที่ตรงคำค้นที่สุด แล้วหาราคาซื้อขาดของรุ่นเดียวกัน
    จากหน้าสินค้าทางการ lg.com/th (ลิงก์ทางการที่แนบ) หรือร้านค้าใหญ่ในไทย พร้อมเงื่อนไขที่ต่าง (ค่าบำรุงรักษา/อะไหล่สิ้นเปลือง, ประกัน, กรรมสิทธิ์, ภาระเงินก้อน/วงเงินบัตร)
    — ค่าเช่าไม่ต้องหา ระบบใช้ราคาจากแคตตาล็อกเว็บเราเอง
+   — หาราคาซื้อขาดตั้งแต่ต้น (ก่อนลงรายละเอียดคู่แข่ง) เพราะโควตาเปิดหน้าเว็บมีจำกัด: ถ้าหน้า LG ไม่แสดงราคา ให้ค้นชื่อรุ่น + "ราคา" จากร้านใหญ่ทันที
+   — บางรุ่นขายแบบ Subscribe อย่างเดียว ถ้าค้น 2 ครั้งแล้วไม่เจอราคาขาดของรุ่นเดียวกัน ให้ใช้รุ่นเทียบเคียงที่ขายขาด
+     (LG หมวดเดียวกัน ฟังก์ชันใกล้กันก่อน ไม่มีค่อยใช้แบรนด์อื่น) และระบุชื่อรุ่นนั้นชัด ๆ
 6. สรุปตาราง: เกณฑ์ 6-10 แถวที่คนตัดสินใจจริง (ค่าบริการ/เดือน, ระยะสัญญา, ค่าแรกเข้า/มัดจำ, บริการบำรุงรักษา, การรับประกัน, ครบสัญญาเป็นของใคร, ต้องใช้บัตรเครดิตไหม, ยกเลิกก่อนกำหนด)
+
+การใช้โควตาค้นเว็บ:
+- แบรนด์ละ 1-2 หน้าทางการพอ ไม่ต้องไล่เปิดเว็บตัวแทนหลายเจ้า — เก็บโควตาไว้หาราคาซื้อขาด
+
+รูปแบบบันทึกสรุปสุดท้าย (ระบบอ่านต่อด้วยโปรแกรม):
+- ส่วนที่ 1 "## ตารางเทียบแบรนด์": ทุกช่องเขียนค่า แล้วตามด้วย URL เต็ม (https://...) ของหน้าที่เห็นค่านั้นในวงเล็บ ห้ามเขียนแค่ชื่อโดเมน
+- ส่วนที่ 2 "## เช่า vs ซื้อขาด": slug สินค้าของเรา, ราคาซื้อขาด + ร้าน + URL เต็ม (+ ชื่อรุ่นถ้าเป็นรุ่นเทียบเคียง), และเงื่อนไขที่ต่าง แต่ละข้อมี URL เต็ม
 
 กติกาความถูกต้อง (สำคัญที่สุด):
 - ทุกค่าในตารางต้องมี URL ที่คุณเปิดอ่านจริงและเห็นข้อมูลนั้นในหน้า ถ้าหาไม่เจอให้เขียน "${NOT_PUBLIC}" ห้ามเดา ห้ามประมาณ
@@ -105,9 +122,12 @@ export const researchComparison = async (keyword: string, serp?: SerpBrief): Pro
     system: SYSTEM_PROMPT,
     prompt,
     schema: compareSchema,
-    structureInstruction: `ดึงตารางเทียบตาม schema — brands ช่องแรกต้องเป็น "${OUR_BRAND}", ค่าที่บันทึกไม่ได้ระบุ URL ให้ใช้ "${NOT_PUBLIC}" และ sourceUrl null`,
-    maxSearches: 12,
-    maxFetches: 14,
+    structureInstruction:
+      `ดึงตารางเทียบตาม schema — brands ช่องแรกต้องเป็น "${OUR_BRAND}", ค่าที่บันทึกไม่ได้ระบุแหล่งให้ใช้ "${NOT_PUBLIC}" และ sourceUrl null\n` +
+      "ถ้าช่องในบันทึกอ้างแค่ชื่อโดเมน (เช่น \"cowaythai.com ระบุ...\") ให้ใช้ URL เต็มของโดเมนนั้นจากรายการแหล่งข้อมูลในบันทึกเป็น sourceUrl\n" +
+      "buyVsRent: ใส่ข้อมูลเสมอถ้าบันทึกมีส่วนเช่า vs ซื้อขาด แม้ไม่มีราคาซื้อขาด (buyPrice null ได้) — ใช้ null ทั้งก้อนเฉพาะเมื่อไม่มีข้อมูลเลย",
+    maxSearches: 14,
+    maxFetches: 20,
   });
 
   const { brands: rawBrands, rows: rawRows, verdicts, buyVsRent: rawBuyVsRent } = research.object;
@@ -182,7 +202,12 @@ const verifyBuyVsRent = (
 
   const buy =
     raw.buyPrice != null && raw.buyPrice > 0 && raw.buyPriceSourceUrl && isVisitedUrl(raw.buyPriceSourceUrl, visitedUrls)
-      ? { price: raw.buyPrice, seller: raw.buyPriceSeller?.trim() || hostnameOf(raw.buyPriceSourceUrl), sourceUrl: raw.buyPriceSourceUrl }
+      ? {
+          price: raw.buyPrice,
+          seller: raw.buyPriceSeller?.trim() || hostnameOf(raw.buyPriceSourceUrl),
+          sourceUrl: raw.buyPriceSourceUrl,
+          productName: raw.buyProductName?.trim() || null,
+        }
       : null;
 
   const verifyCell = (cell: { value: string; sourceUrl: string | null }, allowOwn: boolean) =>

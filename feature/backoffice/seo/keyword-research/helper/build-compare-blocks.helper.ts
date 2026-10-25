@@ -73,7 +73,12 @@ export const buildBuyVsRentBlocks = (data: BuyVsRentDataset, asOf: string, creat
     row(
       "ราคา",
       cell(`เริ่ม ${baht(data.rent.monthly)}/เดือน${data.rent.months ? ` × ${data.rent.months} เดือน` : ""}`, data.rent.sourceUrl),
-      data.buy ? cell(`${baht(data.buy.price)} จ่ายครั้งเดียว (${data.buy.seller})`, data.buy.sourceUrl) : cell("ไม่มีข้อมูลเปิดเผย")
+      data.buy
+        ? cell(
+            `${baht(data.buy.price)} จ่ายครั้งเดียว (${data.buy.seller}${data.buy.productName ? ` — รุ่นเทียบเคียง ${data.buy.productName}` : ""})`,
+            data.buy.sourceUrl
+          )
+        : cell("ไม่มีข้อมูลเปิดเผย")
     ),
     row("เงินก้อนที่ต้องมีวันแรก", cell("จ่ายเป็นรายเดือน ไม่ต้องจ่ายเต็มราคา"), cell(data.buy ? baht(data.buy.price) : "เต็มราคาสินค้า")),
   ];
@@ -94,7 +99,10 @@ export const buildBuyVsRentBlocks = (data: BuyVsRentDataset, asOf: string, creat
         {
           text:
             `ข้อมูล ณ วันที่ ${formatThaiDate(asOf)} — ยอดจ่ายรวมฝั่งเช่าคำนวณจากราคาเริ่มต้นต่อเดือน × จำนวนเดือนของสัญญา ` +
-            "ฝั่งซื้อขาดเป็นราคาสินค้าอย่างเดียว ยังไม่รวมค่าบำรุงรักษา อะไหล่สิ้นเปลือง หรือดอกเบี้ยหากผ่อน ราคาจริงอาจเปลี่ยนตามโปรโมชัน",
+            "ฝั่งซื้อขาดเป็นราคาสินค้าอย่างเดียว ยังไม่รวมค่าบำรุงรักษา อะไหล่สิ้นเปลือง หรือดอกเบี้ยหากผ่อน ราคาจริงอาจเปลี่ยนตามโปรโมชัน" +
+            (data.buy?.productName
+              ? ` รุ่นที่เช่าไม่มีวางขายแบบซื้อขาด จึงใช้ราคา ${data.buy.productName} ซึ่งเป็นรุ่นเทียบเคียงแทน`
+              : ""),
         },
       ],
     },

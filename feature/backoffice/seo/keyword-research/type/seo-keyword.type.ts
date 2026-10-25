@@ -79,8 +79,11 @@ export interface BuyVsRentDataset {
   productName: string;
   /** ค่าเช่าจากแคตตาล็อกเว็บเรา (ไม่ใช่ตัวเลขจาก AI) */
   rent: { monthly: number; months: number | null; sourceUrl: string };
-  /** ราคาซื้อขาดที่เปิดหน้าเว็บยืนยันแล้ว — null = หาแหล่งยืนยันไม่ได้ */
-  buy: { price: number; seller: string; sourceUrl: string } | null;
+  /**
+   * ราคาซื้อขาดที่เปิดหน้าเว็บยืนยันแล้ว — null = หาแหล่งยืนยันไม่ได้
+   * productName มีค่า = รุ่นเดียวกันไม่มีขายขาด จึงใช้รุ่นเทียบเคียงที่ขายขาด (ต้องบอกผู้อ่านตรง ๆ)
+   */
+  buy: { price: number; seller: string; sourceUrl: string; productName: string | null } | null;
   /** แถวเชิงเงื่อนไข: cells[0] = เช่า, cells[1] = ซื้อขาด */
   rows: CompareRow[];
 }

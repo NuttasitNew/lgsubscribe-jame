@@ -76,7 +76,7 @@ describe("buy vs rent table", () => {
       productSlug: "wd516an",
       productName: "เครื่องกรองน้ำ LG (WD516AN)",
       rent: { monthly: 590, months: 60, sourceUrl: "https://www.lgthailand-subscribe.com/products/wd516an" },
-      buy: { price: 24990, seller: "LG Thailand", sourceUrl: "https://www.lg.com/th/water-purifiers/wd516an/" },
+      buy: { price: 24990, seller: "LG Thailand", sourceUrl: "https://www.lg.com/th/water-purifiers/wd516an/", productName: null },
       rows: [],
     },
   };

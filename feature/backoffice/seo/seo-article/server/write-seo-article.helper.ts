@@ -199,7 +199,9 @@ const buildBuyVsRentLines = (data: BuyVsRentDataset): string[] => {
   return [
     `[เช่า vs ซื้อขาด — รุ่นตัวแทน ${data.productName}]`,
     `- เช่า: เริ่ม ${data.rent.monthly} บาท/เดือน${data.rent.months ? ` สัญญา ${data.rent.months} เดือน` : ""}${rentTotal != null ? ` รวมประมาณ ${rentTotal} บาท` : ""}`,
-    data.buy ? `- ซื้อขาด: ${data.buy.price} บาท (${data.buy.seller})` : "- ซื้อขาด: ไม่มีข้อมูลราคาที่ยืนยันได้ — ห้ามระบุราคาซื้อ",
+    data.buy
+      ? `- ซื้อขาด: ${data.buy.price} บาท (${data.buy.seller})${data.buy.productName ? ` — เป็นราคารุ่นเทียบเคียง ${data.buy.productName} เพราะรุ่นที่เช่าไม่มีขายขาด ต้องบอกผู้อ่านตรง ๆ` : ""}`
+      : "- ซื้อขาด: ไม่มีข้อมูลราคาที่ยืนยันได้ — ห้ามระบุราคาซื้อ",
     ...data.rows.map((row) => `- ${row.criterion}: เช่า = ${row.cells[0].value} ; ซื้อขาด = ${row.cells[1].value}`),
   ];
 };
