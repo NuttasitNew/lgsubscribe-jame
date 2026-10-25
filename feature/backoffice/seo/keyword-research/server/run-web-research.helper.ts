@@ -9,6 +9,11 @@ import { getSeoArticleAi, type SeoAiTask } from "../../seo-article/server/seo-ar
 
 /** pause_turn = server tool วนนานจน API พักเทิร์น ต้องส่งต่อให้ทำต่อ — จำกัดรอบไว้กันค่าใช้จ่ายบาน */
 const MAX_CONTINUATIONS = 3;
+/** บันทึกสั้นกว่านี้ = AI ยังไม่ได้เขียนสรุป (มีแค่ประโยคเกริ่น) */
+const MIN_NOTES_LENGTH = 800;
+const WRAP_UP_PROMPT =
+  "หยุดค้นเว็บแล้ว ไม่ต้องเปิดหน้าใดเพิ่ม เขียนบันทึกสรุปทุกข้อมูลที่อ่านเจอจากหน้าที่เปิดไปแล้วให้ครบตามโจทย์ " +
+  "ทุกข้อเท็จจริง/ตัวเลขต้องกำกับ URL ของหน้าที่เห็นข้อมูลนั้นต่อท้าย ข้อไหนหาไม่เจอให้เขียนว่าไม่พบข้อมูล";
 
 export interface WebResearchParams<T> {
   task: Extract<SeoAiTask, "researchKeywords" | "analyzeSerp" | "researchCompare">;
@@ -41,6 +46,7 @@ export interface WebResearchResult<T> {
  *    ผลค้นหาไม่ใช่หน้า Google ไทยตรง ๆ แต่ใกล้เคียงพอสำหรับดูว่าใครติดและเขียนอะไร (อันดับจริงวัดจาก Search Console)
  * 2. ถ้า API ตอบ `pause_turn` (ค้นนานจนพักเทิร์น) ส่ง messages เดิมกลับไปให้ทำต่อ สูงสุด {@link MAX_CONTINUATIONS} รอบ
  *    — AI SDK แปลง pause_turn เป็น "stop" ถ้าไม่เช็ค rawFinishReason จะได้บันทึกครึ่งเดียว
+ *    ถ้าค้นจนหมดรอบ/โดนตัดโดยยังไม่ได้เขียนสรุป → ส่งอีกเทิร์นแบบปิดเครื่องมือ (toolChoice none) ให้สรุปจากที่อ่านแล้ว
  * 3. ขั้นจัดโครง: ให้ Claude รุ่นเดียวกันแปลงบันทึกเป็น JSON ตาม schema (แยกขั้นเพราะ structured output
  *    กับ server tool ที่วนหลายรอบรวมกันแล้วเสี่ยงได้ JSON ครึ่งเดียวตอน pause)
  * 4. คืน URL ที่ tool เจอจริง ให้ผู้เรียกกรองแหล่งอ้างอิงที่ AI อาจแต่งขึ้นทิ้ง
@@ -67,6 +73,7 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
   const notes: string[] = [];
   const visited = new Set<string>();
   const startedAt = Date.now();
+  let endedCleanly = false;
 
   for (let round = 0; round <= MAX_CONTINUATIONS; round++) {
     const result = await generateText({
@@ -93,9 +100,31 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
       }
     }
     if (result.text.trim()) notes.push(result.text.trim());
-
-    if (result.rawFinishReason !== "pause_turn") break;
     messages.push(...result.response.messages);
+    endedCleanly = result.rawFinishReason !== "pause_turn" && result.finishReason !== "length";
+    if (result.rawFinishReason !== "pause_turn") break;
+  }
+
+  // ค้นจนหมดรอบ/โดนตัดก่อนเขียนสรุป (เจอบ่อยในงานเทียบแบรนด์ที่เปิดหลายหน้า) → สั่งให้สรุปจากที่อ่านแล้ว ห้ามค้นเพิ่ม
+  if (!endedCleanly || notes.join("").length < MIN_NOTES_LENGTH) {
+    const wrapUp = await generateText({
+      model: ai.model,
+      system: params.system,
+      messages: [...messages, { role: "user", content: WRAP_UP_PROMPT }],
+      tools,
+      toolChoice: "none",
+      providerOptions: ai.providerOptions,
+      maxOutputTokens: 16000,
+    });
+    void trackAiUsage({
+      feature: params.feature,
+      provider: ai.provider,
+      model: ai.modelId,
+      usage: wrapUp.totalUsage,
+      startedAt,
+      operation: `${params.task}:wrap-up`,
+    });
+    if (wrapUp.text.trim()) notes.push(wrapUp.text.trim());
   }
 
   const notesText = notes.join("\n\n");
