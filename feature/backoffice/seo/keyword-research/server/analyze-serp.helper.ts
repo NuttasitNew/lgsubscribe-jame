@@ -90,8 +90,8 @@ export const analyzeSerp = async (keyword: string): Promise<SerpBrief> => {
     schema: serpSchema,
     structureInstruction:
       "ดึงผลวิเคราะห์ SERP ตาม schema — facts ใส่เฉพาะข้อที่มี URL กำกับในบันทึก, productSlugs เลือกจาก slug ที่ให้ไว้เท่านั้น",
-    maxSearches: 5,
-    maxFetches: 6,
+    maxSearches: 4,
+    maxFetches: 5,
   });
 
   const object = research.object;

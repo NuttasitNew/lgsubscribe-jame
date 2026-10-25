@@ -9,6 +9,10 @@ import { getSeoArticleAi, type SeoAiTask } from "../../seo-article/server/seo-ar
 
 /** pause_turn = server tool วนนานจน API พักเทิร์น ต้องส่งต่อให้ทำต่อ — จำกัดรอบไว้กันค่าใช้จ่ายบาน */
 const MAX_CONTINUATIONS = 3;
+/** เนื้อหาต่อหน้าที่ส่งให้ AI อ่าน — ทุกหน้าถูกส่งซ้ำทุกรอบที่ต่อ จึงเป็นตัวคูณค่าใช้จ่ายหลัก */
+const DEFAULT_MAX_CONTENT_TOKENS = 6000;
+/** งบเวลาขั้นค้นเว็บ — เหลือเวลาให้เทิร์นสรุป + จัดโครงก่อนชนเพดาน 800 วินาทีต่อการเรียก */
+const DEFAULT_TIME_BUDGET_MS = 6 * 60 * 1000;
 /** Claude web search คิดแยก $10 ต่อ 1,000 ครั้ง (web fetch ไม่มีค่าเครื่องมือ จ่ายแค่ token ของเนื้อหา) */
 const WEB_SEARCH_FEE_USD = 0.01;
 /** บันทึกสั้นกว่านี้ = AI ยังไม่ได้เขียนสรุป (มีแค่ประโยคเกริ่น) */
@@ -26,8 +30,12 @@ export interface WebResearchParams<T> {
   schema: z.ZodType<T>;
   /** คำสั่งสำหรับขั้นแปลงบันทึกเป็นโครงข้อมูล (กติกาเฉพาะงาน) */
   structureInstruction: string;
+  /** งบรวมทั้งงาน (ไม่ใช่ต่อรอบ) */
   maxSearches?: number;
+  /** งบรวมทั้งงาน (ไม่ใช่ต่อรอบ) */
   maxFetches?: number;
+  maxContentTokens?: number;
+  timeBudgetMs?: number;
 }
 
 export interface WebResearchResult<T> {
@@ -60,21 +68,29 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
     throw new Error("[SEO-WEB-01] งานค้นเว็บต้องใช้ Claude (ตั้ง ANTHROPIC_API_KEY และอย่าตั้ง SEO_AI_PROVIDER=openai)");
   }
 
-  const tools = {
+  // โควตาค้น/เปิดหน้าเป็นงบรวมทั้งงาน — maxUses ของ API นับต่อ request ถ้าไม่หักยอดที่ใช้ไปแล้ว
+  // งานที่ต่อรอบ pause_turn จะได้โควตาใหม่ทุกรอบ (เคยเปิดไป 60+ หน้า ค่า token ~$3.5 ต่อครั้ง)
+  const searchBudget = params.maxSearches ?? 8;
+  const fetchBudget = params.maxFetches ?? 6;
+  let usedSearches = 0;
+  let usedFetches = 0;
+  const buildTools = () => ({
     web_search: anthropic.tools.webSearch_20260209({
       // ไม่ตั้ง userLocation: web_search ของ Anthropic ไม่รองรับ country "TH" (ตอบ 400) — ใช้คำค้นภาษาไทยแทน
-      maxUses: params.maxSearches ?? 8,
+      maxUses: Math.max(1, searchBudget - usedSearches),
     }),
     web_fetch: anthropic.tools.webFetch_20260209({
-      maxUses: params.maxFetches ?? 6,
-      maxContentTokens: 12000,
+      maxUses: Math.max(1, fetchBudget - usedFetches),
+      maxContentTokens: params.maxContentTokens ?? DEFAULT_MAX_CONTENT_TOKENS,
     }),
-  };
+  });
+  let tools = buildTools();
 
   const messages: ModelMessage[] = [{ role: "user", content: params.prompt }];
   const notes: string[] = [];
   const visited = new Set<string>();
   const startedAt = Date.now();
+  const deadline = startedAt + (params.timeBudgetMs ?? DEFAULT_TIME_BUDGET_MS);
   let endedCleanly = false;
 
   for (let round = 0; round <= MAX_CONTINUATIONS; round++) {
@@ -86,9 +102,10 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
       providerOptions: ai.providerOptions,
       maxOutputTokens: 16000,
     });
-    const searches = result.steps
-      .flatMap((step) => step.content)
-      .filter((part) => part.type === "tool-call" && part.toolName === "web_search").length;
+    const toolCalls = result.steps.flatMap((step) => step.content).filter((part) => part.type === "tool-call");
+    const searches = toolCalls.filter((part) => part.toolName === "web_search").length;
+    usedSearches += searches;
+    usedFetches += toolCalls.filter((part) => part.toolName === "web_fetch").length;
     void trackAiUsage({
       feature: params.feature,
       provider: ai.provider,
@@ -109,6 +126,9 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
     messages.push(...result.response.messages);
     endedCleanly = result.rawFinishReason !== "pause_turn" && result.finishReason !== "length";
     if (result.rawFinishReason !== "pause_turn") break;
+    // หมดงบเวลา/โควตา → ไม่ต่อรอบ ไปสรุปจากที่อ่านแล้ว (งานทั้งก้อนต้องจบใน 800 วินาทีของ Vercel)
+    if (Date.now() > deadline || (usedSearches >= searchBudget && usedFetches >= fetchBudget)) break;
+    tools = buildTools();
   }
 
   // ค้นจนหมดรอบ/โดนตัดก่อนเขียนสรุป (เจอบ่อยในงานเทียบแบรนด์ที่เปิดหลายหน้า) → สั่งให้สรุปจากที่อ่านแล้ว ห้ามค้นเพิ่ม
