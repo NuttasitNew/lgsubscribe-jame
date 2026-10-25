@@ -5,6 +5,7 @@ import { verifyByToken } from "@/lib/seo/auth";
 import { ResponsePattern, ResponsePatternType } from "@/lib/seo/helper/response-pattern";
 import prisma from "@/lib/seo/prisma";
 import { SeoArticleJob, SeoArticleJobStatus } from "@prisma/client";
+import { failStaleSeoArticleJobs } from "./fail-stale-seo-article-jobs.helper";
 
 /** ย้อนหลังกี่ชั่วโมงที่ยังถือว่า "เพิ่งเกิด" และควรโชว์บนแถบสถานะ */
 const RECENT_WINDOW_HOURS = 12;
@@ -70,6 +71,7 @@ export const findSeoArticleJobs = async (): Promise<ResponsePatternType<SeoArtic
 
   // แถบสถานะถูก poll ทุกไม่กี่วินาที — ไม่เปิด log session กัน log ท่วมโดยไม่ได้ข้อมูลอะไรเพิ่ม
   try {
+    await failStaleSeoArticleJobs();
     const recentSince = new Date(Date.now() - RECENT_WINDOW_HOURS * 3600000);
 
     const jobs = await prisma.seoArticleJob.findMany({

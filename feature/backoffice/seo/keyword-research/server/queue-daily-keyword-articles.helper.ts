@@ -4,6 +4,7 @@ import { SeoArticleJobStatus, SeoArticleJobType, SeoKeywordStatus } from "@prism
 import prisma from "@/lib/seo/prisma";
 import { r2Configured } from "@/lib/r2/media-upload";
 import { enqueueSeoArticleJob } from "../../seo-article/server/enqueue-seo-article-job.helper";
+import { failStaleSeoArticleJobs } from "../../seo-article/server/fail-stale-seo-article-jobs.helper";
 import type { SeoWriteFromKeywordPayload } from "../../seo-article/type/seo-article-job-payload.type";
 
 export const DAILY_ARTICLE_COUNT = 2;
@@ -36,6 +37,7 @@ export interface QueueDailyKeywordArticlesResult {
  * @used-by app/api/cron/seo-daily-articles/route.ts
  */
 export const queueDailyKeywordArticles = async (params?: { count?: number }): Promise<QueueDailyKeywordArticlesResult> => {
+  await failStaleSeoArticleJobs();
   const everWritten = await prisma.seoArticleJob.count({ where: { jobType: SeoArticleJobType.WRITE_FROM_KEYWORD } });
   const defaultCount = everWritten === 0 ? STARTER_ARTICLE_COUNT : DAILY_ARTICLE_COUNT;
   const count = Math.min(Math.max(params?.count ?? defaultCount, 1), 5);
