@@ -11,7 +11,7 @@ import type {
 } from "../../seo-article/type/seo-article-job-payload.type";
 import { researchKeywords } from "./research-keywords.helper";
 import { analyzeSerp, buildSerpBriefMessage } from "./analyze-serp.helper";
-import { researchComparison } from "./research-comparison.helper";
+import { applySourcePolicy, researchComparison } from "./research-comparison.helper";
 import { buildSiteContext } from "./build-site-context.helper";
 import type { CompareDataset, SerpBrief } from "../type/seo-keyword.type";
 
@@ -53,7 +53,8 @@ export const runWriteFromKeywordJob: SeoArticleJobRunner = async (job) => {
   // ผลที่เก็บก่อนมีการสกัดสไตล์การเขียน/ตารางเช่า vs ซื้อขาด ถือว่าเก่า วิเคราะห์ใหม่
   const cachedSerp = cached?.kind === "compare" ? cached.serp : cached?.kind === "serp" ? cached : undefined;
   const usableSerp = isFresh && cachedSerp?.writingStyle ? cachedSerp : undefined;
-  const usableCompare = usableSerp && cached?.kind === "compare" && "buyVsRent" in cached ? cached : undefined;
+  const usableCompare =
+    usableSerp && cached?.kind === "compare" && "buyVsRent" in cached ? applySourcePolicy(cached) : undefined;
 
   const saveBrief = (brief: SerpBrief | CompareDataset) =>
     prisma.seoKeyword.update({

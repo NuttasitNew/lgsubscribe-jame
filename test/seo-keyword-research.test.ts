@@ -127,3 +127,47 @@ describe("catalog product lookup", () => {
     expect(resolveCatalogProduct("wd999", products)).toBeUndefined();
   });
 });
+
+describe("article source policy", () => {
+  it("allows only lg.com, our own site and internal paths", async () => {
+    const { isAllowedArticleLink, isCompetingLgDealerUrl } = await import(
+      "@/feature/backoffice/seo/keyword-research/helper/source-policy.helper"
+    );
+    expect(isAllowedArticleLink("https://www.lg.com/th/terms-and-conditions-of-subscription/")).toBe(true);
+    expect(isAllowedArticleLink("https://www.lgthailand-subscribe.com/products/x/")).toBe(true);
+    expect(isAllowedArticleLink("/faq/")).toBe(true);
+    expect(isAllowedArticleLink("https://www.lgsubscribeofficial.com/blog/5573/")).toBe(false);
+    expect(isAllowedArticleLink("https://www.coway.co.th/")).toBe(false);
+    expect(isCompetingLgDealerUrl("https://www.lgsubscribeofficial.com/faq/70/")).toBe(true);
+    expect(isCompetingLgDealerUrl("https://lgdealer.com/product/x/")).toBe(true);
+    expect(isCompetingLgDealerUrl("https://www.homepro.co.th/p/1")).toBe(false);
+    expect(isCompetingLgDealerUrl("https://www.lg.com/th/")).toBe(false);
+  });
+
+  it("strips competitor links but keeps the text", async () => {
+    const { stripDisallowedLinks } = await import("@/feature/backoffice/seo/keyword-research/helper/source-policy.helper");
+    const { value, removedHosts } = stripDisallowedLinks([
+      { id: "p", type: "paragraph", runs: [{ text: "เงื่อนไข", link: "https://www.lgsubscribeofficial.com/blog/1" }, { text: " LG", link: "https://www.lg.com/th/" }] },
+    ]);
+    expect(value[0].runs).toEqual([{ text: "เงื่อนไข" }, { text: " LG", link: "https://www.lg.com/th/" }]);
+    expect(removedHosts).toEqual(["lgsubscribeofficial.com"]);
+  });
+
+  it("does not link other brands in the compare table or sources", () => {
+    const blocks = insertCompareBlocks(
+      [heading("h1", "สรุป"), heading("h2", "ปิด")],
+      {
+        ...dataset,
+        rows: [{ criterion: "ราคา", cells: [{ value: "499", sourceUrl: "https://www.lg.com/th/x/" }, { value: "337", sourceUrl: "https://www.coway.co.th/" }] }],
+        sources: [{ title: "lg.com", url: "https://www.lg.com/th/x/" }, { title: "coway.co.th", url: "https://www.coway.co.th/" }],
+      },
+      () => "id"
+    );
+    const table = blocks.find((b) => b.type === "table");
+    if (table?.type !== "table") throw new Error("no table");
+    expect(table.rows[1].cells[2].runs[0].link).toBeUndefined();
+    const list = blocks.find((b) => b.type === "bulletList");
+    if (list?.type !== "bulletList") throw new Error("no list");
+    expect(list.items).toHaveLength(1);
+  });
+});

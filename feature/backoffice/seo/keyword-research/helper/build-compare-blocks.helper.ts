@@ -1,5 +1,6 @@
 import type { SeoArticleBlock, SeoArticleTableRow } from "../../seo-article/type/seo-article-block.type";
 import type { BuyVsRentDataset, CompareDataset } from "../type/seo-keyword.type";
+import { isAllowedArticleLink } from "./source-policy.helper";
 
 const formatThaiDate = (isoDate: string) =>
   new Intl.DateTimeFormat("th-TH", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Bangkok" }).format(
@@ -21,7 +22,7 @@ export const buildCompareTableBlocks = (dataset: CompareDataset, createId: () =>
     cells: [
       { runs: [{ text: row.criterion, bold: true }] },
       ...row.cells.map((cell) => ({
-        runs: [cell.sourceUrl ? { text: cell.value, link: cell.sourceUrl } : { text: cell.value }],
+        runs: [cell.sourceUrl && isAllowedArticleLink(cell.sourceUrl) ? { text: cell.value, link: cell.sourceUrl } : { text: cell.value }],
       })),
     ],
   }));
@@ -35,8 +36,9 @@ export const buildCompareTableBlocks = (dataset: CompareDataset, createId: () =>
       runs: [
         {
           text:
-            `ข้อมูล ณ วันที่ ${formatThaiDate(dataset.asOf)} รวบรวมจากหน้าเว็บทางการของแต่ละแบรนด์ (กดที่ข้อความในตารางเพื่อดูแหล่งที่มา) ` +
-            "ราคาและเงื่อนไขอาจเปลี่ยนตามโปรโมชันและรุ่นสินค้า ช่องที่เขียนว่า “ไม่มีข้อมูลเปิดเผย” คือหาแหล่งยืนยันจากผู้ให้บริการไม่พบ",
+            `ข้อมูล ณ วันที่ ${formatThaiDate(dataset.asOf)} ข้อมูล LG อ้างอิงจากเว็บไซต์ทางการ lg.com (กดที่ข้อความเพื่อดูแหล่งที่มา) ` +
+            "ข้อมูลแบรนด์อื่นรวบรวมจากข้อมูลที่แบรนด์นั้นเผยแพร่ต่อสาธารณะ " +
+            "ราคาและเงื่อนไขอาจเปลี่ยนตามโปรโมชันและรุ่นสินค้า ช่องที่เขียนว่า “ไม่มีข้อมูลเปิดเผย” คือหาแหล่งยืนยันไม่พบ",
         },
       ],
     },
@@ -56,7 +58,9 @@ export const BUY_VS_RENT_HEADING = "เช่ากับซื้อขาด �
  * - ใต้ตารางบอกสมมติฐานการคำนวณ (ไม่รวมค่าบำรุงรักษาฝั่งซื้อ, ไม่รวมดอกเบี้ยผ่อน)
  */
 export const buildBuyVsRentBlocks = (data: BuyVsRentDataset, asOf: string, createId: () => string): SeoArticleBlock[] => {
-  const cell = (text: string, link?: string | null) => ({ runs: [link ? { text, link } : { text }] });
+  const cell = (text: string, link?: string | null) => ({
+    runs: [link && isAllowedArticleLink(link) ? { text, link } : { text }],
+  });
   const row = (criterion: string, rent: ReturnType<typeof cell>, buy: ReturnType<typeof cell>): SeoArticleTableRow => ({
     cells: [{ runs: [{ text: criterion, bold: true }] }, rent, buy],
   });
@@ -109,9 +113,11 @@ export const buildBuyVsRentBlocks = (data: BuyVsRentDataset, asOf: string, creat
   ];
 };
 
-/** หัวข้อ "แหล่งอ้างอิง" ท้ายบทความ — ลิงก์ทุกแหล่งที่ใช้จริงในตาราง */
-export const buildSourceBlocks = (sources: CompareDataset["sources"], createId: () => string): SeoArticleBlock[] =>
-  sources.length === 0
+/** หัวข้อ "แหล่งอ้างอิง" ท้ายบทความ — เฉพาะแหล่งที่ลิงก์ได้ (lg.com / เว็บเรา) */
+export const buildSourceBlocks = (allSources: CompareDataset["sources"], createId: () => string): SeoArticleBlock[] => {
+  // แหล่งที่ลิงก์ได้มีแค่ lg.com / เว็บเรา — แบรนด์อื่นและตัวแทนเจ้าอื่นไม่ลิงก์ออก
+  const sources = allSources.filter((source) => isAllowedArticleLink(source.url));
+  return sources.length === 0
     ? []
     : [
         { id: createId(), type: "heading", level: 2, runs: [{ text: "แหล่งอ้างอิง" }] },
@@ -121,6 +127,7 @@ export const buildSourceBlocks = (sources: CompareDataset["sources"], createId: 
           items: sources.map((source) => ({ runs: [{ text: source.title, link: source.url }] })),
         },
       ];
+};
 
 /**
  * แทรกตารางไว้ท้ายหัวข้อ H2 แรก (ผู้อ่านเห็นตารางเร็ว ตามหลัก answer-first) และแหล่งอ้างอิงไว้ก่อนหัวข้อสุดท้าย (CTA)
