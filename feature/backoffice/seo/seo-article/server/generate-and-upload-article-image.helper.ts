@@ -20,6 +20,8 @@ interface GenerateAndUploadOptions {
    * (และการแนบยังบังคับให้ไปทาง /v1/images/edits ซึ่งเป็นโหมดแก้ภาพ ไม่ใช่วาดใหม่จากศูนย์)
    */
   withBrandReference?: boolean;
+  /** รูปสินค้าจริงจากเว็บเรา — ต่อท้ายรูปอ้างอิงแบรนด์ เพราะ prompt แบรนด์อ้างรูปด้วยลำดับ "Image 1, 2, ..." */
+  productReferenceUrls?: string[];
 }
 
 /**
@@ -53,9 +55,10 @@ export const generateAndUploadArticleImage = async (
           "auto",
           selectBrandReferenceKinds(options.referenceDescription ?? prompt)
         );
+  const referenceImageUrls = [...(brand?.referenceImageUrls ?? []), ...(options.productReferenceUrls ?? [])].slice(0, 8);
   const buffer = await generateImage({
     prompt: brand ? `${prompt}\n${brand.prompt}` : prompt,
-    ...(brand?.referenceImageUrls.length ? { referenceImageUrls: brand.referenceImageUrls } : {}),
+    ...(referenceImageUrls.length ? { referenceImageUrls } : {}),
   });
   const compressed = await reencodeImageBuffer(buffer, { maxWidth: ARTICLE_IMAGE_SIZE.width });
   const uploaded = await uploadMediaBuffer(compressed, {

@@ -27,6 +27,8 @@ export const generateSeoArticleFromBrief = async (params: {
   brief: SeoArticleBriefInput;
   generateImages?: boolean;
   requestedBy?: string;
+  /** รูปสินค้าจริงจากเว็บ ใช้ประกอบภาพที่ AI วาด */
+  productImagePaths?: string[];
 }): Promise<{ seoArticleId: number; slug: string; title: string }> => {
   const todayThai = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Bangkok" }).format(new Date());
 
@@ -45,6 +47,7 @@ export const generateSeoArticleFromBrief = async (params: {
     origin: SeoArticleOrigin.MANUAL,
     withImages: params.generateImages ?? false,
     ...(params.requestedBy ? { requestedBy: params.requestedBy } : {}),
+    ...(params.productImagePaths?.length ? { productImagePaths: params.productImagePaths } : {}),
   });
 };
 
@@ -120,6 +123,7 @@ const createSeoArticleDraft = async (params: {
   origin: SeoArticleOrigin;
   withImages: boolean;
   requestedBy?: string;
+  productImagePaths?: string[];
 }): Promise<{ seoArticleId: number; slug: string; title: string }> => {
   const { topic, brief, sourceDate, origin, withImages } = params;
   const requestedBy = params.requestedBy || "ระบบ";
@@ -167,7 +171,13 @@ const createSeoArticleDraft = async (params: {
   // งานหนักที่เหลือทำเบื้องหลัง — บทความอยู่ในฐานแล้ว ต่อให้คิวพังก็ไม่เสียเนื้อหาที่ AI เพิ่งเขียน
   // รูปมาก่อนแล้วค่อยแปล (งานรูปเป็นคนต่อคิวงานแปลเอง) — ไม่ gen รูปก็แปลได้ทันที
   const nextJob = withImages
-    ? { jobType: SeoArticleJobType.GENERATE_IMAGES, payload: { translateAfter: true } }
+    ? {
+        jobType: SeoArticleJobType.GENERATE_IMAGES,
+        payload: {
+          translateAfter: true,
+          ...(params.productImagePaths?.length ? { productImagePaths: params.productImagePaths } : {}),
+        },
+      }
     : { jobType: SeoArticleJobType.TRANSLATE_EN };
 
   const queued = await enqueueSeoArticleJob({

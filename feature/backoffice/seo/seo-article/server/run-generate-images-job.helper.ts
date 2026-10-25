@@ -11,6 +11,11 @@ import { restoreArticleCoverImage } from "../helper/restore-article-cover-image.
 import type { SeoArticleJobRunner } from "./seo-article-job-runner.type";
 import type { SeoArticleBlockContent } from "../type/seo-article-block.type";
 import type { SeoArticleGenerateImagesPayload } from "../type/seo-article-job-payload.type";
+import { siteConfig } from "@/lib/site";
+
+/** path รูปใน public/ → URL เต็มบนเว็บจริง (OpenAI ต้องโหลดรูปจาก URL; บน Vercel ไฟล์ public ไม่อยู่ใน function) */
+const toAbsoluteSiteUrls = (paths?: string[]) =>
+  (paths ?? []).filter((path) => path.startsWith("/")).map((path) => `${siteConfig.url}${path}`);
 
 /**
  * @description runner ของงาน GENERATE_IMAGES — gen รูปปก + รูปแทรกใหม่ยกชุด (gpt-image-2 → R2) ให้บทความเดิม
@@ -65,7 +70,13 @@ export const runGenerateImagesJob: SeoArticleJobRunner = async (job) => {
     blocks: removeArticleImageBlocks(content.blocks ?? []),
   };
 
-  const imageResult = await generateArticleImages({ slug: article.slug, title: article.title, content: cleared });
+  const payload = (job.payload ?? {}) as SeoArticleGenerateImagesPayload;
+  const imageResult = await generateArticleImages({
+    slug: article.slug,
+    title: article.title,
+    content: cleared,
+    productImageUrls: toAbsoluteSiteUrls(payload.productImagePaths),
+  });
   if (imageResult.generated === 0) {
     throw new Error(`[SEO-IMG-04] gen รูปไม่สำเร็จ: ${imageResult.errors[0] ?? "Unknown"}`);
   }
@@ -91,7 +102,6 @@ export const runGenerateImagesJob: SeoArticleJobRunner = async (job) => {
 
   // บทความที่เพิ่งเขียนใหม่สั่ง translateAfter มา — ต่อคิวงานแปลตรงนี้ ไม่ใช่ตอนสร้างบทความ
   // เพราะฉบับ EN ต้องแปลจากเนื้อที่ "มีรูปแล้ว" ไม่งั้นได้ EN ที่ไม่มีบล็อกรูปและถูกตีว่าล้าสมัยทันที
-  const payload = (job.payload ?? {}) as SeoArticleGenerateImagesPayload;
   if (payload.translateAfter) {
     const queued = await enqueueSeoArticleJob({
       jobType: SeoArticleJobType.TRANSLATE_EN,

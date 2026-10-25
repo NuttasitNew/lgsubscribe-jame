@@ -25,6 +25,8 @@ export interface SeoArticleGenerateImagesPayload {
    * ใช้ตอนสร้างบทความใหม่: ต้องแปล **หลัง** รูปลงเนื้อหาแล้ว ไม่งั้นฉบับ EN จะไม่มีบล็อกรูปและ hash ไม่ตรงทันที
    */
   translateAfter?: boolean;
+  /** path รูปสินค้าจริงในเว็บ (เช่น /images/products/lg-catalog/art13a.jpg) ให้ภาพประกอบใช้สินค้าจริง */
+  productImagePaths?: string[];
 }
 
 /** งาน WRITE_NOW — เขียนบทความทันที (ไม่มี promptBrief = ดูดหัวข้อจากแชทเมื่อวานเหมือน cron) */

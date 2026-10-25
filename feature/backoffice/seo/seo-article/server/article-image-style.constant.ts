@@ -63,3 +63,12 @@ export const SECTION_SHOTS = [
   "This is an in-article image, NOT a cover. Do NOT repeat the wide cover shot. Instead illustrate the section topic itself — a close-up of the appliance feature being discussed (such as a filter, control panel area without text, door, drawer or vent), or the appliance placed in its room setting. Macro or detail framing.",
   "This is an in-article image, NOT a cover. Prefer a calm lifestyle scene: the appliance quietly doing its job in a bright, tidy Thai home, or people enjoying the comfortable space. Avoid repeating the cover's composition; if a person is not essential to the topic, leave people out entirely.",
 ];
+
+/**
+ * ใช้เมื่อแนบรูปสินค้าจริงจากเว็บเรา (packshot ทางการของ LG ใน public/images/products) เป็นรูปอ้างอิง
+ * — override กติกา "ตัวเครื่องห้ามมีโลโก้" ของ BRAND_LOCK เพราะคราวนี้ต้องการสินค้าจริงรุ่นที่เราขาย
+ */
+export const PRODUCT_REFERENCE_LOCK =
+  "Product reference photos are attached: they are official packshots of the exact LG products sold on our website. " +
+  "Place THAT exact product in the scene and keep it faithful to the reference — same shape, proportions, colour, finish, door/panel layout and the LG logo exactly as it appears on the reference. " +
+  "Do not redesign it, do not add other brands or extra appliances, and do not copy the plain packshot background — build a natural Thai home scene around the product.";
