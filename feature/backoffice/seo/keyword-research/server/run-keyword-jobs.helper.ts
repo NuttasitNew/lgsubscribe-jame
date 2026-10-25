@@ -1,7 +1,8 @@
 import "server-only";
 
-import { SeoArticleOrigin, SeoKeywordArticleType, SeoKeywordStatus } from "@prisma/client";
+import { SeoArticleJobType, SeoArticleOrigin, SeoKeywordArticleType, SeoKeywordStatus } from "@prisma/client";
 import prisma from "@/lib/seo/prisma";
+import { enqueueSeoArticleJob } from "../../seo-article/server/enqueue-seo-article-job.helper";
 import { generateSeoArticleFromBrief } from "../../seo-article/server/generate-seo-article-drafts.helper";
 import type { SeoArticleJobRunner } from "../../seo-article/server/seo-article-job-runner.type";
 import type {
@@ -37,6 +38,8 @@ export const runResearchKeywordsJob: SeoArticleJobRunner = async (job) => {
  * 2. คำแบบ COMPARE → researchComparison เก็บตารางเทียบแบรนด์ที่ทุกช่องมีแหล่งยืนยัน
  * 3. บันทึกผล research ลง SeoKeyword.serpBrief ก่อนเขียน — ถ้าขั้นเขียนพัง ไม่ต้องจ่ายค่าค้นเว็บใหม่ในรอบหน้า
  *    (ผล research อายุไม่เกิน 14 วันใช้ซ้ำได้)
+ * - บทความ COMPARE แยกเป็น 3 งานต่อกัน (อ่านคู่แข่ง → ตารางเทียบ → เขียน) แต่ละงานได้ function invocation ของตัวเอง
+ *   เพราะรวมกันราว 13 นาที เกินเพดาน 800 วินาทีต่อการเรียกของ Vercel — งานถัดไปอ่านผลที่บันทึกไว้แล้วทำขั้นที่เหลือ
  * 4. เขียนร่างด้วยตัวเขียนเดิม (Sonnet 5.5) + วาดรูปด้วยรูปสินค้าจริงจากเว็บ → ผูกบทความกับคำ + เริ่มติดตามอันดับ
  */
 export const runWriteFromKeywordJob: SeoArticleJobRunner = async (job) => {
@@ -47,22 +50,31 @@ export const runWriteFromKeywordJob: SeoArticleJobRunner = async (job) => {
   const cached = keyword.serpBrief as unknown as SerpBrief | CompareDataset | null;
   const isFresh = keyword.serpAnalyzedAt != null && Date.now() - keyword.serpAnalyzedAt.getTime() < 14 * 86400000;
   const isCompare = keyword.articleType === SeoKeywordArticleType.COMPARE;
-
-  let serp: SerpBrief;
-  let compare: CompareDataset | undefined;
   // ผลที่เก็บก่อนมีการสกัดสไตล์การเขียน/ตารางเช่า vs ซื้อขาด ถือว่าเก่า วิเคราะห์ใหม่
-  const cachedSerp = cached?.kind === "compare" ? cached.serp : cached;
-  const isComplete = Boolean(cachedSerp?.writingStyle) && (!isCompare || (cached?.kind === "compare" && "buyVsRent" in cached));
-  if (isFresh && isComplete && cached && (isCompare ? cached.kind === "compare" && cached.serp : cached.kind === "serp")) {
-    serp = cached.kind === "compare" ? cached.serp! : cached;
-    compare = cached.kind === "compare" ? cached : undefined;
-  } else {
-    serp = await analyzeSerp(keyword.keyword);
-    if (isCompare) compare = await researchComparison(keyword.keyword, serp);
-    await prisma.seoKeyword.update({
+  const cachedSerp = cached?.kind === "compare" ? cached.serp : cached?.kind === "serp" ? cached : undefined;
+  const usableSerp = isFresh && cachedSerp?.writingStyle ? cachedSerp : undefined;
+  const usableCompare = usableSerp && cached?.kind === "compare" && "buyVsRent" in cached ? cached : undefined;
+
+  const saveBrief = (brief: SerpBrief | CompareDataset) =>
+    prisma.seoKeyword.update({
       where: { seoKeywordId: keyword.seoKeywordId },
-      data: { serpBrief: (compare ?? serp) as unknown as object, serpAnalyzedAt: new Date() },
+      data: { serpBrief: brief as unknown as object, serpAnalyzedAt: new Date() },
     });
+
+  // ขั้น 1: อ่านคู่แข่ง (~2 นาที) — บทความเทียบต้องเก็บตารางต่ออีก ~9 นาที จึงแยกไปงานถัดไปให้ได้เวลาของตัวเอง
+  let serp = usableSerp;
+  if (!serp) {
+    serp = await analyzeSerp(keyword.keyword);
+    await saveBrief(serp);
+    if (isCompare) return queueNextStage(job, keyword.keyword, "อ่านบทความคู่แข่งแล้ว — ต่อคิวเก็บข้อมูลตารางเทียบ");
+  }
+
+  // ขั้น 2 (เฉพาะ COMPARE): เก็บข้อมูลตารางเทียบแบรนด์ + เช่า vs ซื้อขาด แล้วต่อคิวขั้นเขียน
+  let compare = isCompare ? usableCompare : undefined;
+  if (isCompare && !compare) {
+    compare = await researchComparison(keyword.keyword, serp);
+    await saveBrief(compare);
+    return queueNextStage(job, keyword.keyword, "เก็บข้อมูลตารางเทียบแล้ว — ต่อคิวเขียนบทความ");
   }
 
   const { products } = buildSiteContext();
@@ -94,4 +106,20 @@ export const runWriteFromKeywordJob: SeoArticleJobRunner = async (job) => {
   });
 
   return { seoArticleId: created.seoArticleId, title: created.title };
+};
+
+/** ต่อคิวขั้นถัดไปของคำเดียวกัน (งานใหม่ = function invocation ใหม่) แล้วปิดงานนี้ว่าเสร็จขั้นของมัน */
+const queueNextStage = async (
+  job: Parameters<SeoArticleJobRunner>[0],
+  keyword: string,
+  title: string
+): Promise<Awaited<ReturnType<SeoArticleJobRunner>>> => {
+  await enqueueSeoArticleJob({
+    jobType: SeoArticleJobType.WRITE_FROM_KEYWORD,
+    label: keyword,
+    requestedBy: job.requestedBy,
+    generateImages: job.generateImages,
+    payload: job.payload as unknown as SeoWriteFromKeywordPayload,
+  });
+  return { title };
 };
