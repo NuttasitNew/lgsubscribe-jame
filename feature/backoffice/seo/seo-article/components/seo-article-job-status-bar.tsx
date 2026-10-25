@@ -17,6 +17,8 @@ const JOB_VERB: Record<SeoArticleJobType, string> = {
   SINGLE_IMAGE: "วาดรูปประกอบ",
   WRITE_FAQ: "คิดคำถามหน้า ถาม-ตอบ",
   TRANSLATE_FAQ_EN: "แปลหน้า ถาม-ตอบ",
+  RESEARCH_KEYWORDS: "research คำค้น",
+  WRITE_FROM_KEYWORD: "วิเคราะห์คู่แข่งแล้วเขียน",
 };
 
 /**

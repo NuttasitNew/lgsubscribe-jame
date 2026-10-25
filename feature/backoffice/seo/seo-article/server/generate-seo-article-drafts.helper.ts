@@ -29,6 +29,7 @@ export const generateSeoArticleFromBrief = async (params: {
   requestedBy?: string;
   /** รูปสินค้าจริงจากเว็บ ใช้ประกอบภาพที่ AI วาด */
   productImagePaths?: string[];
+  origin?: SeoArticleOrigin;
 }): Promise<{ seoArticleId: number; slug: string; title: string }> => {
   const todayThai = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Bangkok" }).format(new Date());
 
@@ -44,7 +45,7 @@ export const generateSeoArticleFromBrief = async (params: {
     topic,
     brief: params.brief,
     sourceDate: todayThai,
-    origin: SeoArticleOrigin.MANUAL,
+    origin: params.origin ?? SeoArticleOrigin.MANUAL,
     withImages: params.generateImages ?? false,
     ...(params.requestedBy ? { requestedBy: params.requestedBy } : {}),
     ...(params.productImagePaths?.length ? { productImagePaths: params.productImagePaths } : {}),

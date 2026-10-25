@@ -9,6 +9,7 @@ import { runSingleImageJob } from "./run-single-image-job.helper";
 import { runWriteFaqJob } from "../../ask-answer-faq/server/run-write-faq-job.helper";
 import { runTranslateFaqEnJob } from "../../ask-answer-faq/server/run-translate-faq-en-job.helper";
 import type { SeoArticleJobRunner } from "./seo-article-job-runner.type";
+import { runResearchKeywordsJob, runWriteFromKeywordJob } from "../../keyword-research/server/run-keyword-jobs.helper";
 
 export interface RunSeoArticleJobResult {
   seoArticleJobId: number;
@@ -33,6 +34,8 @@ const RUNNERS: Record<SeoArticleJobType, SeoArticleJobRunner> = {
   [SeoArticleJobType.SINGLE_IMAGE]: runSingleImageJob,
   [SeoArticleJobType.WRITE_FAQ]: runWriteFaqJob,
   [SeoArticleJobType.TRANSLATE_FAQ_EN]: runTranslateFaqEnJob,
+  [SeoArticleJobType.RESEARCH_KEYWORDS]: runResearchKeywordsJob,
+  [SeoArticleJobType.WRITE_FROM_KEYWORD]: runWriteFromKeywordJob,
 };
 
 /**

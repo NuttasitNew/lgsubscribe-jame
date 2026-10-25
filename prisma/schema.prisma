@@ -354,6 +354,8 @@ enum SeoArticleJobType {
   SINGLE_IMAGE
   WRITE_FAQ
   TRANSLATE_FAQ_EN
+  RESEARCH_KEYWORDS
+  WRITE_FROM_KEYWORD
 }
 
 enum SeoArticleJobStatus {
@@ -424,6 +426,58 @@ model SeoKeywordIdea {
   @@index([avgMonthlySearches(sort: Desc)])
   @@index([syncedAt])
   @@index([categoryCodes], type: Gin)
+}
+
+// Keywords the research agent proposed and the ones we chose to play (rank tracked daily from GSC).
+model SeoKeyword {
+  seoKeywordId   Int                   @id @default(autoincrement())
+  keyword        String                @unique // normalized with normalizeSearchTerm
+  intent         String // informational | commercial | transactional | comparison
+  persona        String?
+  articleType    SeoKeywordArticleType @default(GUIDE)
+  priority       Int                   @default(3) // 1 (low) - 5 (high)
+  rationale      String?
+  evidence       Json? // autocomplete hits, planner volume/trend, GSC demand
+  status         SeoKeywordStatus      @default(PROPOSED)
+  seoArticleId   Int? // article written to play this keyword
+  serpBrief      Json? // latest SERP / comparison research
+  serpAnalyzedAt DateTime?
+  createdBy      String
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+
+  ranks SeoKeywordRankDaily[]
+
+  @@index([status, priority])
+  @@index([seoArticleId])
+}
+
+enum SeoKeywordArticleType {
+  GUIDE
+  COMPARE
+}
+
+enum SeoKeywordStatus {
+  PROPOSED
+  TRACKING
+  DISMISSED
+}
+
+// Site-wide Google position for a tracked keyword (best page that day, from Search Console).
+model SeoKeywordRankDaily {
+  id           BigInt   @id @default(autoincrement())
+  seoKeywordId Int
+  date         DateTime @db.Date
+  position     Float
+  page         String
+  clicks       Int      @default(0)
+  impressions  Int      @default(0)
+  syncedAt     DateTime
+
+  seoKeyword SeoKeyword @relation(fields: [seoKeywordId], references: [seoKeywordId], onDelete: Cascade)
+
+  @@unique([seoKeywordId, date])
+  @@index([date])
 }
 
 // AI-proposed FAQ entries shown on /faq after a backoffice user publishes them.
@@ -505,5 +559,8 @@ enum AiUsageFeature {
   SEO_ARTICLE_NORMALIZE
   ASK_ANSWER_FAQ_WRITE
   ASK_ANSWER_FAQ_TRANSLATE
+  SEO_KEYWORD_RESEARCH
+  SEO_SERP_ANALYSIS
+  SEO_COMPARE_RESEARCH
   OTHER
 }

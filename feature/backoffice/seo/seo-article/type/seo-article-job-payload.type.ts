@@ -29,6 +29,17 @@ export interface SeoArticleGenerateImagesPayload {
   productImagePaths?: string[];
 }
 
+/** งาน RESEARCH_KEYWORDS — AI research คำค้นของกลุ่มลูกค้า */
+export interface SeoKeywordResearchPayload {
+  /** โฟกัสเพิ่มเติม เช่น "เครื่องกรองน้ำ" ; ไม่มี = ทั้งเว็บ */
+  focus?: string;
+}
+
+/** งาน WRITE_FROM_KEYWORD — วิเคราะห์ SERP (+ เก็บข้อมูลตารางเทียบ) แล้วเขียนร่าง */
+export interface SeoWriteFromKeywordPayload {
+  seoKeywordId: number;
+}
+
 /** งาน WRITE_NOW — เขียนบทความทันที (ไม่มี promptBrief = ดูดหัวข้อจากแชทเมื่อวานเหมือน cron) */
 export interface SeoArticleWriteNowPayload {
   /** โจทย์ที่พิมพ์เอง — มีค่า = โหมด MANUAL, ไม่มี = ดูดจากแชทเมื่อวาน */
@@ -64,4 +75,6 @@ export type SeoArticleJobPayload =
   | SeoArticleWriteNowPayload
   | SeoArticleSingleImagePayload
   | SeoArticleGenerateImagesPayload
-  | AskAnswerFaqWritePayload;
+  | AskAnswerFaqWritePayload
+  | SeoKeywordResearchPayload
+  | SeoWriteFromKeywordPayload;

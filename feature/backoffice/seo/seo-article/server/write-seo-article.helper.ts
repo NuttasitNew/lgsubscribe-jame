@@ -11,6 +11,9 @@ import { detectAiToneSignals } from "./detect-ai-tone-signals.helper";
 import { getSeoArticleTonePromptHint, type SeoArticleTone } from "../constant/seo-article-tone";
 import type { SeoArticleCategory, SeoArticleFaq, SeoSourceTopic } from "../type/seo-article-content.type";
 import type { SeoArticleBlock } from "../type/seo-article-block.type";
+import { createBlockId } from "../helper/create-block-id.helper";
+import { BUY_VS_RENT_HEADING, insertCompareBlocks } from "../../keyword-research/helper/build-compare-blocks.helper";
+import type { BuyVsRentDataset, CompareDataset } from "../../keyword-research/type/seo-keyword.type";
 
 /**
  * schema ที่ส่งเข้า structured output ของ Anthropic
@@ -55,6 +58,10 @@ export interface SeoArticleBriefInput {
    * ไม่มีค่า = โหมด brief ล้วน AI ห้ามแตะเรื่องราคาเลย
    */
   grounding?: SeoCategoryGrounding;
+  /** ผลวิเคราะห์บทความอันดับต้น ๆ บน Google (ช่องโหว่ + ข้อเท็จจริงที่ยืนยันแล้ว) — จาก analyzeSerp */
+  researchBrief?: string;
+  /** ข้อมูลตารางเทียบแบรนด์ที่ตรวจแหล่งแล้ว — มีค่า = บทความแบบ compare table */
+  compare?: CompareDataset;
 }
 
 export interface WriteSeoArticleResult {
@@ -151,6 +158,52 @@ const GROUNDING_USAGE_RULES = `กติกาการใช้ข้อมู�
 - ความรู้สินค้า (จุดเด่น วิธีเลือก การติดตั้ง การดูแล) ใช้เป็นแหล่งข้อเท็จจริงหลักของบทความ
 - ห้ามยกตัวเลขยอดค้นหา/อันดับ Google มาเขียนลงบทความ — ตัวเลขชุดนั้นให้ไว้เพื่อเลือกประเด็น ไม่ใช่เพื่อเผยแพร่`;
 
+/** กติกาใช้ผลวิเคราะห์ SERP — อยู่ติดกับข้อมูลเหมือน GROUNDING_USAGE_RULES */
+const RESEARCH_USAGE_RULES = `กติกาการใช้ผลวิเคราะห์คู่แข่งข้างบน:
+- เป้าหมายคือบทความที่ตอบ intent ได้ครบและชัดกว่าทุกหน้าที่ติดอันดับ — ตอบคำถามหลักให้จบในย่อหน้าแรก
+- ทุกช่องโหว่ที่ระบุไว้ต้องถูกตอบในบทความ (ถ้าตอบได้ด้วยข้อมูลที่ยืนยันแล้ว)
+- ข้อเท็จจริงที่มี [URL] กำกับใช้ได้ และควรใส่ลิงก์แหล่งที่มา (run.link เป็น URL นั้นตรง ๆ) อย่างน้อย 2 จุด
+  ข้อเท็จจริงที่ไม่มีในรายการและไม่อยู่ในข้อมูลแคตตาล็อก ห้ามยกตัวเลขเอง
+- ห้ามคัดลอกถ้อยคำหรือโครงประโยคของบทความคู่แข่ง และห้ามเอ่ยชื่อเว็บคู่แข่งในเนื้อหา
+- ใช้คำถามที่คนถามต่อเป็น FAQ ท้ายบทความ
+- ถ้ามีบล็อก [สไตล์การเขียนของหน้าที่ติดอันดับ]: ใช้ลำดับเนื้อหา องค์ประกอบ ความลึก และแพทเทิร์นชื่อบทความเป็นแนว
+  เพราะนั่นคือรูปแบบที่ผู้อ่านคำนี้คาดหวัง — แต่กติกาภาษาและสัดส่วนความเรียงในระบบยังมาก่อนเสมอ
+  และทำข้อ "ทำให้ต่าง/เลี่ยง" ให้ได้ เพื่อให้บทความเราดีกว่า ไม่ใช่สำเนาของหน้าที่ติดอันดับ`;
+
+/** กติกาบทความเปรียบเทียบ — ตารางสร้างจากข้อมูลที่ตรวจแล้วโดยระบบ ไม่ใช่ AI */
+const COMPARE_USAGE_RULES = `กติกาบทความเปรียบเทียบ (compare table):
+- **ห้ามส่งบล็อก table** — ระบบจะแทรกตารางเปรียบเทียบจากข้อมูลข้างบน (มีแหล่งยืนยันทุกช่อง) ไว้ท้ายหัวข้อ H2 แรกให้เอง
+  หัวข้อ H2 แรกจึงควรเป็น "สรุปเทียบ ... แบบเห็นภาพ" พร้อมย่อหน้าสั้น ๆ บอกวิธีอ่านตาราง
+- ตัวเลข/เงื่อนไขของแต่ละแบรนด์อ้างได้เฉพาะที่อยู่ในตาราง ห้ามเพิ่มเอง ช่องที่ "ไม่มีข้อมูลเปิดเผย" ห้ามเดา
+- เขียนแบบเป็นกลาง: บอกจุดแข็งของคู่เทียบตามจริง ใครเหมาะกับทางเลือกไหน (ใช้ข้อสรุปที่ให้มา) ห้ามใส่ร้ายแบรนด์อื่น
+- ระบุตรง ๆ ว่าเว็บนี้เป็นตัวแทน LG Subscribe (เปิดเผยความเกี่ยวข้อง) ในย่อหน้าแรกหรือหัวข้อวิธีเทียบ
+- มีหัวข้อ "เราเทียบอย่างไร" สั้น ๆ: เกณฑ์ที่ใช้ แหล่งข้อมูลทางการ และวันที่เก็บข้อมูล
+- ไม่ต้องทำหัวข้อแหล่งอ้างอิง — ระบบแทรกให้ก่อนหัวข้อสุดท้าย
+- ถ้ามีบล็อก [เช่า vs ซื้อขาด]: ต้องมีหัวข้อ H2 ชื่อ "${BUY_VS_RENT_HEADING}" (หรือหัวข้อที่มีทั้งคำว่า "เช่า" และ "ซื้อ")
+  ระบบจะแทรกตารางเช่า vs ซื้อขาดไว้ท้ายหัวข้อนั้น — ในหัวข้อเขียนความเรียงอธิบายตามจริง:
+  ถ้ายอดเช่ารวมสูงกว่าราคาซื้อ ให้บอกตรง ๆ แล้วอธิบายว่าส่วนต่างแลกกับอะไร (ไม่ต้องจ่ายก้อน, บริการดูแล, ประกัน ตามที่ข้อมูลยืนยัน)
+  และบอกว่าใครควรซื้อขาด ใครควรเช่า ห้ามบิดให้การเช่าดูถูกกว่าความจริง`;
+
+const buildCompareMessage = (dataset: CompareDataset): string =>
+  [
+    `[ข้อมูลตารางเทียบ ณ ${dataset.asOf} — ช่องแรกคือของเรา]`,
+    `แบรนด์: ${dataset.brands.join(" | ")}`,
+    ...dataset.rows.map((row) => `- ${row.criterion}: ${row.cells.map((c, i) => `${dataset.brands[i]} = ${c.value}`).join(" ; ")}`),
+    "ข้อสรุปว่าใครเหมาะกับอะไร:",
+    ...dataset.verdicts.map((v) => `- ${v}`),
+    ...(dataset.buyVsRent ? buildBuyVsRentLines(dataset.buyVsRent) : []),
+  ].join("\n");
+
+const buildBuyVsRentLines = (data: BuyVsRentDataset): string[] => {
+  const rentTotal = data.rent.months ? data.rent.monthly * data.rent.months : null;
+  return [
+    `[เช่า vs ซื้อขาด — รุ่นตัวแทน ${data.productName}]`,
+    `- เช่า: เริ่ม ${data.rent.monthly} บาท/เดือน${data.rent.months ? ` สัญญา ${data.rent.months} เดือน` : ""}${rentTotal != null ? ` รวมประมาณ ${rentTotal} บาท` : ""}`,
+    data.buy ? `- ซื้อขาด: ${data.buy.price} บาท (${data.buy.seller})` : "- ซื้อขาด: ไม่มีข้อมูลราคาที่ยืนยันได้ — ห้ามระบุราคาซื้อ",
+    ...data.rows.map((row) => `- ${row.criterion}: เช่า = ${row.cells[0].value} ; ซื้อขาด = ${row.cells[1].value}`),
+  ];
+};
+
 /**
  * @description AI ครั้งที่ 2 — เขียนบทความ SEO เต็มเป็นโครงบล็อก (1 หัวข้อ = 1 บทความ)
  * @logic
@@ -184,6 +237,8 @@ export const writeSeoArticle = async (params: {
         `โทนการเขียน: ${getSeoArticleTonePromptHint(brief.tone)}`,
         topic.keywords.length > 0 ? `คำค้นที่เกี่ยวข้อง: ${topic.keywords.join(", ")}` : "",
         brief.grounding ? `\n${buildGroundingMessage(brief.grounding)}\n${GROUNDING_USAGE_RULES}` : "",
+        brief.researchBrief ? `\n${brief.researchBrief}\n${RESEARCH_USAGE_RULES}` : "",
+        brief.compare ? `\n${buildCompareMessage(brief.compare)}\n${COMPARE_USAGE_RULES}` : "",
       ]
         .filter(Boolean)
         .join("\n")
@@ -214,7 +269,10 @@ export const writeSeoArticle = async (params: {
     startedAt: aiStartedAt,
   });
 
-  const normalized = normalizeAiBlocks(object.blocks, { createId });
+  const normalizedRaw = normalizeAiBlocks(object.blocks, { createId });
+  const normalized = brief?.compare
+    ? { ...normalizedRaw, blocks: insertCompareBlocks(normalizedRaw.blocks, brief.compare, createId ?? createBlockId) }
+    : normalizedRaw;
   // ตาข่ายรับท้าย: prompt สั่งให้เขียนเป็นความเรียงแล้ว แต่ถ้าโมเดลยังซอยเป็นรายการอยู่ ต้องให้คนรีวิวเห็น
   // (เตือนอย่างเดียว ไม่ปัดตกบทความ — คนรีวิวเป็นคนตัดสินว่าจะแก้หรือสั่งเขียนใหม่)
   const toneWarnings = detectAiToneSignals(normalized.blocks);
