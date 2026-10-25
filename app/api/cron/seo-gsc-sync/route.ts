@@ -1,10 +1,12 @@
 import { cronAuthorized } from "@/lib/analytics/cron-auth";
 import { isGscConfigured } from "@/lib/gsc/client";
 import { syncGscSearchQueries } from "@/lib/gsc/sync-search-queries.helper";
+import { syncKeywordRanks } from "@/lib/gsc/sync-keyword-ranks.helper";
 
 export const maxDuration = 120;
 
-// Daily Google Search Console pull for /blog/ pages (feeds the SEO article metrics).
+// Daily Google Search Console pull for /blog/ pages (feeds the SEO article metrics),
+// then site-wide positions of the keywords we chose to play (SeoKeyword TRACKING).
 // `?start=YYYY-MM-DD&end=YYYY-MM-DD` backfills a range.
 export async function GET(request: Request) {
   if (!cronAuthorized(request)) return new Response(null, { status: 401 });
@@ -20,7 +22,9 @@ export async function GET(request: Request) {
 
   try {
     const result = await syncGscSearchQueries({ startDate: start || undefined, endDate: end || undefined });
-    return Response.json(result, { headers: { "Cache-Control": "no-store" } });
+    const ranks = await syncKeywordRanks();
+    if (ranks.errors.length) console.error("[GSC-SYNC-02] keyword rank errors:", ranks.errors);
+    return Response.json({ ...result, ranks }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("[GSC-SYNC-01] seo-gsc-sync failed:", error);
     return Response.json(
