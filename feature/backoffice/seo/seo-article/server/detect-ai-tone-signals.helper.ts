@@ -36,6 +36,14 @@ export const AI_TONE_PHRASES: { phrase: string; maxCount: number }[] = [
   { phrase: "นอกจากนี้", maxCount: 2 },
   { phrase: "โดยสรุป", maxCount: 1 },
   { phrase: "สรุปแล้ว", maxCount: 1 },
+  // ภาษาพูดที่ไม่เข้ากับเว็บบริการของแบรนด์ (เจ้าของเว็บติว่า "ไม่เป็นทางการ ดูแปลก")
+  { phrase: "บอกกันตรง", maxCount: 0 },
+  { phrase: "พูดกันตรง", maxCount: 0 },
+  { phrase: "กันก่อน", maxCount: 0 },
+  { phrase: "กว่าเพื่อน", maxCount: 0 },
+  { phrase: "ก่อนนะ", maxCount: 0 },
+  { phrase: "ได้เลย", maxCount: 1 },
+  { phrase: "ไม่ต้องห่วง", maxCount: 0 },
 ];
 
 /** ชนิดบล็อกที่นับเป็น "เนื้อหา" — heading/divider/image เป็นโครง ไม่ใช่เนื้อความ จึงไม่นับเป็นตัวหาร */
