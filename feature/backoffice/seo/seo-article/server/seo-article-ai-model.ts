@@ -15,7 +15,10 @@ export type SeoAiTask =
   | "suggestTopics"
   | "extractChatTopics"
   | "imageBrief"
-  | "classifyPraise";
+  | "classifyPraise"
+  | "researchKeywords"
+  | "analyzeSerp"
+  | "researchCompare";
 
 type SeoAiTaskProfile = {
   openai: string;
@@ -24,9 +27,9 @@ type SeoAiTaskProfile = {
 };
 
 /** งานเขียนที่ลูกค้าอ่านจริงบนเว็บ — ใช้ effort สูงในงานที่ต้องเรียบเรียง */
-const WRITER_MODEL = { openai: "gpt-6-luna", anthropic: "claude-sonnet-5" } as const;
+const WRITER_MODEL = { openai: "gpt-6-luna", anthropic: "claude-sonnet-5-5" } as const;
 /** งานท่อภายใน — ใช้รุ่นเดียวกันแต่ลด effort ตามความซับซ้อนของงาน */
-const PIPELINE_MODEL = { openai: "gpt-6-luna", anthropic: "claude-haiku-4-5" } as const;
+const PIPELINE_MODEL = { openai: "gpt-6-luna", anthropic: "claude-haiku-5-5" } as const;
 
 /**
  * ตาราง model + effort ต่องาน — เกณฑ์แบ่ง 2 ชั้น
@@ -51,6 +54,12 @@ const SEO_AI_TASK_PROFILE: Record<SeoAiTask, SeoAiTaskProfile> = {
   imageBrief: { ...PIPELINE_MODEL, reasoningEffort: "low" },
   /** จัดหมวดคำชมลูกค้า — classification ล้วน ไม่มีอะไรให้คิด */
   classifyPraise: { ...PIPELINE_MODEL, reasoningEffort: "low" },
+  /** research คำค้นของกลุ่มลูกค้า (ค้นเว็บ + อ่านข้อมูลยอดค้นหา) — เลือกคำผิด = เขียนบทความที่ไม่มีใครค้น */
+  researchKeywords: { ...WRITER_MODEL, reasoningEffort: "high" },
+  /** อ่านบทความอันดับต้น ๆ แล้วหาช่องโหว่ — ค้นเว็บหลายรอบ ใช้ effort กลางพอ */
+  analyzeSerp: { ...WRITER_MODEL, reasoningEffort: "medium" },
+  /** เก็บข้อมูลแบรนด์คู่เทียบพร้อมแหล่งอ้างอิง — ตัวเลขผิดในตารางเทียบ = เสียความน่าเชื่อถือทั้งเว็บ */
+  researchCompare: { ...WRITER_MODEL, reasoningEffort: "high" },
 };
 
 /** ค่าเริ่มต้นของ worker เขียนบทความ — ใช้อ้างอิงใน log/ทดสอบ */
@@ -83,7 +92,8 @@ export const getSeoArticleAi = (task: SeoAiTask): ResolvedChatModel & { provider
   const resolved = getConfiguredModel({
     providerEnvName: "SEO_AI_PROVIDER",
     modelEnvName: "SEO_AI_MODEL",
-    defaultProvider: "openai",
+    // lg-jame ใช้ Claude เขียน/research (Sonnet 5.5 + Haiku 5.5) — OpenAI เหลือไว้สร้างรูปอย่างเดียว
+    defaultProvider: "anthropic",
     defaultModelId: { openai: profile.openai, anthropic: profile.anthropic },
   });
 

@@ -69,7 +69,10 @@ export function getCallProviderOptions(
   }
 ): ProviderOptions {
   if (provider === "anthropic") {
-    return {};
+    // effort ของ Claude อยู่ใน output_config — Sonnet 5.5/Haiku 5.5 ไม่มีระดับ "none" จึงปัดเป็น low
+    if (!opts?.reasoningEffort) return {};
+    const effort = opts.reasoningEffort === "none" ? "low" : opts.reasoningEffort;
+    return { anthropic: { effort } } as unknown as ProviderOptions;
   }
   if (provider === "openai") {
     const openaiOptions: Record<string, unknown> = {
