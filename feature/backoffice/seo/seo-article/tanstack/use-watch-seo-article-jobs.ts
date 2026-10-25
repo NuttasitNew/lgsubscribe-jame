@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { SeoArticleJobStatus, SeoArticleJobType } from "@prisma/client";
 import { seoArticleKeys } from "./query-key";
+import { seoKeywordKeys } from "../../keyword-research/tanstack/query-key";
 import { askAnswerFaqKeys } from "../../ask-answer-faq/tanstack/query-key";
 import { useFindSeoArticleJobs } from "./find-seo-article-jobs.query";
 import type { SeoArticleJobItem } from "../server/find-seo-article-jobs.action";
@@ -111,6 +112,16 @@ export const useWatchSeoArticleJobs = (): SeoArticleJobItem[] => {
         // แปลไฟล์ en ทั้งใบ push ตรงขึ้นเว็บ ไม่แตะฐานเลย — ไม่มี cache ให้ล้าง
         // แต่ต้องมี case ไว้ให้ switch ครบทุกชนิด (เพิ่มชนิดใหม่แล้วจะได้เห็นว่าลืมคิดถึงที่นี่)
         case SeoArticleJobType.TRANSLATE_FAQ_EN:
+          break;
+
+        // งานหน้า keyword — ตารางคำค้นเปลี่ยน; เขียนจากคำค้นได้บทความใหม่ด้วย
+        case SeoArticleJobType.RESEARCH_KEYWORDS:
+          void queryClient.invalidateQueries({ queryKey: seoKeywordKeys.all() });
+          break;
+        case SeoArticleJobType.WRITE_FROM_KEYWORD:
+          void queryClient.invalidateQueries({ queryKey: seoKeywordKeys.all() });
+          void queryClient.invalidateQueries({ queryKey: seoArticleKeys.lists() });
+          void queryClient.invalidateQueries({ queryKey: seoArticleKeys.overview() });
           break;
       }
     }

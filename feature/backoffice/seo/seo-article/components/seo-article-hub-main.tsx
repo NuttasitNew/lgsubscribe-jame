@@ -24,6 +24,7 @@ import { SeoArticleListSection } from "./seo-article-list-section";
 import { SeoArticleMetricsSection } from "./seo-article-metrics-section";
 import { SeoArticleOverviewSection } from "./seo-article-overview-section";
 import { AskAnswerFaqSection } from "../../ask-answer-faq/components/ask-answer-faq-section";
+import { SeoKeywordSection } from "../../keyword-research/components/seo-keyword-section";
 
 /**
  * @description หน้า hub บทความ SEO — พื้นเทา + section การ์ดขาว + in-page sidebar (แทน tab เดิม)
@@ -87,7 +88,7 @@ export const SeoArticleHubMain = () => {
         {/* ปุ่ม action หลักของ section ที่เลือกอยู่
             — section ผลบน Google ไม่มี action, section หน้า ถาม-ตอบ มีปุ่มของตัวเองในการ์ดข้างล่าง
               (ถ้าโชว์ปุ่มเขียนบทความคู่กัน คนจะกดผิดปุ่มเพราะทั้งคู่ขึ้นต้นว่า "สร้าง/ให้ AI") */}
-        {section !== "metrics" && section !== "faq" && (
+        {section !== "metrics" && section !== "faq" && section !== "keywords" && (
           <div className="flex flex-wrap items-center gap-2">
             {/* สั่งเขียน = ปุ่มหลัก; ชุดอ้างอิงภาพใช้กำหนดหน้าตารูปที่ AI วาด */}
             <Button onClick={openCategoryDialog} className="gap-1.5">
@@ -124,6 +125,7 @@ export const SeoArticleHubMain = () => {
         <div className="min-h-0 min-w-0 overflow-y-auto pr-0.5">
           {section === "overview" && <SeoArticleOverviewSection onGoToSection={setSection} />}
           {section === "faq" && <AskAnswerFaqSection jobs={jobs} />}
+          {section === "keywords" && <SeoKeywordSection />}
           {section === "metrics" && <SeoArticleMetricsSection />}
           {listStatus != null && <SeoArticleListSection key={section} status={listStatus} />}
         </div>

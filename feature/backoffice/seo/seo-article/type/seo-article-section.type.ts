@@ -1,5 +1,5 @@
 import { SeoArticleStatus } from "@prisma/client";
-import { Compass, FileClock, FileCheck2, FileX2, Files, LineChart, MessageCircleQuestion } from "lucide-react";
+import { Compass, FileClock, Target, FileCheck2, FileX2, Files, LineChart, MessageCircleQuestion } from "lucide-react";
 import type { PageSectionItem } from "@/components/shared/page-section-sidebar";
 
 /**
@@ -7,7 +7,7 @@ import type { PageSectionItem } from "@/components/shared/page-section-sidebar";
  *              (ไฟล์ nuqs import ไปทำ parseAsStringLiteral ต่อ เพื่อไม่ให้ key หลุดกัน)
  * @page /super-admin/hurry-web/seo-article
  */
-export const SEO_ARTICLE_SECTIONS = ["overview", "draft", "published", "rejected", "all", "faq", "metrics"] as const;
+export const SEO_ARTICLE_SECTIONS = ["overview", "keywords", "draft", "published", "rejected", "all", "faq", "metrics"] as const;
 
 /** key ของ section ในหน้า hub บทความ SEO */
 export type SeoArticleSectionKey = (typeof SEO_ARTICLE_SECTIONS)[number];
@@ -19,6 +19,7 @@ export type SeoArticleSectionKey = (typeof SEO_ARTICLE_SECTIONS)[number];
  */
 export const SEO_ARTICLE_SECTION_ITEMS: PageSectionItem[] = [
   { id: "overview", label: "ภาพรวม", description: "สรุปสถานะ · หัวข้อที่ลูกค้าถาม", icon: Compass },
+  { id: "keywords", label: "Keyword & อันดับ", description: "AI research คำค้น · ติดตามอันดับ", icon: Target },
   { id: "draft", label: "รอรีวิว", description: "ร่างที่ AI เขียนไว้ รอตรวจ", icon: FileClock },
   { id: "published", label: "เผยแพร่แล้ว", description: "ขึ้นหน้า /blog แล้ว", icon: FileCheck2 },
   { id: "rejected", label: "ปัดตก", description: "ร่างที่ไม่เอา (กัน AI เสนอซ้ำ)", icon: FileX2 },
