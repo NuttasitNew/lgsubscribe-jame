@@ -1,7 +1,7 @@
 import "server-only";
 import { isOpenAiConfigured } from "@/lib/openai/generate-image";
 import { generateAndUploadArticleImage } from "./generate-and-upload-article-image.helper";
-import { COVER_SHOT, IMAGE_STYLE, PRODUCT_REFERENCE_LOCK, SECTION_SHOTS } from "./article-image-style.constant";
+import { COVER_SHOT, IMAGE_STYLE, SECTION_SHOTS } from "./article-image-style.constant";
 import {
   countArticleImageBlocks,
   insertArticleImageBlocks,
@@ -22,7 +22,7 @@ export interface GenerateArticleImagesResult {
 }
 
 /**
- * @description gen รูปปก + รูปแทรกบทความด้วย gpt-image-2 แล้ว upload ขึ้น R2 — คืน contentJson โครงบล็อกที่ใส่รูปแล้ว
+ * @description gen รูปปก + รูปแทรกบทความด้วย gpt-image-2.5-sunburst แล้ว upload ขึ้น R2 — คืน contentJson โครงบล็อกที่ใส่รูปแล้ว
  * @logic
  * 1. ปก: prompt จาก title ขนาด 1536x1024 — เก็บเป็น `coverImage` (string) + `coverImageAlt`
  * 2. รูปแทรก: planArticleImageSlots เลือกตำแหน่งใต้หัวข้อ (เว้นหัวข้อสุดท้ายที่เป็น CTA) สูงสุด 2 ใบ
@@ -52,14 +52,13 @@ export const generateArticleImages = async (params: {
 }): Promise<GenerateArticleImagesResult> => {
   const { slug, title, content, maxImages, createId } = params;
   const productImageUrls = params.productImageUrls?.filter(Boolean) ?? [];
-  const productLock = productImageUrls.length ? ` ${PRODUCT_REFERENCE_LOCK}` : "";
 
   const needCover = !content.coverImage || content.coverImage.trim().length === 0;
   const slots = planArticleImageSlots(content.blocks, { maxImages: maxImages ?? MAX_ARTICLE_IMAGE_BLOCKS });
   // นับ "รูปที่มีอยู่แล้วเลยไม่ต้อง gen ซ้ำ" — ปก + รูปในเนื้อบทความ
   const skipped = (needCover ? 0 : 1) + countArticleImageBlocks(content.blocks);
 
-  // มีรูปครบแล้ว → ไม่ยิง API เลย (กันเผาค่า gpt-image-2 ทุกครั้งที่เรียก)
+  // มีรูปครบแล้ว → ไม่ยิง API เลย (กันเผาค่า gpt-image-2.5-sunburst ทุกครั้งที่เรียก)
   if (!needCover && slots.length === 0) {
     return { content, generated: 0, skipped, errors: [] };
   }
@@ -81,7 +80,7 @@ export const generateArticleImages = async (params: {
           {
             kind: "cover" as const,
             slotIndex: -1,
-            prompt: `Blog cover image for a Thai LG Subscribe (monthly LG appliance subscription) article titled "${title}". Read the Thai title and work out exactly which appliance the article is about — that appliance must be the clear focus of the photo. ${COVER_SHOT} ${IMAGE_STYLE}${productLock}`,
+            prompt: `Blog cover image for a Thai LG Subscribe (monthly LG appliance subscription) article titled "${title}". Read the Thai title and work out exactly which appliance the article is about — that appliance must be the clear focus of the photo. ${COVER_SHOT} ${IMAGE_STYLE}`,
             filename: `${slug}-cover`,
             alt: title,
             referenceTopic: title,
@@ -91,7 +90,7 @@ export const generateArticleImages = async (params: {
     ...slots.map((slot, order) => ({
       kind: "block" as const,
       slotIndex: order,
-      prompt: `Illustration photo for one section of a Thai LG Subscribe (monthly LG appliance subscription) blog article. Article title: "${title}". Section topic: "${slot.heading}". Read that Thai section topic and picture what it is actually describing — the photo must match THAT topic, not the article in general. ${SECTION_SHOTS[order % SECTION_SHOTS.length]} ${IMAGE_STYLE}${productLock}`,
+      prompt: `Illustration photo for one section of a Thai LG Subscribe (monthly LG appliance subscription) blog article. Article title: "${title}". Section topic: "${slot.heading}". Read that Thai section topic and picture what it is actually describing — the photo must match THAT topic, not the article in general. ${SECTION_SHOTS[order % SECTION_SHOTS.length]} ${IMAGE_STYLE}`,
       filename: `${slug}-section-${order + 1}`,
       // alt ต้องมีทุกใบ — หัวข้อว่างเมื่อไหร่ใช้ชื่อบทความแทน ห้ามปล่อยว่าง
       alt: slot.heading.trim().length > 0 ? slot.heading : title,

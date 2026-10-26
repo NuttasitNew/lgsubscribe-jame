@@ -12,13 +12,14 @@ import type { SeoArticleJobRunner } from "./seo-article-job-runner.type";
 import type { SeoArticleBlockContent } from "../type/seo-article-block.type";
 import type { SeoArticleGenerateImagesPayload } from "../type/seo-article-job-payload.type";
 import { siteConfig } from "@/lib/site";
+import { findArticleProductImageUrls } from "./find-article-product-images.helper";
 
 /** path รูปใน public/ → URL เต็มบนเว็บจริง (OpenAI ต้องโหลดรูปจาก URL; บน Vercel ไฟล์ public ไม่อยู่ใน function) */
 const toAbsoluteSiteUrls = (paths?: string[]) =>
   (paths ?? []).filter((path) => path.startsWith("/")).map((path) => `${siteConfig.url}${path}`);
 
 /**
- * @description runner ของงาน GENERATE_IMAGES — gen รูปปก + รูปแทรกใหม่ยกชุด (gpt-image-2 → R2) ให้บทความเดิม
+ * @description runner ของงาน GENERATE_IMAGES — gen รูปปก + รูปแทรกใหม่ยกชุด (gpt-image-2.5-sunburst → R2) ให้บทความเดิม
  * @logic
  * 1. ล้างรูปเดิมใน "ก้อน input ที่ส่งเข้า gen" เท่านั้น เพื่อข้าม guard กันสร้างซ้ำ — DB ยังไม่ถูกแตะ
  *    ⚠️ ปกเดิมถูกเก็บไว้เสมอ ถ้า job ปกพัง (rejected) จะคืนค่าเดิมกลับ [SEO-IMG-07]
@@ -75,7 +76,10 @@ export const runGenerateImagesJob: SeoArticleJobRunner = async (job) => {
     slug: article.slug,
     title: article.title,
     content: cleared,
-    productImageUrls: toAbsoluteSiteUrls(payload.productImagePaths),
+    // งานจาก keyword research ส่งรุ่นมาให้ ; กดวาดใหม่จากหน้าแก้ไขไม่มี → หารุ่นจากเนื้อบทความเอง
+    productImageUrls: payload.productImagePaths?.length
+      ? toAbsoluteSiteUrls(payload.productImagePaths)
+      : findArticleProductImageUrls(content),
   });
   if (imageResult.generated === 0) {
     throw new Error(`[SEO-IMG-04] gen รูปไม่สำเร็จ: ${imageResult.errors[0] ?? "Unknown"}`);

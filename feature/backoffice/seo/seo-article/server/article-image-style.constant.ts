@@ -66,9 +66,11 @@ export const SECTION_SHOTS = [
 
 /**
  * ใช้เมื่อแนบรูปสินค้าจริงจากเว็บเรา (packshot ทางการของ LG ใน public/images/products) เป็นรูปอ้างอิง
- * — override กติกา "ตัวเครื่องห้ามมีโลโก้" ของ BRAND_LOCK เพราะคราวนี้ต้องการสินค้าจริงรุ่นที่เราขาย
+ * — override กติกา "ตัวเครื่องห้ามมีโลโก้" ของ BRAND_LOCK/โปรไฟล์แบรนด์ เพราะคราวนี้ต้องการสินค้าจริงรุ่นที่เราขาย
+ * - generateAndUploadArticleImage ต่อข้อความนี้ไว้ท้ายสุดของคำสั่ง (หลังโปรไฟล์แบรนด์) เพื่อให้ชนะกติกาก่อนหน้า
  */
 export const PRODUCT_REFERENCE_LOCK =
   "Product reference photos are attached: they are official packshots of the exact LG products sold on our website. " +
   "Place THAT exact product in the scene and keep it faithful to the reference — same shape, proportions, colour, finish, door/panel layout and the LG logo exactly as it appears on the reference. " +
-  "Do not redesign it, do not add other brands or extra appliances, and do not copy the plain packshot background — build a natural Thai home scene around the product.";
+  "Do not redesign it, do not add other brands or extra appliances, and do not copy the plain packshot background — build a natural Thai home scene around the product. " +
+  "This rule overrides any earlier instruction about blank appliance bodies or no logos: the LG logo and panel markings stay exactly as on the reference product; everything else in the scene stays free of readable text.";

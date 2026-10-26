@@ -11,11 +11,13 @@ import { buildArticleImageBrief } from "./build-article-image-brief.helper";
 import { ARTICLE_IMAGE_SIZE, generateAndUploadArticleImage } from "./generate-and-upload-article-image.helper";
 import { withTechnicianReferenceHint } from "./with-technician-reference-hint.helper";
 import { recordArticleImage } from "./record-article-image.helper";
+import { findArticleProductImageUrls } from "./find-article-product-images.helper";
+import { selectBrandReferenceKinds } from "../../brand-profile/helper/select-brand-reference-kinds.helper";
 import type { SeoArticleJobRunner } from "./seo-article-job-runner.type";
 import type { SeoArticleSingleImagePayload } from "../type/seo-article-job-payload.type";
 
 /**
- * @description runner ของงาน SINGLE_IMAGE — สั่ง AI (gpt-image-2) วาดรูปประกอบบทความทีละใบ
+ * @description runner ของงาน SINGLE_IMAGE — สั่ง AI (gpt-image-2.5-sunburst) วาดรูปประกอบบทความทีละใบ
  * @logic
  * - **ห้ามแตะ contentJson เด็ดขาด** — หน้าแก้ไขเป็นเจ้าของร่างที่กำลังแก้ (SeoArticle.draftJson)
  *   รูปเดินทางกลับหน้าจอผ่าน `resultJson` ของ job แล้วผู้ใช้กดบันทึกบทความเองทีหลัง
@@ -41,7 +43,7 @@ export const runSingleImageJob: SeoArticleJobRunner = async (job) => {
 
   const article = await prisma.seoArticle.findUnique({
     where: { seoArticleId },
-    select: { slug: true, title: true },
+    select: { slug: true, title: true, contentJson: true },
   });
   if (!article) throw new Error("[SEO-IMG-GEN-04] ไม่พบบทความ (อาจถูกลบไประหว่างรอคิว)");
 
@@ -82,12 +84,20 @@ export const runSingleImageJob: SeoArticleJobRunner = async (job) => {
   });
   if (!built.ok) throw new Error(built.message);
 
+  // ภาพถ่ายที่พูดถึงเครื่องใช้ไฟฟ้า → แนบรูปสินค้าจริงรุ่นที่บทความพูดถึง ให้วาดเครื่องรุ่นที่เราขายจริง
+  // ภาพฉาก/เอกสาร/อินโฟกราฟิก ไม่แนบ (กติการูปสินค้าบังคับให้มีเครื่องในฉาก)
+  const productReferenceUrls =
+    style === "photo" && selectBrandReferenceKinds(description).includes("equipment")
+      ? findArticleProductImageUrls({ title: article.title, content: article.contentJson })
+      : [];
+
   let url: string;
   try {
     url = await generateAndUploadArticleImage(built.prompt, `${article.slug}-${placement}-${style}`, {
       // อินโฟกราฟิกห้ามแนบรูปอ้างอิงแบรนด์ (เป็นภาพถ่าย จะดึงผลให้ออกมาเป็นภาพเหมือนจริง)
       withBrandReference: style !== "infographic",
       referenceDescription: withTechnicianReferenceHint(description),
+      ...(productReferenceUrls.length ? { productReferenceUrls } : {}),
     });
   } catch (error) {
     throw new Error(`[SEO-IMG-GEN-07] วาดรูปไม่สำเร็จ — ${error instanceof Error ? error.message : "Unknown"}`);

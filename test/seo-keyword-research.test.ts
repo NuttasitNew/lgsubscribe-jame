@@ -171,3 +171,18 @@ describe("article source policy", () => {
     expect(list.items).toHaveLength(1);
   });
 });
+
+describe("article product reference images", () => {
+  it("finds the catalog products an article links to or names by model", async () => {
+    const { findArticleProductImageUrls } = await import("@/feature/backoffice/seo/seo-article/server/find-article-product-images.helper");
+    const urls = findArticleProductImageUrls({
+      blocks: [
+        { type: "paragraph", runs: [{ text: "เช่าแอร์ SAQ13A", link: "/products/lg-saq13a" }] },
+        { type: "paragraph", runs: [{ text: "เทียบกับเครื่องกรองน้ำ WD516AN" }] },
+      ],
+    });
+    expect(urls).toHaveLength(2);
+    expect(urls[0]).toMatch(/saq13a\.jpg$/);
+    expect(findArticleProductImageUrls({ blocks: [{ type: "paragraph", runs: [{ text: "ไม่มีรุ่น" }] }] })).toEqual([]);
+  });
+});
