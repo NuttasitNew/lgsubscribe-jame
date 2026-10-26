@@ -2,7 +2,7 @@ import { createBlockId } from "../helper/create-block-id.helper";
 import { serializeRunsToText } from "../helper/serialize-blocks-to-text.helper";
 import type { SeoArticleBlock, SeoArticleHeadingBlock } from "../type/seo-article-block.type";
 
-/** จำนวนรูปแทรกในเนื้อบทความสูงสุด (ไม่นับรูปปก) — คุมต้นทุน gpt-image-2 */
+/** จำนวนรูปแทรกในเนื้อบทความสูงสุด (ไม่นับรูปปก) — คุมต้นทุน gpt-image-2.5-sunburst */
 export const MAX_ARTICLE_IMAGE_BLOCKS = 2;
 
 /** ตำแหน่งที่จะแทรกรูป 1 ใบ */

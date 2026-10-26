@@ -44,7 +44,7 @@ const truncateAtWord = (value: string, maxLength: number): string => {
 };
 
 /**
- * @description แปลง "คำสั่งวาดที่ผู้ใช้พิมพ์" + บริบทบทความ → prompt ฉบับเต็มของ gpt-image-2 + alt ที่เสนอให้
+ * @description แปลง "คำสั่งวาดที่ผู้ใช้พิมพ์" + บริบทบทความ → prompt ฉบับเต็มของ gpt-image-2.5-sunburst + alt ที่เสนอให้
  * @logic
  * - ตรวจก่อนเสมอ: ว่าง → [SEO-IMG-GEN-02], ยาวเกิน MAX_IMAGE_DESCRIPTION_LENGTH → [SEO-IMG-GEN-03]
  *   (ตรวจความยาวหลังยุบช่องว่างแล้ว เพื่อไม่ให้การเว้นบรรทัดไปกินโควตา)

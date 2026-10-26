@@ -6,7 +6,7 @@
 export interface SeoArticleSection {
   heading: string; // หัวข้อย่อย (h2)
   html: string; // เนื้อหา HTML string (p/ul/ol เท่านั้น)
-  image?: { url: string; alt: string }; // รูปแทรกใต้ heading (gen ด้วย gpt-image-2, host บน R2)
+  image?: { url: string; alt: string }; // รูปแทรกใต้ heading (gen ด้วย gpt-image-2.5-sunburst, host บน R2)
 }
 
 export interface SeoArticleFaq {
@@ -17,7 +17,7 @@ export interface SeoArticleFaq {
 export type SeoArticleCategory = "productGuide" | "buyingGuide" | "careTips" | "services";
 
 export interface SeoArticleContent {
-  coverImage?: string; // URL รูปหัวบทความ (gen ด้วย gpt-image-2, host บน R2 ของ hmp)
+  coverImage?: string; // URL รูปหัวบทความ (gen ด้วย gpt-image-2.5-sunburst, host บน R2 ของ hmp)
   category: SeoArticleCategory; // หมวดบทความบนหน้า /blog
   sections: SeoArticleSection[];
   faq: SeoArticleFaq[];

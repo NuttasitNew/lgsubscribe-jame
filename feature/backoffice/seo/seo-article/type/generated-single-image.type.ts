@@ -8,7 +8,7 @@
 export interface GeneratedSingleImage {
   /** URL รูปบน R2 (category "seo-article") */
   url: string;
-  /** ความกว้างจริงของรูปที่สั่ง gpt-image-2 วาด — ใส่ลงบล็อกเพื่อลด layout shift ฝั่งเว็บ */
+  /** ความกว้างจริงของรูปที่สั่ง gpt-image-2.5-sunburst วาด — ใส่ลงบล็อกเพื่อลด layout shift ฝั่งเว็บ */
   width: number;
   /** ความสูงจริงของรูป */
   height: number;

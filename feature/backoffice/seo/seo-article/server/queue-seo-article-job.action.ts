@@ -13,7 +13,7 @@ import type { SeoArticleCategory } from "../type/seo-article-content.type";
 import type { AskAnswerFaqWritePayload } from "../../ask-answer-faq/type/ask-answer-faq-job-payload.type";
 import { MAX_FAQ_COUNT } from "../../ask-answer-faq/server/write-ask-answer-faqs.helper";
 
-/** ระยะกันกดรัวงานวาดรูปต่อคน (วินาที) — gpt-image-2 คิดเงินต่อใบ ปุ่มค้าง/กดซ้ำต้องไม่กลายเป็นค่า API หลายเท่า */
+/** ระยะกันกดรัวงานวาดรูปต่อคน (วินาที) — gpt-image-2.5-sunburst คิดเงินต่อใบ ปุ่มค้าง/กดซ้ำต้องไม่กลายเป็นค่า API หลายเท่า */
 const IMAGE_LOCK_SECONDS = 20;
 /** ความยาวโจทย์ที่รับได้ — สั้นไปสั่งงานไม่รู้เรื่อง ยาวไปเปลือง token */
 const MIN_BRIEF_LENGTH = 5;

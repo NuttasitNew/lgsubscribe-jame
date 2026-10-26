@@ -92,7 +92,7 @@ export interface SeoArticleNumberedListBlock extends SeoArticleBlockBase {
 
 /**
  * รูปในเนื้อบทความ
- * - `width`/`height` เป็น optional เพราะรูปจริงมีหลายขนาด (1536x1024 จาก gpt-image-2, 500x500 จากรูปเก่า)
+ * - `width`/`height` เป็น optional เพราะรูปจริงมีหลายขนาด (1536x1024 จาก gpt-image-2.5-sunburst, 500x500 จากรูปเก่า)
  *   ห้ามบังคับ — รูปที่ไม่รู้ขนาดต้อง publish ได้ปกติ
  * - `caption` = คำบรรยายใต้รูปที่ผู้ใช้เห็น ต่างจาก `alt` ที่มีไว้ให้ screen reader / SEO
  */
