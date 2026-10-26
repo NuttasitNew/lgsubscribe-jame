@@ -17,7 +17,7 @@ export type SingleImagePlacement = "cover" | "inline";
 export type SingleImageStyle = "photo" | "infographic";
 
 export interface BuildSingleImagePromptParams {
-  /** ข้อความอิสระที่ผู้ใช้พิมพ์บอกว่าอยากได้ภาพอะไร (หรือคำสั่งที่ Claude เขียนให้ตอนกดวาดอัตโนมัติ) */
+  /** ข้อความอิสระที่ผู้ใช้พิมพ์บอกว่าอยากได้ภาพอะไร (หรือคำสั่งที่ AI เขียนให้ตอนกดวาดอัตโนมัติ) */
   description: string;
   /** ชื่อบทความ — ใช้เป็นบริบทให้ภาพเข้ากับเนื้อหา */
   articleTitle: string;

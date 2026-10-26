@@ -109,7 +109,7 @@ export const SeoArticleAiImagePrompt = ({
   const canSubmit = isReady && trimmed.length > 0;
 
   /**
-   * สั่งวาด — `auto` = ไม่ส่งคำสั่งไป ปล่อยให้ Claude อ่านบทความแล้วคิดเอง
+   * สั่งวาด — `auto` = ไม่ส่งคำสั่งไป ปล่อยให้ AI อ่านบทความแล้วคิดเอง
    * คำสั่งที่ AI คิดจะถูกส่งกลับมาใน result.data.description แล้วเติมลงช่อง
    * เพื่อให้ผู้ใช้เห็นว่ามันสั่งวาดอะไร และแก้ต่อแล้วกดวาดใหม่ได้
    */
