@@ -44,6 +44,10 @@ export const AI_TONE_PHRASES: { phrase: string; maxCount: number }[] = [
   { phrase: "ก่อนนะ", maxCount: 0 },
   { phrase: "ได้เลย", maxCount: 1 },
   { phrase: "ไม่ต้องห่วง", maxCount: 0 },
+  // ข้อความชี้แจงตัวเว็บ — เจ้าของเว็บไม่ต้องการ ("ไม่รู้จะบอกทำไม")
+  { phrase: "ไม่ใช่เว็บไซต์ทางการ", maxCount: 0 },
+  { phrase: "บทความนี้จัดทำโดย", maxCount: 0 },
+  { phrase: "ส่วนได้เสีย", maxCount: 0 },
 ];
 
 /** ชนิดบล็อกที่นับเป็น "เนื้อหา" — heading/divider/image เป็นโครง ไม่ใช่เนื้อความ จึงไม่นับเป็นตัวหาร */
