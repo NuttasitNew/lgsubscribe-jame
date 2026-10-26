@@ -74,3 +74,13 @@ export const PRODUCT_REFERENCE_LOCK =
   "Place THAT exact product in the scene and keep it faithful to the reference — same shape, proportions, colour, finish, door/panel layout and the LG logo exactly as it appears on the reference. " +
   "Do not redesign it, do not add other brands or extra appliances, and do not copy the plain packshot background — build a natural Thai home scene around the product. " +
   "This rule overrides any earlier instruction about blank appliance bodies or no logos: the LG logo and panel markings stay exactly as on the reference product; everything else in the scene stays free of readable text.";
+
+/**
+ * ใช้เมื่อบทความไม่ได้พูดถึงรุ่นใดในแคตตาล็อก (เช่น เรื่องการสมัคร เอกสาร การชำระเงิน สัญญา)
+ * — ไม่งั้น AI จะเดาเครื่องสักชนิดมาตั้งกลางภาพ ซึ่งไม่เล่าเรื่องของหัวข้อเลย (เคสจริง บทความ "ไม่มีบัตรเครดิต" 26 ต.ค. 2026)
+ */
+export const NO_PRODUCT_TOPIC_LOCK =
+  "If the topic is not about one specific appliance (for example applying, documents, payment methods, contracts or approval), " +
+  "illustrate that real-life situation instead: a Thai resident at home calmly handling it — reading paperwork, checking a phone or laptop, or talking with family — " +
+  "with any screens and papers turned away or blurred so nothing is readable. At most one LG appliance may appear softly in the background; never make an appliance the subject.";
+
