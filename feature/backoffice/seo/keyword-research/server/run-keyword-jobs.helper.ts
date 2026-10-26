@@ -40,7 +40,7 @@ export const runResearchKeywordsJob: SeoArticleJobRunner = async (job) => {
  *    (ผล research อายุไม่เกิน 14 วันใช้ซ้ำได้)
  * - บทความ COMPARE แยกเป็น 3 งานต่อกัน (อ่านคู่แข่ง → ตารางเทียบ → เขียน) แต่ละงานได้ function invocation ของตัวเอง
  *   เพราะรวมกันราว 13 นาที เกินเพดาน 800 วินาทีต่อการเรียกของ Vercel — งานถัดไปอ่านผลที่บันทึกไว้แล้วทำขั้นที่เหลือ
- * 4. เขียนร่างด้วยตัวเขียนเดิม (Sonnet 5.5) + วาดรูปด้วยรูปสินค้าจริงจากเว็บ → ผูกบทความกับคำ + เริ่มติดตามอันดับ
+ * 4. เขียนร่างด้วยตัวเขียนเดิม (gpt-6-luna) + วาดรูปด้วยรูปสินค้าจริงจากเว็บ → ผูกบทความกับคำ + เริ่มติดตามอันดับ
  */
 export const runWriteFromKeywordJob: SeoArticleJobRunner = async (job) => {
   const payload = (job.payload ?? {}) as unknown as SeoWriteFromKeywordPayload;

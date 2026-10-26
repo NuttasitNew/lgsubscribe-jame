@@ -59,7 +59,7 @@ export interface ResearchKeywordsResult {
  *    - หมวด/รุ่น/ราคาเริ่มต้นจากแคตตาล็อกในเว็บ
  *    - Google Autocomplete ของ seed ต่อหมวด (คนพิมพ์คำนี้จริง)
  *    - Keyword Planner (ยอดค้นหา/เดือน + แนวโน้ม 12 เดือน) และคำค้นจาก Search Console 28 วัน ถ้ามี
- * 2. Claude Sonnet 5.5 + web_search ดู SERP จริงเพื่อตัดสิน intent / ชนิดบทความ แล้วเสนอ ~25 คำ
+ * 2. ChatGPT gpt-6-luna + web search ดู SERP จริงเพื่อตัดสิน intent / ชนิดบทความ แล้วเสนอ ~25 คำ
  * 3. หลักฐาน (evidence) ของแต่ละคำคำนวณจากข้อมูลของเราเอง ไม่เชื่อตัวเลขที่ AI พิมพ์มา
  * 4. คำที่มีอยู่แล้ว (ทุกสถานะ รวม DISMISSED) ไม่บันทึกซ้ำ — ปัดตกแล้วต้องไม่ถูกเสนอวนกลับมา
  */

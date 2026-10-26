@@ -20,61 +20,26 @@ export type SeoAiTask =
   | "analyzeSerp"
   | "researchCompare";
 
-type SeoAiTaskProfile = {
-  openai: string;
-  anthropic: string;
-  reasoningEffort: "low" | "medium" | "high" | "xhigh" | "max";
-};
-
-/** งานเขียนที่ลูกค้าอ่านจริงบนเว็บ — ใช้ effort สูงในงานที่ต้องเรียบเรียง */
-const WRITER_MODEL = { openai: "gpt-6-luna", anthropic: "claude-sonnet-5-5" } as const;
-/** งานท่อภายใน — ใช้รุ่นเดียวกันแต่ลด effort ตามความซับซ้อนของงาน */
-const PIPELINE_MODEL = { openai: "gpt-6-luna", anthropic: "claude-haiku-5-5" } as const;
-
 /**
- * ตาราง model + effort ต่องาน — เกณฑ์แบ่ง 2 ชั้น
- * 1. OpenAI ใช้ gpt-6-luna ทุกงาน; Anthropic แยกรุ่นสำหรับเนื้อหาที่ลูกค้าอ่านกับงานท่อภายใน
- * 2. effort สูงเฉพาะงานที่ต้อง "คิด" (เรียบเรียงบทความ/ตอบให้ถูกเรื่องธุรกิจ)
- *    งานแปลกับงานดึงข้อมูลไม่ได้ดีขึ้นตาม effort แต่จ่าย reasoning token เพิ่มเต็ม ๆ
+ * ทุกงานในสาย SEO ใช้ ChatGPT gpt-6-luna effort medium รุ่นเดียว (เจ้าของเว็บกำหนด 26 ต.ค. 2026)
+ * รุ่น Claude เก็บไว้เป็นทางสำรองผ่าน env `SEO_AI_PROVIDER=anthropic` เท่านั้น
  */
-const SEO_AI_TASK_PROFILE: Record<SeoAiTask, SeoAiTaskProfile> = {
-  /** เขียนบทความไทยเต็มใบ — output ยาวสุดในระบบ สำนวนคือคุณค่าทั้งหมดของงานนี้ */
-  writeArticle: { ...WRITER_MODEL, reasoningEffort: "high" },
-  /** แปลบทความเป็น EN — ลูกค้าอ่านจริง แต่ต้นฉบับคิดมาแล้ว ไม่ต้อง reason ซ้ำ */
-  translateArticle: { ...WRITER_MODEL, reasoningEffort: "medium" },
-  /** เขียน FAQ หน้าถาม-ตอบ — ลูกค้าอ่าน + ตอบผิดเรื่องราคา/บริการแล้วเสียหายจริง */
-  writeFaq: { ...WRITER_MODEL, reasoningEffort: "high" },
-  /** แปล FAQ เป็น EN */
-  translateFaq: { ...WRITER_MODEL, reasoningEffort: "medium" },
-  /** เสนอหัวข้อจากหมวดบริการ — output สั้นมาก ค่าโมเดลแทบไม่ขยับ แต่หัวข้อผิด = บทความทั้งใบเสียเปล่า */
-  suggestTopics: { ...WRITER_MODEL, reasoningEffort: "medium" },
-  /** ดึงหัวข้อจากแชทเมื่อวาน — extraction จาก log ที่มีคำตอบอยู่แล้ว ไม่ต้องใช้ตัวเขียนเก่ง */
-  extractChatTopics: { ...PIPELINE_MODEL, reasoningEffort: "medium" },
-  /** เขียน prompt ส่งต่อให้ gpt-image-2 — งาน mechanical ผลลัพธ์ไม่ถึงสายตาลูกค้า */
-  imageBrief: { ...PIPELINE_MODEL, reasoningEffort: "low" },
-  /** จัดหมวดคำชมลูกค้า — classification ล้วน ไม่มีอะไรให้คิด */
-  classifyPraise: { ...PIPELINE_MODEL, reasoningEffort: "low" },
-  /** research คำค้นของกลุ่มลูกค้า (ค้นเว็บ + อ่านข้อมูลยอดค้นหา) — เลือกคำผิด = เขียนบทความที่ไม่มีใครค้น */
-  researchKeywords: { ...WRITER_MODEL, reasoningEffort: "high" },
-  /** อ่านบทความอันดับต้น ๆ แล้วหาช่องโหว่ — ค้นเว็บหลายรอบ ใช้ effort กลางพอ */
-  analyzeSerp: { ...WRITER_MODEL, reasoningEffort: "medium" },
-  /** เก็บข้อมูลแบรนด์คู่เทียบพร้อมแหล่งอ้างอิง — ตัวเลขผิดในตารางเทียบ = เสียความน่าเชื่อถือทั้งเว็บ */
-  researchCompare: { ...WRITER_MODEL, reasoningEffort: "high" },
-};
+const SEO_AI_MODEL = { openai: "gpt-6-luna", anthropic: "claude-sonnet-5-5" } as const;
+const SEO_AI_REASONING_EFFORT = "medium" as const;
 
 /** ค่าเริ่มต้นของ worker เขียนบทความ — ใช้อ้างอิงใน log/ทดสอบ */
-export const SEO_AI_DEFAULT_MODEL = SEO_AI_TASK_PROFILE.writeArticle.openai;
+export const SEO_AI_DEFAULT_MODEL = SEO_AI_MODEL.openai;
 
 /**
  * @description resolve model + providerOptions ของงาน SEO/FAQ แต่ละงานจากตาราง profile เดียวกัน
  * @access server-only
  * @logic
- * - model/effort มาจาก {@link SEO_AI_TASK_PROFILE} ตาม `task` ที่ส่งมา (ดูเกณฑ์แบ่งในคอมเมนต์ของตาราง)
+ * - ทุก task ได้ gpt-6-luna + effort medium เท่ากัน — `task` ยังรับไว้เพื่อให้ call site บอกว่างานไหน (log/อนาคต)
  * - env override ได้ 2 ตัว และ **มีผลกับทุก task พร้อมกัน** (ตั้งใจให้เป็น kill switch ไม่ใช่ตัวจูนรายงาน)
  *   `SEO_AI_PROVIDER` = openai | anthropic ; `SEO_AI_MODEL` = model id ตรง ๆ
  * - คืน model กับ providerOptions มาด้วยกันเพื่อไม่ให้ call site หยิบ model ของงานหนึ่งไปคู่กับ effort ของอีกงาน
  * - `cacheKey` คงที่ทั้งสาย ("seo-article-v1") เพราะ prompt prefix ฝั่ง OpenAI แชร์กันได้
- * @param task งานที่กำลังเรียก — ตัวกำหนดทั้ง model tier และ reasoning effort
+ * @param task งานที่กำลังเรียก
  * @returns {@link ResolvedChatModel} + `providerOptions` ที่ใส่ตรงเข้า `generateObject` ได้เลย
  * @used-by
  * - {@link write-seo-article.helper.ts} · {@link translate-article-to-en.helper.ts}
@@ -88,20 +53,19 @@ export const SEO_AI_DEFAULT_MODEL = SEO_AI_TASK_PROFILE.writeArticle.openai;
  * - {@link @/lib/ai/billing/model-pricing.ts} (ราคาต่อ 1M token ของแต่ละ model)
  */
 export const getSeoArticleAi = (task: SeoAiTask): ResolvedChatModel & { providerOptions: ProviderOptions } => {
-  const profile = SEO_AI_TASK_PROFILE[task];
+  void task;
   const resolved = getConfiguredModel({
     providerEnvName: "SEO_AI_PROVIDER",
     modelEnvName: "SEO_AI_MODEL",
-    // lg-jame ใช้ Claude เขียน/research (Sonnet 5.5 + Haiku 5.5) — OpenAI เหลือไว้สร้างรูปอย่างเดียว
-    defaultProvider: "anthropic",
-    defaultModelId: { openai: profile.openai, anthropic: profile.anthropic },
+    defaultProvider: "openai",
+    defaultModelId: SEO_AI_MODEL,
   });
 
   return {
     ...resolved,
     providerOptions: getCallProviderOptions(resolved.provider, {
       cacheKey: "seo-article-v1",
-      reasoningEffort: profile.reasoningEffort,
+      reasoningEffort: SEO_AI_REASONING_EFFORT,
       strictJsonSchema: false,
     }),
   };

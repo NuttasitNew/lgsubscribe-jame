@@ -1,7 +1,8 @@
 import "server-only";
 
 import { anthropic } from "@ai-sdk/anthropic";
-import { generateObject, generateText, type ModelMessage } from "ai";
+import { openai } from "@ai-sdk/openai";
+import { generateObject, generateText, type ModelMessage, type ToolSet } from "ai";
 import type { z } from "zod";
 import { AiUsageFeature } from "@prisma/client";
 import { trackAiUsage } from "@/lib/ai/usage/track-ai-usage";
@@ -13,7 +14,7 @@ const MAX_CONTINUATIONS = 3;
 const DEFAULT_MAX_CONTENT_TOKENS = 6000;
 /** งบเวลาขั้นค้นเว็บ — เหลือเวลาให้เทิร์นสรุป + จัดโครงก่อนชนเพดาน 800 วินาทีต่อการเรียก */
 const DEFAULT_TIME_BUDGET_MS = 6 * 60 * 1000;
-/** Claude web search คิดแยก $10 ต่อ 1,000 ครั้ง (web fetch ไม่มีค่าเครื่องมือ จ่ายแค่ token ของเนื้อหา) */
+/** web search คิดแยก $10 ต่อ 1,000 ครั้งทั้ง OpenAI และ Claude (เปิดหน้าเว็บไม่มีค่าเครื่องมือ จ่ายแค่ token ของเนื้อหา) */
 const WEB_SEARCH_FEE_USD = 0.01;
 /** บันทึกสั้นกว่านี้ = AI ยังไม่ได้เขียนสรุป (มีแค่ประโยคเกริ่น) */
 const MIN_NOTES_LENGTH = 800;
@@ -51,39 +52,51 @@ export interface WebResearchResult<T> {
  * @description แกนร่วมของ AI ที่ต้อง "ออกไปดูเว็บจริง" (research keyword / อ่าน SERP / เก็บข้อมูลแบรนด์คู่เทียบ)
  * @access server-only
  * @logic
- * 1. ขั้นค้นคว้า: Claude Sonnet 5.5 + server tools `web_search_20260209` / `web_fetch_20260209`
- *    (dynamic filtering — Anthropic รันค้น/อ่านหน้าเว็บให้ฝั่งเซิร์ฟเวอร์ ไม่ต้องมี SERP API แยก)
+ * 1. ขั้นค้นคว้า: ค่าเริ่มต้นคือ ChatGPT gpt-6-luna + tool `web_search` ของ OpenAI (ค้น + เปิดหน้า + หาในหน้า ในตัวเดียว
+ *    ฝั่งเซิร์ฟเวอร์ OpenAI) จำกัดจำนวนครั้งด้วย `maxToolCalls` ; ถ้าสลับไป Claude ใช้ `web_search_20260209` / `web_fetch_20260209`
  *    ผลค้นหาไม่ใช่หน้า Google ไทยตรง ๆ แต่ใกล้เคียงพอสำหรับดูว่าใครติดและเขียนอะไร (อันดับจริงวัดจาก Search Console)
  * 2. ถ้า API ตอบ `pause_turn` (ค้นนานจนพักเทิร์น) ส่ง messages เดิมกลับไปให้ทำต่อ สูงสุด {@link MAX_CONTINUATIONS} รอบ
  *    — AI SDK แปลง pause_turn เป็น "stop" ถ้าไม่เช็ค rawFinishReason จะได้บันทึกครึ่งเดียว
  *    ถ้าค้นจนหมดรอบ/โดนตัดโดยยังไม่ได้เขียนสรุป → ส่งอีกเทิร์นแบบปิดเครื่องมือ (toolChoice none) ให้สรุปจากที่อ่านแล้ว
- * 3. ขั้นจัดโครง: ให้ Claude รุ่นเดียวกันแปลงบันทึกเป็น JSON ตาม schema (แยกขั้นเพราะ structured output
+ * 3. ขั้นจัดโครง: ให้โมเดลเดียวกันแปลงบันทึกเป็น JSON ตาม schema (แยกขั้นเพราะ structured output
  *    กับ server tool ที่วนหลายรอบรวมกันแล้วเสี่ยงได้ JSON ครึ่งเดียวตอน pause)
  * 4. คืน URL ที่ tool เจอจริง ให้ผู้เรียกกรองแหล่งอ้างอิงที่ AI อาจแต่งขึ้นทิ้ง
  * - เนื้อหาเว็บภายนอกเป็นข้อมูล ไม่ใช่คำสั่ง — system prompt ของทุกงานต้องย้ำเรื่องนี้
  */
 export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<WebResearchResult<T>> => {
   const ai = getSeoArticleAi(params.task);
-  if (ai.provider !== "anthropic") {
-    throw new Error("[SEO-WEB-01] งานค้นเว็บต้องใช้ Claude (ตั้ง ANTHROPIC_API_KEY และอย่าตั้ง SEO_AI_PROVIDER=openai)");
-  }
+  const isOpenAi = ai.provider === "openai";
 
-  // โควตาค้น/เปิดหน้าเป็นงบรวมทั้งงาน — maxUses ของ API นับต่อ request ถ้าไม่หักยอดที่ใช้ไปแล้ว
+  // โควตาค้น/เปิดหน้าเป็นงบรวมทั้งงาน — maxUses ของ Claude นับต่อ request ถ้าไม่หักยอดที่ใช้ไปแล้ว
   // งานที่ต่อรอบ pause_turn จะได้โควตาใหม่ทุกรอบ (เคยเปิดไป 60+ หน้า ค่า token ~$3.5 ต่อครั้ง)
   const searchBudget = params.maxSearches ?? 8;
   const fetchBudget = params.maxFetches ?? 6;
   let usedSearches = 0;
   let usedFetches = 0;
-  const buildTools = () => ({
-    web_search: anthropic.tools.webSearch_20260209({
-      // ไม่ตั้ง userLocation: web_search ของ Anthropic ไม่รองรับ country "TH" (ตอบ 400) — ใช้คำค้นภาษาไทยแทน
-      maxUses: Math.max(1, searchBudget - usedSearches),
-    }),
-    web_fetch: anthropic.tools.webFetch_20260209({
-      maxUses: Math.max(1, fetchBudget - usedFetches),
-      maxContentTokens: params.maxContentTokens ?? DEFAULT_MAX_CONTENT_TOKENS,
-    }),
-  });
+  const buildTools = (): ToolSet =>
+    isOpenAi
+      ? // OpenAI รวมค้น/เปิดหน้า/หาในหน้าไว้ใน web_search ตัวเดียว — งบรวมคุมผ่าน maxToolCalls ด้านล่าง
+        { web_search: openai.tools.webSearch({ searchContextSize: "medium", userLocation: { type: "approximate", country: "TH" } }) }
+      : {
+          web_search: anthropic.tools.webSearch_20260209({
+            // ไม่ตั้ง userLocation: web_search ของ Anthropic ไม่รองรับ country "TH" (ตอบ 400) — ใช้คำค้นภาษาไทยแทน
+            maxUses: Math.max(1, searchBudget - usedSearches),
+          }),
+          web_fetch: anthropic.tools.webFetch_20260209({
+            maxUses: Math.max(1, fetchBudget - usedFetches),
+            maxContentTokens: params.maxContentTokens ?? DEFAULT_MAX_CONTENT_TOKENS,
+          }),
+        };
+  const searchProviderOptions = () =>
+    isOpenAi
+      ? {
+          ...ai.providerOptions,
+          openai: {
+            ...(ai.providerOptions.openai as Record<string, unknown>),
+            maxToolCalls: Math.max(1, searchBudget + fetchBudget - usedSearches - usedFetches),
+          },
+        }
+      : ai.providerOptions;
   let tools = buildTools();
 
   const messages: ModelMessage[] = [{ role: "user", content: params.prompt }];
@@ -99,10 +112,11 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
       system: params.system,
       messages,
       tools,
-      providerOptions: ai.providerOptions,
+      providerOptions: searchProviderOptions(),
       maxOutputTokens: 16000,
     });
     const toolCalls = result.steps.flatMap((step) => step.content).filter((part) => part.type === "tool-call");
+    // OpenAI: web_search 1 call = ค้น 1 ครั้ง หรือ เปิดหน้า/หาในหน้า 1 ครั้ง — คิดค่าเครื่องมือทุก call
     const searches = toolCalls.filter((part) => part.toolName === "web_search").length;
     usedSearches += searches;
     usedFetches += toolCalls.filter((part) => part.toolName === "web_fetch").length;
@@ -160,8 +174,7 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
   const { object, usage } = await generateObject({
     model: ai.model,
     schema: params.schema,
-    // งานคัดลอกข้อมูลลงโครง ไม่ต้องคิดลึก
-    providerOptions: { anthropic: { effort: "low" } },
+    providerOptions: ai.providerOptions,
     system:
       "แปลงบันทึกการค้นคว้าเป็นข้อมูลตาม schema อย่างซื่อตรง ห้ามเติมข้อเท็จจริง ตัวเลข หรือ URL ที่ไม่มีในบันทึก " +
       "ถ้าบันทึกไม่มีข้อมูลช่องไหน ให้เว้นว่างหรือใช้ค่า null ตามที่ schema อนุญาต",
@@ -184,17 +197,20 @@ export const runWebResearch = async <T>(params: WebResearchParams<T>): Promise<W
   return { object, notes: notesText, visitedUrls: [...visited], model: ai.modelId };
 };
 
-/** เก็บ URL จากผล web_search (array) / web_fetch (object มี url) แบบไม่ผูกกับ shape ภายในมากเกินไป */
+/**
+ * เก็บ URL จากผลเครื่องมือค้นเว็บแบบไม่ผูกกับ shape ภายใน — ไล่ทุก field ที่ชื่อ `url`
+ * (Claude: array ผลค้น / object ของหน้าที่ fetch ; OpenAI: `action.url` ของหน้าที่เปิด + `sources[].url`)
+ */
 const collectUrls = (output: unknown, into: Set<string>) => {
   if (Array.isArray(output)) {
     for (const item of output) collectUrls(item, into);
     return;
   }
   if (output && typeof output === "object") {
-    const url = (output as { url?: unknown }).url;
-    if (typeof url === "string" && /^https?:\/\//.test(url)) into.add(url);
-    const value = (output as { value?: unknown }).value;
-    if (value) collectUrls(value, into);
+    for (const [key, child] of Object.entries(output)) {
+      if (key === "url" && typeof child === "string" && /^https?:\/\//.test(child)) into.add(child);
+      else if (child && typeof child === "object") collectUrls(child, into);
+    }
   }
 };
 
