@@ -20,7 +20,7 @@ import { siteConfig } from "@/lib/site";
 
 const dialogName = "โปรโมชัน LG Subscribe Day";
 const closeName = "ปิดโปรโมชัน LG Subscribe Day";
-const duringCampaign = "2026-10-03T11:26:00+07:00";
+const duringCampaign = "2026-10-31T14:05:00+07:00";
 
 beforeEach(() => {
   window.localStorage.setItem("lg_tracking_consent_v1", "necessary");
@@ -132,7 +132,7 @@ describe("FloatingSubscribeDay", () => {
     ).toBeInTheDocument();
   });
 
-  it.each(["2026-10-02T23:59:59.999+07:00", SUBSCRIBE_DAY_END])(
+  it.each(["2026-10-30T23:59:59.999+07:00", SUBSCRIBE_DAY_END])(
     "does not open outside the window at %s",
     (timestamp) => {
       setDate(timestamp);
