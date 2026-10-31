@@ -26,6 +26,8 @@ const reviewPhotosByModel: Record<string, ReviewPhoto[]> = {
   ],
 };
 
+export const verifiedInstallPhotos = reviewPhotosByModel.WT1410NHEG;
+
 // The customer photo matches the navy/beige finish. The delivery photos show
 // WashTower cartons without a visible machine; none is assigned to an exact model.
 const navyBeigeModels = new Set(["WT1410NHEN", "WT2520NHEN"]);
