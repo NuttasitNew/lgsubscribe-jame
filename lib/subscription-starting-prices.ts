@@ -56,6 +56,12 @@ export function getSubscriptionStartingPrice(model: string, category?: string): 
   return categoryStartingFallbacks[category] ?? null;
 }
 
+/** First-bill price from the price list, e.g. "• ราคา 149.-(1รอบบิล แรก)"; plans without one return null. */
+export function getSubscriptionFirstBillPrice(model: string): number | null {
+  const price = findCampaignProduct(model)?.promotions[0]?.match(/ราคา\s*([\d,]+)/)?.[1];
+  return price ? Number(price.replace(/,/g, "")) : null;
+}
+
 /** Unmatched, withdrawn and paused models must not fall back into the sales catalog. */
 export function isCurrentSubscriptionModel(model: string): boolean {
   return findCampaignProduct(model) !== undefined;

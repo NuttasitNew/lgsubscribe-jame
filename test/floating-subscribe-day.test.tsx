@@ -18,6 +18,9 @@ import {
 import { setTrackingConsent } from "@/lib/analytics/consent";
 import { siteConfig } from "@/lib/site";
 
+const navigation = vi.hoisted(() => ({ pathname: "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => navigation.pathname }));
+
 const dialogName = "โปรโมชัน LG Subscribe Day";
 const closeName = "ปิดโปรโมชัน LG Subscribe Day";
 const duringCampaign = "2026-10-31T14:05:00+07:00";
@@ -28,6 +31,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  navigation.pathname = "/";
   vi.restoreAllMocks();
   window.localStorage.clear();
   window.sessionStorage.clear();
@@ -100,6 +104,14 @@ describe("FloatingSubscribeDay", () => {
 
     unmount();
     render(<FloatingSubscribeDay />);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("stays closed on the campaign page, which already shows the artwork", async () => {
+    setDate(duringCampaign);
+    navigation.pathname = subscribeDayCampaign.path;
+    render(<FloatingSubscribeDay />);
+    await act(async () => {});
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 

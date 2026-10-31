@@ -2,6 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { LineMark } from "@/components/line-mark";
@@ -22,6 +23,8 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   // The modal makes the page inert, so it must wait until the cookie banner has been answered.
   const consent = useTrackingConsent();
+  // The campaign page already shows this artwork, so the modal would only cover it.
+  const onCampaignPage = usePathname() === subscribeDayCampaign.path;
   const dismissed = useRef(false);
   const previousFocus = useRef<HTMLElement | null>(null);
   const closeButton = useRef<HTMLButtonElement | null>(null);
@@ -73,7 +76,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
   }, []);
 
   return (
-    <Dialog.Root open={isOpen && consent !== "pending"} onOpenChange={(open) => !open && dismiss()}>
+    <Dialog.Root open={isOpen && consent !== "pending" && !onCampaignPage} onOpenChange={(open) => !open && dismiss()}>
       <Dialog.Portal>
         <Dialog.Overlay data-promotion-overlay="" className="fixed inset-0 z-[80] bg-black/65" />
         <Dialog.Content

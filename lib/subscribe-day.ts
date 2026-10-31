@@ -4,6 +4,7 @@ export const SUBSCRIBE_DAY_END = "2026-11-12T00:00:00+07:00";
 
 export const subscribeDayCampaign = {
   image: "/images/campaigns/lg-subscribe-day-halloween-2026-10.webp",
+  path: "/subscribe-day/",
   maxDiscountPercent: 15,
   dateLabel: "31 ต.ค.69 – 11 พ.ย.69",
   ctaLabel: "กดปุ่มนี้เพื่อแอดไลน์รับโปรโมชั่น",
