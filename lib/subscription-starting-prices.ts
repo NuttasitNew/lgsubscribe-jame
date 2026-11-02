@@ -1,4 +1,4 @@
-import { octSubscriptionCampaignProducts } from "@/lib/oct-subscription-campaign";
+import { novSubscriptionCampaignProducts } from "@/lib/nov-subscription-campaign";
 
 /** Catalog aliases whose public model label intentionally differs from the price-list SKU. */
 const campaignModelAliases: Record<string, string> = {
@@ -7,6 +7,7 @@ const campaignModelAliases: Record<string, string> = {
   GRAB: "LG xboom Grab",
   BOUNCE: "LG xboom Bounce",
   STAGE301: "LG xboom STAGE301",
+  STAGE501: "LG xboom STAGE501",
 };
 
 function normalizedCampaignKey(value: string): string {
@@ -20,16 +21,16 @@ function normalizedCampaignKey(value: string): string {
 
 function findCampaignProduct(model: string) {
   if (model === "WD516AN" || model === "WD518AN") {
-    return octSubscriptionCampaignProducts.find((product) => product.model === "WD516AN / WD518AN");
+    return novSubscriptionCampaignProducts.find((product) => product.model === "WD516AN / WD518AN");
   }
 
   const campaignModel = campaignModelAliases[model] ?? model;
   const key = normalizedCampaignKey(campaignModel);
-  return octSubscriptionCampaignProducts.find((product) => normalizedCampaignKey(product.model) === key);
+  return novSubscriptionCampaignProducts.find((product) => normalizedCampaignKey(product.model) === key);
 }
 
 export const subscriptionStartingPrices = Object.fromEntries(
-  octSubscriptionCampaignProducts.map((product) => [product.model, product.monthlyPrice]),
+  novSubscriptionCampaignProducts.map((product) => [product.model, product.monthlyPrice]),
 ) as Readonly<Record<string, number>>;
 
 /** Campaign entry price used only when the exact model is unknown. */
