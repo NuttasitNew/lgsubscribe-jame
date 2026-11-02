@@ -123,15 +123,15 @@ describe("product gallery promotion stills", () => {
 });
 
 describe("synced catalog promotion stills", () => {
-  it("exposes an October promotion still for every current catalog card", () => {
+  it("exposes a November promotion still for every current catalog card", () => {
     const matched = catalogProducts.filter((product) => product.promotionImage);
-    expect(promotionImageAssets).toHaveLength(67);
-    expect(catalogProducts).toHaveLength(68);
+    expect(promotionImageAssets).toHaveLength(66);
+    expect(catalogProducts).toHaveLength(67);
     expect(matched).toHaveLength(catalogProducts.length);
     expect(matched.map((product) => product.model).sort()).toEqual(
       catalogProducts.map((product) => product.model).sort(),
     );
-    expect(promotionImageAssets.every((asset) => asset.publicPath.includes("/oct-2026/"))).toBe(true);
+    expect(promotionImageAssets.every((asset) => asset.publicPath.includes("/nov-2026/"))).toBe(true);
 
     const unusedAssets = promotionImageAssets.filter(
       (asset) =>
