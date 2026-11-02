@@ -94,8 +94,8 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     category: "เครื่องลดความชื้น",
     eyebrow: "ควบคุมความชื้น ลดกลิ่นอับ",
     summary:
-      "LG PuriCare Dehumidifier ชุด DD23GMWE1S รองรับการลดความชื้น พร้อมของแถม AeroMini ตามรายการโปรโมชันเดือนกันยายน",
-    models: ["DD23GMWE1S"],
+      "LG PuriCare Dehumidifier รุ่น MD19GQGA1 ลดความชื้น 19 ลิตรต่อวัน และชุด MD19GQGA1S มาพร้อมเครื่องฟอกอากาศ AeroMini ตามรายการโปรโมชัน",
+    models: ["DD23GMWE1S", "MD19GQGA1", "MD19GQGA1S"],
     highlights: [
       "Dual Inverter Compressor",
       "โหมด Smart+, Silent, Laundry และ Spot",
@@ -168,6 +168,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
       "GN-F452PQAK",
       "GN-V389FQEF",
       "GN-F392PQAK",
+      "B52APGAM",
     ],
     highlights: [
       "Multi Air Flow",
@@ -216,6 +217,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
       "65QNED80BSA",
       "85QNED80BSA",
       "100QNED86BS",
+      "75QNED86BSA",
       "100MRGB96BS",
       "OLED55C6PSA",
       "OLED65C6PSA",
@@ -254,8 +256,8 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     category: "ลำโพง",
     eyebrow: "ลำโพงพกพาและลำโพงปาร์ตี้",
     summary:
-      "กลุ่ม LG xboom มีทั้ง Grab, Bounce และ Stage 301 เลือกจากขนาด กำลังขับ ระดับกันน้ำ และเวลาเล่นต่อรอบชาร์จ ไม่ใช่ซาวด์บาร์สำหรับทีวี",
-    models: ["GRAB", "BOUNCE", "STAGE301"],
+      "กลุ่ม LG xboom มีทั้ง Grab, Bounce, Stage 301 และ Stage 501 เลือกจากขนาด กำลังขับ ระดับกันน้ำ และเวลาเล่นต่อรอบชาร์จ ไม่ใช่ซาวด์บาร์สำหรับทีวี",
+    models: ["GRAB", "BOUNCE", "STAGE301", "STAGE501"],
     highlights: [
       "ปรับแต่งเสียงโดย will.i.am",
       "AI Sound และ Space Calibration",
@@ -310,6 +312,9 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
       "TX2726ST5J",
       "TX2523AT7G",
       "TX2315DT5G",
+      "FX2725SFXKA",
+      "FV1413S2BA",
+      "RX10VHP3KR",
       "RV10VHP2B",
     ],
     highlights: [
@@ -359,7 +364,7 @@ export const productKnowledgeGuides: ProductKnowledgeGuide[] = [
     eyebrow: "เกม งาน และความบันเทิง",
     summary:
       "กลุ่มจอในรายการ Subscribe มีทั้ง UltraGear สำหรับเกม UltraFine สำหรับงาน และ Smart Monitor Swing สำหรับใช้งานทั่วไป",
-    models: ["34U650A-B", "32U889SA", "32U889.GRAB"],
+    models: ["34U650A-B", "32U889SA", "32U889.GRAB", "27GX704A-B"],
     highlights: [
       "OLED และ IPS ตามรุ่น",
       "UltraWide 21:9 ตามรุ่น",

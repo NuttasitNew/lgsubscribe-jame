@@ -117,3 +117,12 @@ Downloaded: 21 August 2026
 | `tx2523at7g.png` | `TX2523AT7G.AEGPETH` | https://lgsubscribe-official.com/products/021b5011-b267-4b30-840e-89a1e0c9750b | `Price list Sep_V3.pdf` p.22 exact-model packshot | extracted-from-price-list |
 | `as30ggw10.png` | `AS30GGW10.ABAE` | `Price list Sep_V3.pdf` p.29 | exact gift packshot for `DD23GMWE1S.ATH` | extracted-from-price-list |
 | `s80ty.jpg` | `S80TY` | https://www.lg.com/th/speakers/soundbars/s80ty/ | official LG gallery packshot | downloaded |
+| `b52apgam.jpg` | `GC-B52APGAM.ADHPLMT` | https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-b52apgam/ | official LG gallery packshot (trimmed, squared) | downloaded |
+| `fx2725sfxka.jpg` | `FX2725SFXKA.AEBPETH` | https://www.lg.com/th/laundry/front-load-washing-machine/fx2725sfxka/ | official LG gallery packshot (trimmed, squared) | downloaded |
+| `fv1413s2ba.jpg` | `FV1413S2BA.ABLPETH` | https://www.lg.com/th/laundry/front-load-washing-machine/fv1413s2ba/ | official LG gallery packshot (trimmed, squared) | downloaded |
+| `rx10vhp3kr.jpg` | `RX10VHP3KR.AEBPETH` | https://www.lg.com/th/laundry/dryer/rx10vhp3kr/ | official LG gallery packshot (trimmed, squared) | downloaded |
+| `md19gqga1.jpg` | `MD19GQGA1.ATH` | https://www.lg.com/th/dehumidifier/md19gqga1/ | official LG gallery packshot (trimmed, squared) | downloaded |
+| `md19gqga1s.jpg` | `MD19GQGA1S.ATH` | https://www.lg.com/th/dehumidifier/md19gqga1s-ath/ | official LG gallery packshot (trimmed, squared) | downloaded |
+| `75qned86bsa.jpg` | `75QNED86BSA.ATM` | https://www.lg.com/th/tv-soundbars/qned-evo/75qned86bsa/ | official LG gallery packshot (trimmed, squared) | downloaded |
+| `27gx704a-b.jpg` | `27GX704A-B.ATM` | https://www.lg.com/th/monitors/gaming/27gx704a-b/ | official LG gallery packshot (trimmed, squared) | downloaded |
+| `stage501.jpg` | `STAGE501.ATHALBK` | https://www.lg.com/th/speakers/xboom-bluetooth-speaker/stage501/ | official LG gallery packshot (trimmed, squared) | downloaded |

@@ -33,9 +33,9 @@ describe("HomePage popular categories", () => {
       "href",
       catalogHref("เครื่องกรองน้ำ"),
     );
-    expect(screen.getByRole("link", { name: /เครื่องดูดฝุ่น LG รุ่น/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /เครื่องลดความชื้น LG รุ่น/ })).toHaveAttribute(
       "href",
-      catalogHref("เครื่องดูดฝุ่น"),
+      catalogHref("เครื่องลดความชื้น"),
     );
     expect(screen.getByRole("link", { name: /ทีวีและความบันเทิง LG รุ่น/ })).toHaveAttribute(
       "href",

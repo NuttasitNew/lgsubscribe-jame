@@ -664,6 +664,78 @@ const catalogProductSources: Record<string, CatalogProductSource> = {
     officialUrl: "https://www.lg.com/th/monitors/",
     officialModel: "34U650A-B.ATM",
   },
+  B52APGAM: {
+    name: "ตู้เย็น Multi-Door รุ่น GC-B52APGAM ขนาด 18.1 คิว ระบบ Inverter Compressor",
+    description:
+      "ตู้เย็น Multi-Door รุ่น GC-B52APGAM ความจุ 18.1 คิว หรือ 511 ลิตร ประตูกระจกดีไซน์ Built-in พร้อม FRESH Converter+, Multi Air Flow และ Inverter Compressor",
+    image: "/images/products/lg-catalog/b52apgam.jpg",
+    officialUrl: "https://www.lg.com/th/refrigerators/multi-door-refrigerator/gc-b52apgam/",
+    officialModel: "GC-B52APGAM.ADHPLMT",
+  },
+  FX2725SFXKA: {
+    name: "เครื่องซักผ้าฝาหน้า รุ่น FX2725SFXKA ระบบ AI DD™ ความจุซัก 25 กก. พร้อม Smart WI-FI control ควบคุมสั่งงานผ่านสมาร์ทโฟน",
+    description:
+      "เครื่องซักผ้าฝาหน้า LG ความจุซัก 25 กก. ระบบ AI DD™ และ Inverter Direct Drive พร้อม TurboWash360˚, Steam และ ezDispense จ่ายน้ำยาอัตโนมัติ",
+    image: "/images/products/lg-catalog/fx2725sfxka.jpg",
+    officialUrl: "https://www.lg.com/th/laundry/front-load-washing-machine/fx2725sfxka/",
+    officialModel: "FX2725SFXKA.AEBPETH",
+  },
+  FV1413S2BA: {
+    name: "เครื่องซักผ้า 13 กก. รุ่น FV1413S2BA ระบบ AI DD™ พร้อม Smart WI-FI control ควบคุมสั่งงานผ่านสมาร์ทโฟน",
+    description:
+      "เครื่องซักผ้าฝาหน้า LG ความจุซัก 13 กก. สีดำโลหะ ระบบ AI DD™ ถนอมผ้า พร้อม TurboWash360˚, Steam+ และระบบจ่ายน้ำยาอัตโนมัติ",
+    image: "/images/products/lg-catalog/fv1413s2ba.jpg",
+    officialUrl: "https://www.lg.com/th/laundry/front-load-washing-machine/fv1413s2ba/",
+    officialModel: "FV1413S2BA.ABLPETH",
+  },
+  RX10VHP3KR: {
+    name: "เครื่องอบผ้า รุ่น RX10VHP3KR ความจุอบ 10 กก. ระบบ Dual Inverter Heat Pump พร้อม Smart WI-FI control ควบคุมสั่งงานผ่านสมาร์ทโฟน",
+    description:
+      "เครื่องอบผ้า LG ความจุอบ 10 กก. ระบบ Dual Inverter Heat Pump พร้อม AI Dry และระบบทำความสะอาดคอนเดนเซอร์อัตโนมัติ",
+    image: "/images/products/lg-catalog/rx10vhp3kr.jpg",
+    officialUrl: "https://www.lg.com/th/laundry/dryer/rx10vhp3kr/",
+    officialModel: "RX10VHP3KR.AEBPETH",
+  },
+  MD19GQGA1: {
+    name: "เครื่องลดความชื้น LG PuriCare Dehumidifier 19 รุ่น MD19GQGA1 30 ลิตร",
+    description:
+      "เครื่องลดความชื้น LG PuriCare รุ่น MD19GQGA1 ลดความชื้น 19 ลิตรต่อวัน (สูงสุด 30 ลิตรต่อวันภายใต้เงื่อนไขทดสอบ) พร้อมคอมเพรสเซอร์ Dual Inverter และ LG ThinQ™",
+    image: "/images/products/lg-catalog/md19gqga1.jpg",
+    officialUrl: "https://www.lg.com/th/dehumidifier/md19gqga1/",
+    officialModel: "MD19GQGA1.ATH",
+  },
+  MD19GQGA1S: {
+    name: "เครื่องลดความชื้น LG PuriCare รุ่น MD19GQGA1 พร้อม AeroMini",
+    description:
+      "ชุด LG Subscribe รหัส MD19GQGA1S ประกอบด้วยเครื่องลดความชื้น LG PuriCare รุ่น MD19GQGA1 และเครื่องฟอกอากาศขนาดเล็ก AeroMini รุ่น AS30GGW10",
+    image: "/images/products/lg-catalog/md19gqga1s.jpg",
+    officialUrl: "https://www.lg.com/th/dehumidifier/md19gqga1s-ath/",
+    officialModel: "MD19GQGA1S.ATH",
+  },
+  "75QNED86BSA": {
+    name: 'ทีวี 75" LG QNED evo AI Mini LED QNED86 4K Smart TV 2026 รุ่น 75QNED86BSA',
+    description:
+      "ทีวี AI อัจฉริยะรุ่นใหม่ล่าสุดจาก LG รุ่น 75QNED86BSA เพื่อประสบการณ์การรับชมที่ดีที่สุดผ่านคุณสมบัติ AI ของแพลตฟอร์ม webOS",
+    image: "/images/products/lg-catalog/75qned86bsa.jpg",
+    officialUrl: "https://www.lg.com/th/tv-soundbars/qned-evo/75qned86bsa/",
+    officialModel: "75QNED86BSA.ATM",
+  },
+  "27GX704A-B": {
+    name: "LG UltraGear™ GX7 27 นิ้ว 240Hz OLED QHD Gaming Monitor 27GX704A DisplayHDR™ True Black 400",
+    description:
+      "จอเกมมิ่ง LG UltraGear™ OLED ขนาด 27 นิ้ว ความละเอียด QHD รีเฟรชเรต 240Hz ตอบสนอง 0.03ms (GtG) พร้อม DisplayHDR™ True Black 400 และ Glare Panel",
+    image: "/images/products/lg-catalog/27gx704a-b.jpg",
+    officialUrl: "https://www.lg.com/th/monitors/gaming/27gx704a-b/",
+    officialModel: "27GX704A-B.ATM",
+  },
+  STAGE501: {
+    name: "LG xboom Stage 501 tuned by will.i.am",
+    description:
+      "ลำโพงปาร์ตี้ LG xboom Stage 501 ปรับแต่งโดย will.i.am พร้อมระบบคาราโอเกะ AI กำลังขับ 220 วัตต์ กันน้ำระดับ IPX4 และเล่นต่อเนื่องสูงสุด 25 ชั่วโมง",
+    image: "/images/products/lg-catalog/stage501.jpg",
+    officialUrl: "https://www.lg.com/th/speakers/xboom-bluetooth-speaker/stage501/",
+    officialModel: "STAGE501.ATHALBK",
+  },
 };
 
 export const catalogProducts: Product[] = productKnowledgeGuides.flatMap((guide) =>

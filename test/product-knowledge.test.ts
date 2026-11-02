@@ -55,6 +55,7 @@ describe("product knowledge extracted from the supplied library", () => {
       "GRAB",
       "BOUNCE",
       "STAGE301",
+      "STAGE501",
     ]);
   });
 

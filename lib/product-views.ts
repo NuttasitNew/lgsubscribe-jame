@@ -107,6 +107,15 @@ export const productViewWeights: Record<string, number> = {
   "34U650A-B": 46,
   "32U889.GRAB": 45,
   "27LX6TDGA.GRAB": 43,
+  B52APGAM: 94,
+  FX2725SFXKA: 99,
+  FV1413S2BA: 100,
+  RX10VHP3KR: 76,
+  MD19GQGA1: 70,
+  MD19GQGA1S: 65,
+  "75QNED86BSA": 112,
+  "27GX704A-B": 61,
+  STAGE501: 54,
 };
 
 const DEFAULT_PRODUCT_WEIGHT = 70;

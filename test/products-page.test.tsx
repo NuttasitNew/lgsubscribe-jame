@@ -48,7 +48,7 @@ describe("ProductsPage knowledge visibility", () => {
   it("renders the catalog models as real product cards with local artwork and detail links", () => {
     render(<ProductsPage />);
 
-    expect(catalogProducts).toHaveLength(68);
+    expect(catalogProducts).toHaveLength(67);
     expect(
       screen.queryByRole("heading", { name: `สินค้า LG ทั้ง ${catalogProducts.length} รุ่น` }),
     ).not.toBeInTheDocument();

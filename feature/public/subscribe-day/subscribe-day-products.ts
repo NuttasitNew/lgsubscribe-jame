@@ -16,13 +16,13 @@ const productGroups: readonly ProductGroup[] = [
     label: "เครื่องซักผ้าและอบผ้า",
     category: "เครื่องซักผ้าและอบผ้า",
     keywords: /ซักผ้า|อบผ้า|wash/i,
-    slugs: ["lg-washtower-wt1410nheg", "lg-front-load-fv1413s4m", "lg-tx2523at7g", "lg-fv1413h4m"],
+    slugs: ["lg-washtower-wt1410nheg", "lg-fv1413s2ba", "lg-tx2523at7g", "lg-fv1413h4m"],
   },
   {
     label: "ตู้เย็น",
     category: "ตู้เย็น",
     keywords: /ตู้เย็น/,
-    slugs: ["lg-x257cmew", "lg-gn-f392pqak", "lg-gn-f452pqak", "lg-gn-v389fqef"],
+    slugs: ["lg-x257cmew", "lg-gn-f392pqak", "lg-gv-b25ffgdb", "lg-b52apgam"],
   },
   {
     label: "เครื่องกรองน้ำ",

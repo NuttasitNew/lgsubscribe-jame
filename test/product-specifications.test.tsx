@@ -13,7 +13,7 @@ afterEach(cleanup);
 
 describe("official LG product specifications", () => {
   it("accounts for every static product detail route without borrowing another model's data", () => {
-    expect(allProducts).toHaveLength(68);
+    expect(allProducts).toHaveLength(67);
     expect(Object.keys(productSpecificationRecords).length).toBeGreaterThanOrEqual(allProducts.length);
 
     for (const product of allProducts) {

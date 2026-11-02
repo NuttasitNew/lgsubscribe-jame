@@ -21,7 +21,7 @@ import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
 import { bestSellerProducts, catalogProducts } from "@/lib/catalog-products";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
 import { isWaterPurifierPromoActive } from "@/lib/water-purifier-promo";
-import { customerStories, faqs, products } from "@/lib/site";
+import { customerStories, faqs } from "@/lib/site";
 
 const categoryCards = [
   {
@@ -49,10 +49,10 @@ const categoryCards = [
     image: "/images/products/official/water-purifier-wd518an.jpg",
   },
   {
-    label: "เครื่องดูดฝุ่น",
-    category: "เครื่องดูดฝุ่น",
-    model: "A9T-ULTRA",
-    image: products[2].image,
+    label: "เครื่องลดความชื้น",
+    category: "เครื่องลดความชื้น",
+    model: "MD19GQGA1",
+    image: catalogProducts.find((product) => product.model === "MD19GQGA1")!.image,
   },
   {
     label: "ทีวีและความบันเทิง",
