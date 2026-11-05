@@ -48,7 +48,7 @@ const buildWaitingLabel = (seconds: number): string => {
 };
 
 /**
- * @description ช่องสั่ง "ให้ AI วาดรูป" — พิมพ์บอกว่าอยากได้ภาพอะไร แล้วกดสั่งวาดด้วย gpt-image-2.5-sunburst
+ * @description ช่องสั่ง "ให้ AI วาดรูป" — พิมพ์บอกว่าอยากได้ภาพอะไร แล้วกดสั่งวาดด้วย gpt-image-2.6-sunburst
  * @page /super-admin/hurry-web/seo-article?edit=<id>
  * @access super-admin
  * @parent {@link seo-article-image-block.tsx}, {@link seo-article-cover-banner.tsx}

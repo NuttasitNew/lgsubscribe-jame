@@ -17,7 +17,7 @@ import type { SeoArticleJobRunner } from "./seo-article-job-runner.type";
 import type { SeoArticleSingleImagePayload } from "../type/seo-article-job-payload.type";
 
 /**
- * @description runner ของงาน SINGLE_IMAGE — สั่ง AI (gpt-image-2.5-sunburst) วาดรูปประกอบบทความทีละใบ
+ * @description runner ของงาน SINGLE_IMAGE — สั่ง AI (gpt-image-2.6-sunburst) วาดรูปประกอบบทความทีละใบ
  * @logic
  * - **ห้ามแตะ contentJson เด็ดขาด** — หน้าแก้ไขเป็นเจ้าของร่างที่กำลังแก้ (SeoArticle.draftJson)
  *   รูปเดินทางกลับหน้าจอผ่าน `resultJson` ของ job แล้วผู้ใช้กดบันทึกบทความเองทีหลัง

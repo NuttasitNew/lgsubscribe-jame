@@ -11,7 +11,7 @@ import { PRODUCT_REFERENCE_LOCK } from "./article-image-style.constant";
 export const ARTICLE_IMAGE_SIZE = { width: 1536, height: 1024 } as const;
 
 /**
- * คุณภาพของ gpt-image-2.5-sunburst สำหรับภาพบทความ — high เพราะต้องคงรายละเอียดสินค้าจริง (ทรง แผงหน้า โลโก้)
+ * คุณภาพของ gpt-image-2.6-sunburst สำหรับภาพบทความ — high เพราะต้องคงรายละเอียดสินค้าจริง (ทรง แผงหน้า โลโก้)
  * ตามรูปอ้างอิงให้ได้ ; xhigh/max แพงขึ้นมากแต่ภาพบนเว็บถูกย่อเหลือ ~800px อยู่ดี
  */
 const ARTICLE_IMAGE_QUALITY = "high" as const;
@@ -32,14 +32,14 @@ interface GenerateAndUploadOptions {
 }
 
 /**
- * @description gen รูป 1 ใบด้วย gpt-image-2.5-sunburst แล้วอัปขึ้น R2 — คืน url
+ * @description gen รูป 1 ใบด้วย gpt-image-2.6-sunburst แล้วอัปขึ้น R2 — คืน url
  * @logic
  * - ภาพถ่าย: แนบเฉพาะรูปอ้างอิงที่ตรงกับบรีฟ → ไปทาง /v1/images/edits เมื่อมีรูปอ้างอิง
  *   ไม่มีรูปอ้างอิงจะวาดใหม่ผ่าน generations
  * - อินโฟกราฟิก: ไม่แนบ → วาดใหม่จากศูนย์ (ดูเหตุผลที่ withBrandReference)
  * - ขนาด 1536x1024 quality high ({@link ARTICLE_IMAGE_QUALITY}) — ที่เก็บเดียวกันทุกใบ: R2 category "seo-article"
  * - มีรูปสินค้าจริงแนบ → ต่อ PRODUCT_REFERENCE_LOCK ท้ายสุด ให้ AI คงเครื่องรุ่นนั้นตามรูป
- * - **บีบไฟล์ก่อนอัปเสมอ**: output ดิบจาก gpt-image-2.5-sunburst ~1.5 MB/ใบ เพราะไม่เคย re-encode
+ * - **บีบไฟล์ก่อนอัปเสมอ**: output ดิบจาก gpt-image-2.6-sunburst ~1.5 MB/ใบ เพราะไม่เคย re-encode
  *   ผ่าน reencodeImageBuffer เหลือ ~0.4 MB (ขนาดภาพเท่าเดิม ไม่ crop)
  *   บีบพลาด → แจ้งข้อผิดพลาด ไม่อัปต้นฉบับโดยระบุชนิดไฟล์ผิด
  * - อัปไม่สำเร็จ → throw เพื่อให้ผู้เรียกจัดการ (ยกชุดใช้ Promise.allSettled, ทีละใบ return error ให้ผู้ใช้)

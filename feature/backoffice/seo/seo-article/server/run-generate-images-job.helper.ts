@@ -19,7 +19,7 @@ const toAbsoluteSiteUrls = (paths?: string[]) =>
   (paths ?? []).filter((path) => path.startsWith("/")).map((path) => `${siteConfig.url}${path}`);
 
 /**
- * @description runner ของงาน GENERATE_IMAGES — gen รูปปก + รูปแทรกใหม่ยกชุด (gpt-image-2.5-sunburst → R2) ให้บทความเดิม
+ * @description runner ของงาน GENERATE_IMAGES — gen รูปปก + รูปแทรกใหม่ยกชุด (gpt-image-2.6-sunburst → R2) ให้บทความเดิม
  * @logic
  * 1. ล้างรูปเดิมใน "ก้อน input ที่ส่งเข้า gen" เท่านั้น เพื่อข้าม guard กันสร้างซ้ำ — DB ยังไม่ถูกแตะ
  *    ⚠️ ปกเดิมถูกเก็บไว้เสมอ ถ้า job ปกพัง (rejected) จะคืนค่าเดิมกลับ [SEO-IMG-07]

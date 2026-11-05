@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site";
 const MAX_PRODUCT_REFERENCES = 2;
 
 /**
- * @description หารูปสินค้าจริง (packshot ทางการใน public/) ของรุ่นที่บทความพูดถึง เพื่อแนบให้ gpt-image-2.5-sunburst วาดเครื่องรุ่นนั้นจริง
+ * @description หารูปสินค้าจริง (packshot ทางการใน public/) ของรุ่นที่บทความพูดถึง เพื่อแนบให้ gpt-image-2.6-sunburst วาดเครื่องรุ่นนั้นจริง
  * @access server-only
  * @logic
  * - อ่านจาก JSON ของบทความทั้งก้อน (บล็อก + ตาราง + FAQ) ไม่ผูกกับโครงบล็อก

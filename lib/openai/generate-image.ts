@@ -2,7 +2,7 @@ import "server-only";
 import type { GenerationSize } from "@/lib/seo/helper/crop-to-ratio";
 
 /**
- * @description เรียก OpenAI Images API (gpt-image-2.5-sunburst) สร้างรูปประกอบบทความ SEO — คืน Buffer (webp)
+ * @description เรียก OpenAI Images API (gpt-image-2.6-sunburst) สร้างรูปประกอบบทความ SEO — คืน Buffer (webp)
  *
  * @config env variables:
  * - CHATGPT_API_KEY: OpenAI API key (ใช้ทั้ง prod และ dev)
@@ -17,7 +17,7 @@ import type { GenerationSize } from "@/lib/seo/helper/crop-to-ratio";
  * @used-by feature/super-admin/hurry-web/seo-article/server/generate-article-images.helper.ts
  */
 
-const OPENAI_IMAGE_MODEL = "gpt-image-2.5-sunburst";
+const OPENAI_IMAGE_MODEL = "gpt-image-2.6-sunburst";
 
 export interface GenerateImageParams {
   prompt: string;

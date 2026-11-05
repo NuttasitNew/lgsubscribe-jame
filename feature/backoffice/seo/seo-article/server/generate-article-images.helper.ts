@@ -22,7 +22,7 @@ export interface GenerateArticleImagesResult {
 }
 
 /**
- * @description gen รูปปก + รูปแทรกบทความด้วย gpt-image-2.5-sunburst แล้ว upload ขึ้น R2 — คืน contentJson โครงบล็อกที่ใส่รูปแล้ว
+ * @description gen รูปปก + รูปแทรกบทความด้วย gpt-image-2.6-sunburst แล้ว upload ขึ้น R2 — คืน contentJson โครงบล็อกที่ใส่รูปแล้ว
  * @logic
  * 1. ปก: prompt จาก title ขนาด 1536x1024 — เก็บเป็น `coverImage` (string) + `coverImageAlt`
  * 2. รูปแทรก: planArticleImageSlots เลือกตำแหน่งใต้หัวข้อ (เว้นหัวข้อสุดท้ายที่เป็น CTA) สูงสุด 2 ใบ
@@ -60,7 +60,7 @@ export const generateArticleImages = async (params: {
   // นับ "รูปที่มีอยู่แล้วเลยไม่ต้อง gen ซ้ำ" — ปก + รูปในเนื้อบทความ
   const skipped = (needCover ? 0 : 1) + countArticleImageBlocks(content.blocks);
 
-  // มีรูปครบแล้ว → ไม่ยิง API เลย (กันเผาค่า gpt-image-2.5-sunburst ทุกครั้งที่เรียก)
+  // มีรูปครบแล้ว → ไม่ยิง API เลย (กันเผาค่า gpt-image-2.6-sunburst ทุกครั้งที่เรียก)
   if (!needCover && slots.length === 0) {
     return { content, generated: 0, skipped, errors: [] };
   }
