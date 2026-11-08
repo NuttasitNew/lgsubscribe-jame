@@ -9,7 +9,7 @@ import { LineMark } from "@/components/line-mark";
 import { Button } from "@/components/ui/button";
 import { verifiedInstallPhotos } from "@/feature/public/products/components/wash-tower-reviews";
 import { getSubscribeDayProducts } from "@/feature/public/subscribe-day/subscribe-day-products";
-import { createPageMetadata, siteConfig, type Product } from "@/lib/site";
+import { authorizedAgent, createPageMetadata, siteConfig, type Product } from "@/lib/site";
 import { isSubscribeDayActive, subscribeDayCampaign } from "@/lib/subscribe-day";
 import { getSubscriptionFirstBillPrice } from "@/lib/subscription-starting-prices";
 import { subscribeDayImage } from "@/lib/subscribe-day-image";
@@ -118,6 +118,13 @@ export default async function SubscribeDayPage({
             <p className="mt-5 text-xl font-bold text-amber-100">โปรโมชั่น {subscribeDayCampaign.dateLabel}</p>
             <p className="mt-3 max-w-xl leading-7 text-white/70">
               ทั้งลูกค้าใหม่และลูกค้าเดิมรับส่วนลด 15% เมื่อ Subscribe ตามจำนวนเครื่องที่กำหนด เฉพาะรุ่นที่ร่วมรายการ
+            </p>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
+              สมัครผ่านคุณ{authorizedAgent.nameTh} ตัวแทนขาย LG Subscribe ที่ได้รับอนุญาต รหัส {authorizedAgent.code}{" "}
+              (ไม่ใช่ LG Electronics) ·{" "}
+              <Link href={authorizedAgent.path} className="underline underline-offset-2 hover:text-white">
+                ตรวจสอบสถานะตัวแทน
+              </Link>
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <LineButton className="bg-orange-500 text-[#14091f] hover:bg-orange-400" />

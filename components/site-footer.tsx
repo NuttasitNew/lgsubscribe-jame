@@ -18,7 +18,7 @@ export function SiteFooter() {
     <footer className="border-t border-black/10 bg-[#171717] pb-28 text-white lg:pb-0">
       <div className="container-page grid gap-12 py-16 md:grid-cols-[1.3fr_0.8fr_1fr]">
         <div>
-          <Link href="/" aria-label="LG Subscribe หน้าแรก" className="inline-flex">
+          <Link href="/" aria-label="ตัวแทนขาย LG Subscribe หน้าแรก" className="inline-flex">
             <Image
               src="/brand/lg-subscribe-logo-red.png"
               alt="LG Subscribe"
@@ -29,7 +29,7 @@ export function SiteFooter() {
             />
           </Link>
           <p className="mt-5 max-w-md text-sm leading-7 text-white/65">
-            บริการเช่าใช้เครื่องใช้ไฟฟ้า LG แบบชำระรายเดือน พร้อมทีมดูแลและคำแนะนำก่อนทำสัญญา
+            ตัวแทนขายบริการ LG Subscribe ที่ได้รับอนุญาต — เช่าใช้เครื่องใช้ไฟฟ้า LG แบบชำระรายเดือน พร้อมคำแนะนำก่อนทำสัญญา
           </p>
           <p className="mt-3 max-w-md text-xs leading-6 text-white/50">{siteOperatorDisclosure.blurb}</p>
         </div>
@@ -146,7 +146,7 @@ export function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="container-page flex flex-col gap-3 py-6 text-xs leading-6 text-white/60 md:flex-row md:items-center md:justify-between">
           <div className="grid gap-2">
-            <p>© {new Date().getFullYear()} LG Subscribe Thailand. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} {authorizedAgent.nameTh} · ตัวแทนขาย LG Subscribe รหัส {authorizedAgent.code}</p>
             <SiteViewStats />
           </div>
           <p className="max-w-3xl md:text-right">

@@ -21,7 +21,7 @@ import { FaqAccordion } from "@/feature/public/faq/components/faq-accordion";
 import { bestSellerProducts, catalogProducts } from "@/lib/catalog-products";
 import { buildProductsSearchHref } from "@/lib/catalog-search";
 import { isWaterPurifierPromoActive } from "@/lib/water-purifier-promo";
-import { customerStories, faqs } from "@/lib/site";
+import { authorizedAgent, customerStories, faqs } from "@/lib/site";
 
 const categoryCards = [
   {
@@ -106,7 +106,9 @@ export function HomePage() {
       <section className="home-hero">
         <div className="container-page relative grid min-h-[570px] min-w-0 items-center overflow-hidden py-12 lg:min-h-[640px] lg:grid-cols-[0.9fr_1.1fr] lg:py-16">
           <div className="relative z-20 min-w-0 max-w-[610px]">
-            <p className="mb-3 text-sm font-bold text-primary">เครื่องใช้ไฟฟ้า LG จ่ายสบายแบบรายเดือน</p>
+            <p className="mb-3 text-sm font-bold text-primary">
+              ตัวแทนขาย LG Subscribe ที่ได้รับอนุญาต · รหัส {authorizedAgent.code}
+            </p>
             <h1 className="text-[3rem] font-bold leading-[1.05] tracking-[-0.045em] text-neutral-950 sm:text-6xl lg:text-[4.7rem]">
               <span className="text-primary">LG</span> Subscribe
             </h1>

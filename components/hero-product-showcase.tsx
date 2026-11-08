@@ -13,7 +13,7 @@ export function HeroProductShowcase() {
           <BrandLogo alt="LG" className="w-[4.6rem]" />
         </div>
         <p className="text-right text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
-          Official product showcase
+          สินค้าในบริการ LG Subscribe
         </p>
       </div>
 

@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       product.monthlyPrice !== null
         ? `${product.name} ราคาในโปรโมชัน ฿${product.monthlyPrice.toLocaleString("th-TH")}/เดือน`
         : `${product.name} ราคาและแพ็กเกจ LG Subscribe`,
-    description: `${product.description} ดูรายละเอียดแพ็กเกจ ${product.model} และปรึกษาเจ้าหน้าที่ LG Subscribe`,
+    description: `${product.description} ดูรายละเอียดแพ็กเกจ ${product.model} และปรึกษาตัวแทนขาย LG Subscribe ที่ได้รับอนุญาต`,
     path: `/products/${product.slug}/`,
     image: product.image,
   });

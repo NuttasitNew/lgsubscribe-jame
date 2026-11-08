@@ -7,9 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { createPageMetadata, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "ติดต่อ LG Subscribe โทร LINE และอีเมล",
+  title: "ติดต่อตัวแทนขาย LG Subscribe โทร LINE และอีเมล",
   description:
-    "ติดต่อฝ่ายขาย LG Subscribe ผ่าน LINE OA @lgsubscribe โทรศัพท์ หรืออีเมล เพื่อสอบถามราคา รุ่นสินค้า เอกสารสมัคร เงื่อนไขสัญญา และบริการหลังการขาย",
+    "ติดต่อตัวแทนขาย LG Subscribe ที่ได้รับอนุญาต ผ่าน LINE OA @lgsubscribe โทรศัพท์ หรืออีเมล เพื่อสอบถามราคา รุ่นสินค้า เอกสารสมัคร เงื่อนไขสัญญา และบริการหลังการขาย",
   path: "/contact/",
 });
 
@@ -33,8 +33,8 @@ export default function ContactPage() {
       <JsonLd data={schema} />
       <header className="page-hero">
         <div className="container-page max-w-5xl text-center">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-red-400">Contact LG Subscribe</p>
-          <h1 className="mt-4 text-4xl font-bold sm:text-5xl">ติดต่อฝ่ายขาย LG Subscribe</h1>
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-red-400">ติดต่อตัวแทนขาย</p>
+          <h1 className="mt-4 text-4xl font-bold sm:text-5xl">ติดต่อตัวแทนขาย LG Subscribe</h1>
           <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/65">
             สอบถามรุ่น ราคา โปรโมชัน เอกสารสมัคร และเงื่อนไขก่อนทำสัญญาผ่าน LINE โทรศัพท์ หรืออีเมล
           </p>
