@@ -28,7 +28,7 @@ export function BlogArticlePage({ article }: { article: HurryWebBlogFileV2 }) {
       publisher: {
         "@type": "Organization",
         name: siteConfig.shortName,
-        logo: { "@type": "ImageObject", url: `${siteConfig.url}/brand/lg-logo.svg` },
+        logo: { "@type": "ImageObject", url: `${siteConfig.url}/brand/lg-subscribe-logo-red.png` },
       },
       mainEntityOfPage: url,
     },

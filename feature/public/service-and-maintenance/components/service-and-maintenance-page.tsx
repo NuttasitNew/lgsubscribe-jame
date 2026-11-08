@@ -5,7 +5,7 @@ import { GeneratedIcon } from "@/components/generated-icon";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { createPageMetadata } from "@/lib/site";
+import { createPageMetadata, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createPageMetadata({
   title: "บริการซ่อมและบำรุงรักษา LG Subscribe ดูแลอะไรบ้าง",
@@ -28,7 +28,7 @@ export default function ServicePage() {
     "@type": "Service",
     name: "บริการซ่อมและบำรุงรักษา LG Subscribe",
     description: metadata.description,
-    provider: { "@type": "Organization", name: "LG Subscribe" },
+    provider: { "@type": "Organization", name: siteConfig.shortName },
     areaServed: { "@type": "Country", name: "Thailand" },
   };
 
