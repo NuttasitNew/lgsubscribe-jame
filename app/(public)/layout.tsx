@@ -1,3 +1,4 @@
+import { AgentDisclosureBar } from "@/components/agent-disclosure-bar";
 import { FloatingSubscribeDay } from "@/components/floating-subscribe-day";
 import { WebAnalytics } from "@/components/web-analytics";
 import { TrackingConsent } from "@/components/tracking-consent";
@@ -16,7 +17,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     "@id": `${siteConfig.url}/#organization`,
     name: siteConfig.shortName,
     url: siteConfig.url,
-    logo: `${siteConfig.url}/brand/lg-logo.svg`,
+    logo: `${siteConfig.url}/brand/lg-subscribe-logo-red.png`,
     description: siteConfig.description,
     disambiguatingDescription: siteOperatorDisclosure.en.identity,
     sameAs: [siteConfig.lineUrl],
@@ -42,6 +43,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
       >
         ข้ามไปยังเนื้อหาหลัก
       </a>
+      <AgentDisclosureBar />
       <SiteHeader />
       <main id="main-content">{children}</main>
       <SiteFooter />

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     siteName: siteConfig.shortName,
     title: siteConfig.title,
     description: siteConfig.description,
-    images: [{ url: "/brand/lg-logo-social.png", alt: "LG" }],
+    images: [{ url: "/brand/lg-logo-social.png", alt: siteConfig.shortName }],
   },
   twitter: {
     card: "summary_large_image",

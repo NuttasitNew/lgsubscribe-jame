@@ -2,13 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { LineMark } from "@/components/line-mark";
 import { SiteHeaderActions } from "@/components/site-header-actions";
-import { navigation, siteConfig } from "@/lib/site";
+import { authorizedAgent, navigation, siteConfig } from "@/lib/site";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-black/[0.07] bg-white">
       <div className="mx-auto flex h-[76px] w-full max-w-[1480px] items-center justify-between gap-5 px-5 sm:px-8">
-        <Link href="/" aria-label="LG Subscribe หน้าแรก" className="group flex shrink-0 items-center gap-3">
+        <Link
+          href="/"
+          aria-label="ตัวแทนขาย LG Subscribe หน้าแรก"
+          className="group flex shrink-0 flex-col items-start gap-1"
+        >
           <Image
             src="/brand/lg-subscribe-logo-red.png"
             alt="LG Subscribe"
@@ -18,6 +22,9 @@ export function SiteHeader() {
             sizes="(max-width: 640px) 156px, 184px"
             className="h-auto w-[9.75rem] transition-transform group-hover:scale-[1.02] sm:w-[11.5rem]"
           />
+          <span className="text-[11px] font-semibold leading-none text-neutral-600">
+            ตัวแทนขายที่ได้รับอนุญาต · {authorizedAgent.code}
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-6 xl:flex" aria-label="เมนูหลัก">

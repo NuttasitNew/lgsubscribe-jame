@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lgthailand-subscribe.com";
 
 export const siteConfig = {
-  name: "LG Subscribe Thailand",
-  shortName: "LG Subscribe",
-  title: "LG Subscribe Thailand | เช่าใช้เครื่องใช้ไฟฟ้า พร้อมบริการดูแลถึงบ้าน",
+  name: "ตัวแทนขาย LG Subscribe ที่ได้รับอนุญาต",
+  shortName: "ตัวแทนขาย LG Subscribe",
+  title: "ตัวแทนขาย LG Subscribe ที่ได้รับอนุญาต | เช่าใช้เครื่องใช้ไฟฟ้า LG รายเดือน",
   description:
-    "เช่าใช้เครื่องใช้ไฟฟ้า LG แบบชำระรายเดือน ไม่กันวงเงินบัตร พร้อมบริการดูแลโดยช่าง LG ถึงบ้านและการคุ้มครองตลอดอายุสัญญา",
+    "ตัวแทนขายบริการ LG Subscribe ที่ได้รับอนุญาต (รหัสตัวแทน LGF216232) ไม่ใช่เว็บไซต์ทางการของ LG — เช่าใช้เครื่องใช้ไฟฟ้า LG แบบชำระรายเดือน ไม่กันวงเงินบัตร พร้อมบริการดูแลตามแพ็กเกจตลอดอายุสัญญา",
   url: rawSiteUrl.replace(/\/$/, ""),
   lineId: "@lgsubscribe",
   lineUrl: "https://line.me/R/ti/p/%40lgsubscribe",
@@ -51,6 +51,9 @@ export const authorizedAgent = {
 
 /** Footer copy for Google Ads / trademark reviewers: authorized agent, not LG. */
 export const siteOperatorDisclosure = {
+  /** One-line notice shown above the header on every public page. */
+  bar: `ตัวแทนขาย LG Subscribe ที่ได้รับอนุญาต รหัส ${authorizedAgent.code} · ไม่ใช่เว็บไซต์ทางการของ LG Electronics`,
+  barShort: `ตัวแทนขายที่ได้รับอนุญาต · รหัส ${authorizedAgent.code}`,
   blurb:
     "ตัวแทนการขายบริการ LG Subscribe ที่ได้รับอนุญาตจาก LG โดยตรง — ไม่ใช่เว็บไซต์ทางการของ LG Electronics",
   th: {
