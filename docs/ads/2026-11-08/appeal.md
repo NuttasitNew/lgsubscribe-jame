@@ -5,7 +5,7 @@
 ## ก่อนกดยื่น
 
 1. Deploy เว็บที่แก้แล้วขึ้น production ก่อน เพราะผู้ตรวจจะเปิดเว็บจริง
-2. **Pause แคมเปญ `LG Subscribe Day | Promo | 31Oct-11Nov 2026` (24413356479)** แคมเปญนี้ยิงคำแบรนด์เปล่าๆ เช่น "เครื่องซักผ้า lg" และน่าจะเป็นตัวจุดชนวน
+2. แคมเปญ `LG Subscribe Day | Promo | 31Oct-11Nov 2026` (24413356479) pause ไม่ได้ระหว่างถูกระงับ (บัญชีเป็น read-only, ลองแล้ว 8 พ.ย.) — ถ้าได้บัญชีคืนก่อน 11 พ.ย. ให้ pause ทันที
 3. เตรียมไฟล์แนบ: หนังสือแต่งตั้ง/ใบรับรองตัวแทนจาก LG (รหัส LGF216232), รูปเกียรติบัตร Excellent LSM Award, screenshot หน้าเว็บที่มีแถบบอกว่าเป็นตัวแทน
 4. ยื่นที่ ads.google.com → Policy manager → Account suspended → **Appeal** เลือกเหตุผล "I believe this is an error" แล้ววางข้อความด้านล่าง
 
@@ -36,8 +36,8 @@ What we changed (live on https://www.lgthailand-subscribe.com)
 6. Our full operator disclosure and trademark notice: https://www.lgthailand-subscribe.com/authorized/
 
 Changes to our ads
-- We paused the campaign that targeted generic brand keywords such as "LG washing machine" and "LG refrigerator".
-- Our ads will only target searches about LG Subscribe / monthly subscription, and ad text will state that we are an authorized agent.
+- As soon as the account is editable again, we will pause the campaign that targeted generic brand keywords such as "LG washing machine" and "LG refrigerator" (the account is read-only while suspended, so we could not pause it yet; it is also scheduled to end on November 11, 2026).
+- From now on our ads will only target searches about LG Subscribe / monthly subscription, and ad text will state that we are an authorized agent.
 
 Attached: our LG agent authorization document and screenshots of the updated website.
 
@@ -55,3 +55,10 @@ lgsubscribe.th@gmail.com | +66 86 551 5949
 - ข้อความแอดใส่คำว่า "ตัวแทนขายที่ได้รับอนุญาต" อย่างน้อย 1 headline หรือ description
 - ขอ LG Thailand ยื่น trademark authorization ให้บัญชีนี้ผ่านฟอร์มของ Google (เจ้าของเครื่องหมายการค้าต้องเป็นคนยื่น)
 - ห้ามเปิดบัญชี Google Ads ใหม่ระหว่างที่ยังถูกระงับ
+
+## สถานะ
+
+- **ยื่นอุทธรณ์แล้ว 8 พ.ย. 2569 17:00** ผ่าน Admin → Policy → Summary → Account suspended → Submit an appeal (Policy → Account → History แสดง "Suspension appeal · Complete")
+- ข้อความที่ส่งจริงต่างจากร่างข้างบน: ตัดประโยค "LG เป็นผู้ติดตั้ง/ซ่อมบำรุง" (ยังไม่ยืนยัน) และบรรทัดแนบเอกสาร (ฟอร์มแนบไฟล์ไม่ได้ — บอกว่าพร้อมส่งหนังสือแต่งตั้งถ้าขอ)
+- คำตอบในฟอร์ม: เจ้าของ Yes · เปลี่ยนใน 3 วัน Yes (แก้เว็บ) · affiliate No · หลายบัญชี Google No · เป็นเจ้าของเว็บ Yes · เว็บเปิด ~3 เดือน (9 ส.ค. 2569) · redirect No · สัมพันธ์ตรงกับ LG Yes · บริหารโดยองค์กรอื่น No · ถูกแฮก No
+- รอผล 1–3 วันทำการ (Google ว่าอาจนานกว่า) · ห้ามยื่นซ้ำภายใน 7 วัน
