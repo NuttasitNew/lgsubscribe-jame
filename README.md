@@ -5,7 +5,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, run the development server:
 
 ```bash
-npm run dev
+pnpm dev
 # or
 yarn dev
 # or
@@ -35,8 +35,8 @@ The LINE webhook stores raw events, LINE profiles, messages, chat summaries, and
 3. Apply database migrations and start the app:
 
    ```bash
-   npm run db:migrate
-   npm run dev
+   pnpm db:migrate
+   pnpm dev
    ```
 
 4. Open [http://localhost:3000/backoffice/](http://localhost:3000/backoffice/). After deployment, configure LINE Developers to send events to:
@@ -69,12 +69,12 @@ LINE credentials saved in the backoffice are AES-256-GCM encrypted with `SETTING
 - Until the production endpoint, account authorization and scheduling are complete, backoffice displays “รอเชื่อมต่อเพื่อรับรายงานจริง”; local tests are not proof of a live Google sync.
 - Prepared private drafts in the LG account: Ads script `12445193` (“LG Subscribe - Daily Google Ads Reports”) and Apps Script project `1T6-dmrnj0_gYxgPkeegNV16Oms5t-2aQseteu1uIZaXZNyCBsj6UizoW` (“LG Subscribe - Daily GA4 Reports”). Their receiver secret remains a placeholder until production setup. For GA4, `?source=ga4_manifest` downloads `appsscript.json` with the AnalyticsData v1beta dependency and only `analytics.readonly` plus external HTTP transport scopes. Account grant and live executions remain pending.
 
-Run the additional development database checks with `RUN_WEB_ANALYTICS_INTEGRATION=true npm run test -- test/web-analytics-database.integration.test.ts test/google-sync-database.integration.test.ts`.
+Run the additional development database checks with `RUN_WEB_ANALYTICS_INTEGRATION=true pnpm test -- test/web-analytics-database.integration.test.ts test/google-sync-database.integration.test.ts`.
 
 Run the real-database integration test only against a disposable or development database:
 
 ```bash
-RUN_DATABASE_INTEGRATION=true npm run test -- test/line-webhook-database.integration.test.ts
+RUN_DATABASE_INTEGRATION=true pnpm test -- test/line-webhook-database.integration.test.ts
 ```
 
 ## Learn More

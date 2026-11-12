@@ -1,0 +1,9 @@
+allowBuilds:
+  esbuild: true
+  sharp: false
+  unrs-resolver: false
+  '@parcel/watcher': false
+  '@swc/core': false
+  '@prisma/engines': true
+  prisma: true
+  protobufjs: false
