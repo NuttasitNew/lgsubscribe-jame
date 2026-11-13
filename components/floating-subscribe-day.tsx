@@ -119,12 +119,12 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
               ref={closeButton}
               type="button"
               aria-label={subscribeDayCampaign.closeLabel}
-              className="absolute right-2 top-2 z-10 grid size-11 place-items-center rounded-full bg-neutral-800 text-white shadow-lg ring-2 ring-white transition-colors hover:bg-neutral-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:-right-3 sm:-top-3"
+              className="absolute right-2 top-2 z-10 grid size-11 place-items-center rounded-full bg-red-600 text-white shadow-lg ring-2 ring-amber-200 transition-colors hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:-right-3 sm:-top-3"
             >
               <X className="size-5" strokeWidth={3} aria-hidden="true" />
             </button>
           </Dialog.Close>
-          <div className="overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-1 ring-black/10">
+          <div className="overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-4 ring-amber-200">
             <a
               className="block aspect-[1087/1447]"
               href={siteConfig.lineUrl}
