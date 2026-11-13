@@ -145,8 +145,6 @@ export default async function SubscribeDayPage({
             {...subscribeDayImage}
             unoptimized
             alt={subscribeDayCampaign.alt}
-            width={1156}
-            height={1361}
             priority
             className="mx-auto w-full max-w-md rounded-2xl shadow-[0_24px_64px_rgba(0,0,0,0.55)] ring-1 ring-orange-300/30"
           />

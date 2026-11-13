@@ -81,7 +81,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
         <Dialog.Overlay data-promotion-overlay="" className="fixed inset-0 z-[80] bg-black/65" />
         <Dialog.Content
           aria-modal="true"
-          className="subscribe-day-popup fixed left-1/2 top-1/2 z-[81] w-[min(32rem,calc(100vw-24px),calc((100dvh-100px)*0.849))] -translate-x-1/2 -translate-y-1/2 outline-none"
+          className="subscribe-day-popup fixed left-1/2 top-1/2 z-[81] w-[min(32rem,calc(100vw-24px),calc((100dvh-100px)*0.751))] -translate-x-1/2 -translate-y-1/2 outline-none"
           onOpenAutoFocus={(event) => {
             event.preventDefault();
             previousFocus.current =
@@ -126,7 +126,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
           </Dialog.Close>
           <div className="overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-1 ring-black/10">
             <a
-              className="block aspect-[1156/1361]"
+              className="block aspect-[1087/1447]"
               href={siteConfig.lineUrl}
               target="_blank"
               rel="noreferrer"
@@ -137,8 +137,6 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
                   {...subscribeDayImage}
                   unoptimized
                   alt={subscribeDayCampaign.alt}
-                  width={1156}
-                  height={1361}
                   loading="eager"
                   fetchPriority="high"
                   className="h-auto w-full"

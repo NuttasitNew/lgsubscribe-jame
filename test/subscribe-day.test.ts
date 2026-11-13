@@ -42,9 +42,9 @@ describe("LG Subscribe Day window (extended to 15 Nov)", () => {
     );
   });
 
-  it("keeps the original Halloween artwork on a campaign-specific public path", () => {
+  it("uses the extended Maldives poster on a campaign-specific public path", () => {
     expect(subscribeDayCampaign.image).toBe(
-      "/images/campaigns/lg-subscribe-day-halloween-2026-10.webp",
+      "/images/campaigns/lg-subscribe-day-maldives-2026-11.webp",
     );
     expect(
       existsSync(join(process.cwd(), "public", subscribeDayCampaign.image)),
@@ -53,6 +53,7 @@ describe("LG Subscribe Day window (extended to 15 Nov)", () => {
     expect(subscribeDayCampaign.dateLabel).toBe("31 ต.ค.69 – 15 พ.ย.69");
     expect(subscribeDayCampaign.alt).toContain("ขยายเวลาโปรโมชั่น 31 ต.ค. 69 – 15 พ.ย. 69");
     expect(subscribeDayCampaign.alt).toContain("ลด 15%");
+    expect(subscribeDayCampaign.alt).toContain("ลุ้นบินมัลดีฟส์");
   });
 
   it("remembers a closed popup only for the current website session", () => {

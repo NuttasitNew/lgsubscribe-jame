@@ -3,14 +3,16 @@ export const SUBSCRIBE_DAY_START = "2026-10-31T00:00:00+07:00";
 export const SUBSCRIBE_DAY_END = "2026-11-16T00:00:00+07:00";
 
 export const subscribeDayCampaign = {
-  image: "/images/campaigns/lg-subscribe-day-halloween-2026-10.webp",
+  image: "/images/campaigns/lg-subscribe-day-maldives-2026-11.webp",
+  imageWidth: 1087,
+  imageHeight: 1447,
   path: "/subscribe-day/",
   maxDiscountPercent: 15,
   dateLabel: "31 ต.ค.69 – 15 พ.ย.69",
   ctaLabel: "กดปุ่มนี้เพื่อแอดไลน์รับโปรโมชั่น",
   dialogLabel: "โปรโมชัน LG Subscribe Day",
   closeLabel: "ปิดโปรโมชัน LG Subscribe Day",
-  alt: "LG Subscribe Day ขยายเวลาโปรโมชั่น 31 ต.ค. 69 – 15 พ.ย. 69 ลูกค้าใหม่ Subscribe 2 เครื่องขึ้นไป ลด 15% ลูกค้าเดิม Subscribe 1 เครื่องขึ้นไป ลด 15% เงื่อนไขเป็นไปตามที่บริษัทกำหนด เฉพาะรุ่นที่ร่วมรายการ",
+  alt: "LG Subscribe Day ขยายเวลาโปรโมชั่น 31 ต.ค. 69 – 15 พ.ย. 69 ฉลองครบรอบ 2 ปี ยิ่งซับ ยิ่งฟิน ลุ้นบินมัลดีฟส์ ลูกค้าใหม่ Subscribe 2 เครื่องขึ้นไป ลด 15% ลูกค้าเดิม Subscribe 1 เครื่องขึ้นไป ลด 15% เงื่อนไขเป็นไปตามที่บริษัทกำหนด เฉพาะรุ่นที่ร่วมรายการ",
 } as const;
 
 export const subscribeDayPopupStorageKey = `lg-subscribe-day-popup:${SUBSCRIBE_DAY_END}`;
