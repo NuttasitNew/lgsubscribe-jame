@@ -24,14 +24,14 @@ afterEach(() => {
 
 describe("Subscribe Day page", () => {
   it("shows the offers during the campaign", async () => {
-    vi.useFakeTimers({ now: new Date("2026-11-11T23:59:59+07:00") });
+    vi.useFakeTimers({ now: new Date("2026-11-15T23:59:59+07:00") });
     render(await page());
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain("LG Subscribe Day");
     expect(screen.getByText("Subscribe 2 เครื่องขึ้นไป")).toBeTruthy();
     expect(screen.getByText("Subscribe 1 เครื่องขึ้นไป")).toBeTruthy();
   });
 
-  it.each(["2026-10-30T23:59:59+07:00", "2026-11-12T00:00:00+07:00"])(
+  it.each(["2026-10-30T23:59:59+07:00", "2026-11-16T00:00:00+07:00"])(
     "redirects home at %s",
     async (now) => {
       vi.useFakeTimers({ now: new Date(now) });

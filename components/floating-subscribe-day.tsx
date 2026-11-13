@@ -112,7 +112,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
         >
           <Dialog.Title className="sr-only">{subscribeDayCampaign.dialogLabel}</Dialog.Title>
           <Dialog.Description className="sr-only">
-            โปรโมชั่น 31 ตุลาคม – 11 พฤศจิกายน 2569 ตามเวลาไทย สอบถามรายละเอียดและเงื่อนไขผ่าน LINE
+            ขยายเวลาโปรโมชั่น 31 ตุลาคม – 15 พฤศจิกายน 2569 ตามเวลาไทย สอบถามรายละเอียดและเงื่อนไขผ่าน LINE
           </Dialog.Description>
           <Dialog.Close asChild>
             <button

@@ -1,16 +1,16 @@
-/** Thailand campaign: 31 October – 11 November 2569 (2026), ending at midnight on 12 November. */
+/** Thailand campaign: 31 October – 15 November 2569 (2026), extended by LG from 11 November; ends at midnight on 16 November. */
 export const SUBSCRIBE_DAY_START = "2026-10-31T00:00:00+07:00";
-export const SUBSCRIBE_DAY_END = "2026-11-12T00:00:00+07:00";
+export const SUBSCRIBE_DAY_END = "2026-11-16T00:00:00+07:00";
 
 export const subscribeDayCampaign = {
   image: "/images/campaigns/lg-subscribe-day-halloween-2026-10.webp",
   path: "/subscribe-day/",
   maxDiscountPercent: 15,
-  dateLabel: "31 ต.ค.69 – 11 พ.ย.69",
+  dateLabel: "31 ต.ค.69 – 15 พ.ย.69",
   ctaLabel: "กดปุ่มนี้เพื่อแอดไลน์รับโปรโมชั่น",
   dialogLabel: "โปรโมชัน LG Subscribe Day",
   closeLabel: "ปิดโปรโมชัน LG Subscribe Day",
-  alt: "LG Subscribe Day โปรโมชั่น 31 ต.ค. 69 – 11 พ.ย. 69 ลูกค้าใหม่ Subscribe 2 เครื่องขึ้นไป ลด 15% ลูกค้าเดิม Subscribe 1 เครื่องขึ้นไป ลด 15% เงื่อนไขเป็นไปตามที่บริษัทกำหนด เฉพาะรุ่นที่ร่วมรายการ",
+  alt: "LG Subscribe Day ขยายเวลาโปรโมชั่น 31 ต.ค. 69 – 15 พ.ย. 69 ลูกค้าใหม่ Subscribe 2 เครื่องขึ้นไป ลด 15% ลูกค้าเดิม Subscribe 1 เครื่องขึ้นไป ลด 15% เงื่อนไขเป็นไปตามที่บริษัทกำหนด เฉพาะรุ่นที่ร่วมรายการ",
 } as const;
 
 export const subscribeDayPopupStorageKey = `lg-subscribe-day-popup:${SUBSCRIBE_DAY_END}`;
