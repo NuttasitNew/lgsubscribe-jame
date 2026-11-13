@@ -26,7 +26,11 @@ describe("Subscribe Day page", () => {
   it("shows the offers during the campaign", async () => {
     vi.useFakeTimers({ now: new Date("2026-11-15T23:59:59+07:00") });
     render(await page());
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toContain("LG Subscribe Day");
+    const heading = screen.getByRole("heading", { level: 1 }).textContent;
+    expect(heading).toContain("LG Subscribe Day");
+    expect(heading).toContain("ขยายเวลาถึง 15 พ.ย. 69");
+    expect(screen.getByText("ขยายเวลาโปรโมชั่น")).toBeTruthy();
+    expect(screen.getByText(/31 ต.ค.69 – 15 พ.ย.69/)).toBeTruthy();
     expect(screen.getByText("Subscribe 2 เครื่องขึ้นไป")).toBeTruthy();
     expect(screen.getByText("Subscribe 1 เครื่องขึ้นไป")).toBeTruthy();
   });
@@ -81,6 +85,21 @@ describe("Subscribe Day page", () => {
     expect(getSubscriptionFirstBillPrice("WD110MN")).toBe(99);
     expect(getSubscriptionFirstBillPrice("WT1410NHEG")).toBe(149);
     expect(getSubscriptionFirstBillPrice("NOT-A-MODEL")).toBeNull();
+  });
+
+  it("shows the Maldives headline as LG's campaign without inventing draw rules", async () => {
+    vi.useFakeTimers({ now: new Date("2026-11-13T12:00:00+07:00") });
+    render(await page());
+    const maldives = screen.getByRole("heading", { name: /ลุ้นบินมัลดีฟส์/, level: 2 });
+    const card = maldives.parentElement!;
+    expect(card.textContent).toContain("เงื่อนไขเป็นไปตามที่บริษัทฯ กำหนด");
+    expect(card.textContent).not.toMatch(/รางวัล\s*\d|จำนวน|วิธีร่วมสนุก/);
+    expect(screen.getByText(/ไม่ใช่ LG Electronics/)).toBeTruthy();
+  });
+
+  it("uses the extended dates in the page metadata", () => {
+    expect(String(metadata.title)).toContain("15 พ.ย. 69");
+    expect(metadata.description).toContain("ขยายเวลาโปรโมชั่น");
   });
 
   it("stays out of search results", () => {
