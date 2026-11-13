@@ -149,8 +149,9 @@ export default async function SubscribeDayPage({
             </div>
           </div>
           <div className="relative mx-auto w-full max-w-md">
-            <Hibiscus className="absolute -left-5 -top-5 z-10 size-16 drop-shadow sm:size-20" />
-            <Plumeria className="absolute -bottom-4 -right-4 z-10 size-14 drop-shadow sm:size-16" />
+            {/* Flowers sit on the sky and lagoon areas so they never cover the poster's text. */}
+            <Plumeria className="absolute -right-4 -top-4 z-10 size-14 drop-shadow sm:size-16" />
+            <Hibiscus className="absolute -left-6 top-[58%] z-10 size-14 drop-shadow sm:size-16" />
             {/* Poster supplied by the user (LG's extended campaign artwork, 31 ต.ค.69 – 15 พ.ย.69). */}
             <Image
               {...subscribeDayImage}
