@@ -26,6 +26,15 @@ export function setTrackingConsent(value: Exclude<TrackingConsent, "pending">) {
   }
   notify();
 }
+/** Clears the saved choice so the cookie banner asks again (used by the privacy policy page). */
+export function resetTrackingConsent() {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    /* Storage unavailable */
+  }
+  notify();
+}
 export function useTrackingConsent() {
   return useSyncExternalStore(
     (listener) => {

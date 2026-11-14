@@ -18,6 +18,7 @@ const staticPages = [
   "/blog/",
   "/authorized/",
   "/contact/",
+  "/privacy-policy/",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
