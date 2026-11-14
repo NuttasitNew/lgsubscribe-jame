@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { setTrackingConsent, useTrackingConsent } from "@/lib/analytics/consent";
 
@@ -13,7 +14,10 @@ export function TrackingConsent() {
         >
           <h2 className="text-sm font-semibold">เลือกการใช้คุกกี้</h2>
           <p className="mt-1 text-xs leading-6 text-muted-foreground">
-            คุกกี้สถิติช่วยวัดการเข้าเว็บและการคลิกติดต่อ ส่วนคุกกี้โฆษณาช่วยวัดผล Google Ads
+            คุกกี้สถิติช่วยวัดการเข้าเว็บและการคลิกติดต่อ ส่วนคุกกี้โฆษณาช่วยวัดผล Google Ads{" "}
+            <Link href="/privacy-policy/#cookies" className="font-medium text-foreground underline underline-offset-4">
+              อ่านนโยบายความเป็นส่วนตัว
+            </Link>
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {(

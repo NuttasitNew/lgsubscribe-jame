@@ -11,6 +11,7 @@ const footerNavigation = [
   { href: authorizedAgent.path, label: "ความน่าเชื่อถือ" },
   { href: "/faq/", label: "คำถามที่พบบ่อย" },
   { href: "/blog/", label: "บทความ" },
+  { href: "/privacy-policy/", label: "นโยบายความเป็นส่วนตัว" },
 ] as const;
 
 export function SiteFooter() {
