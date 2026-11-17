@@ -24,7 +24,8 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
   // The modal makes the page inert, so it must wait until the cookie banner has been answered.
   const consent = useTrackingConsent();
   // The campaign page already shows this artwork, so the modal would only cover it.
-  const onCampaignPage = usePathname() === subscribeDayCampaign.path;
+  const pathname = usePathname();
+  const onCampaignPage = pathname === subscribeDayCampaign.path || pathname === subscribeDayCampaign.legacyPath;
   const dismissed = useRef(false);
   const previousFocus = useRef<HTMLElement | null>(null);
   const closeButton = useRef<HTMLButtonElement | null>(null);
@@ -81,7 +82,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
         <Dialog.Overlay data-promotion-overlay="" className="fixed inset-0 z-[80] bg-black/65" />
         <Dialog.Content
           aria-modal="true"
-          className="subscribe-day-popup fixed left-1/2 top-1/2 z-[81] w-[min(32rem,calc(100vw-24px),calc((100dvh-100px)*0.751))] -translate-x-1/2 -translate-y-1/2 outline-none"
+          className="subscribe-day-popup fixed left-1/2 top-1/2 z-[81] w-[min(32rem,calc(100vw-24px),calc(100dvh-100px))] -translate-x-1/2 -translate-y-1/2 outline-none"
           onOpenAutoFocus={(event) => {
             event.preventDefault();
             previousFocus.current =
@@ -112,7 +113,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
         >
           <Dialog.Title className="sr-only">{subscribeDayCampaign.dialogLabel}</Dialog.Title>
           <Dialog.Description className="sr-only">
-            ขยายเวลาโปรโมชั่น 31 ตุลาคม – 15 พฤศจิกายน 2569 ตามเวลาไทย สอบถามรายละเอียดและเงื่อนไขผ่าน LINE
+            ฉลองครบรอบ 2 ปี ลูกค้าเก่าและลูกค้าใหม่ลดเพิ่ม 10% โปรโมชัน 16 – 30 พฤศจิกายน 2569 ตามเวลาไทย สอบถามรายละเอียดและเงื่อนไขผ่าน LINE
           </Dialog.Description>
           <Dialog.Close asChild>
             <button
@@ -126,7 +127,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
           </Dialog.Close>
           <div className="overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-4 ring-amber-200">
             <a
-              className="block aspect-[1087/1447]"
+              className="block aspect-square"
               href={siteConfig.lineUrl}
               target="_blank"
               rel="noreferrer"

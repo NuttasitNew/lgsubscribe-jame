@@ -17,42 +17,40 @@ afterEach(() => {
   window.sessionStorage.clear();
 });
 
-describe("LG Subscribe Day window (extended to 15 Nov)", () => {
+describe("LG Subscribe 2nd-anniversary window (16–30 Nov)", () => {
   it.each([
-    ["2026-10-30T23:59:59.999+07:00", false],
-    ["2026-10-31T00:00:00+07:00", true],
-    ["2026-10-31T14:05:00+07:00", true],
-    ["2026-11-05T19:56:00+07:00", true],
-    ["2026-11-11T23:59:59.999+07:00", true],
-    ["2026-11-12T00:00:00+07:00", true],
-    ["2026-11-15T23:59:59.999+07:00", true],
-    ["2026-11-16T00:00:00+07:00", false],
+    ["2026-11-15T23:59:59.999+07:00", false],
+    ["2026-11-16T00:00:00+07:00", true],
+    ["2026-11-17T14:05:00+07:00", true],
+    ["2026-11-30T23:59:59.999+07:00", true],
+    ["2026-12-01T00:00:00+07:00", false],
   ])("has the expected visibility at %s", (timestamp, active) => {
     expect(isSubscribeDayActive(new Date(timestamp))).toBe(active);
   });
 
   it("uses Thailand offsets independent of the visitor's local timezone", () => {
-    expect(SUBSCRIBE_DAY_START).toBe("2026-10-31T00:00:00+07:00");
-    expect(SUBSCRIBE_DAY_END).toBe("2026-11-16T00:00:00+07:00");
-    expect(isSubscribeDayActive(new Date("2026-10-30T17:00:00.000Z"))).toBe(
+    expect(SUBSCRIBE_DAY_START).toBe("2026-11-16T00:00:00+07:00");
+    expect(SUBSCRIBE_DAY_END).toBe("2026-12-01T00:00:00+07:00");
+    expect(isSubscribeDayActive(new Date("2026-11-15T17:00:00.000Z"))).toBe(
       true,
     );
-    expect(isSubscribeDayActive(new Date("2026-11-15T17:00:00.000Z"))).toBe(
+    expect(isSubscribeDayActive(new Date("2026-11-30T17:00:00.000Z"))).toBe(
       false,
     );
   });
 
-  it("uses the extended Maldives poster on a campaign-specific public path", () => {
+  it("uses the 2nd-anniversary poster on a campaign-specific public path", () => {
     expect(subscribeDayCampaign.image).toBe(
-      "/images/campaigns/lg-subscribe-day-maldives-2026-11.webp",
+      "/images/campaigns/lg-subscribe-2nd-anniversary-2026-11.webp",
     );
+    expect(subscribeDayCampaign.path).toBe("/subscribe-anniversary/");
     expect(
       existsSync(join(process.cwd(), "public", subscribeDayCampaign.image)),
     ).toBe(true);
-    expect(subscribeDayCampaign.maxDiscountPercent).toBe(15);
-    expect(subscribeDayCampaign.dateLabel).toBe("31 ต.ค.69 – 15 พ.ย.69");
-    expect(subscribeDayCampaign.alt).toContain("ขยายเวลาโปรโมชั่น 31 ต.ค. 69 – 15 พ.ย. 69");
-    expect(subscribeDayCampaign.alt).toContain("ลด 15%");
+    expect(subscribeDayCampaign.maxDiscountPercent).toBe(10);
+    expect(subscribeDayCampaign.dateLabel).toBe("16 พ.ย.69 – 30 พ.ย.69");
+    expect(subscribeDayCampaign.alt).toContain("โปรโมชัน 16 พ.ย. 69 – 30 พ.ย. 69");
+    expect(subscribeDayCampaign.alt).toContain("ลดเพิ่ม 10%");
     expect(subscribeDayCampaign.alt).toContain("ลุ้นบินมัลดีฟส์");
   });
 

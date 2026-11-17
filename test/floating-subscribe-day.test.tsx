@@ -21,9 +21,9 @@ import { siteConfig } from "@/lib/site";
 const navigation = vi.hoisted(() => ({ pathname: "/" }));
 vi.mock("next/navigation", () => ({ usePathname: () => navigation.pathname }));
 
-const dialogName = "โปรโมชัน LG Subscribe Day";
-const closeName = "ปิดโปรโมชัน LG Subscribe Day";
-const duringCampaign = "2026-10-31T14:05:00+07:00";
+const dialogName = "โปรโมชัน LG Subscribe ฉลองครบรอบ 2 ปี";
+const closeName = "ปิดโปรโมชัน LG Subscribe ฉลองครบรอบ 2 ปี";
+const duringCampaign = "2026-11-17T14:05:00+07:00";
 
 beforeEach(() => {
   window.localStorage.setItem("lg_tracking_consent_v1", "necessary");
@@ -115,6 +115,14 @@ describe("FloatingSubscribeDay", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it("stays closed on the old /subscribe-day/ path, which forwards to the campaign page", async () => {
+    setDate(duringCampaign);
+    navigation.pathname = subscribeDayCampaign.legacyPath;
+    render(<FloatingSubscribeDay />);
+    await act(async () => {});
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
   it("does not open when this campaign was dismissed before hydration", () => {
     setDate(duringCampaign);
     window.sessionStorage.setItem(subscribeDayPopupStorageKey, "1");
@@ -144,7 +152,7 @@ describe("FloatingSubscribeDay", () => {
     ).toBeInTheDocument();
   });
 
-  it.each(["2026-10-30T23:59:59.999+07:00", SUBSCRIBE_DAY_END])(
+  it.each(["2026-11-15T23:59:59.999+07:00", SUBSCRIBE_DAY_END])(
     "does not open outside the window at %s",
     (timestamp) => {
       setDate(timestamp);
