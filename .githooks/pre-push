@@ -1,0 +1,13 @@
+#!/bin/sh
+# ด่านก่อน push: รันเทสต์ทั้งชุด (ทั้งชุดใช้ ~7 วินาที จึงไม่ต้องเลือกเฉพาะส่วน)
+# with-test-lock: ถ้าโปรเจกต์อื่นกำลังรันเทสต์ทั้งชุดอยู่ จะรอคิวก่อน ไม่รันซ้อนจน RAM หมด (worker สูงสุด 6)
+# เปิดใช้ (ครั้งเดียวต่อ clone): git config core.hooksPath .githooks
+# ข้ามฉุกเฉิน: git push --no-verify
+set -e
+cat > /dev/null   # ไม่ใช้ stdin ของ pre-push
+
+if [ ! -x ./node_modules/.bin/vitest ]; then
+  echo "pre-push: ไม่พบ node_modules (ยังไม่ได้ install ในโฟลเดอร์นี้) — รัน pnpm install ก่อน หรือ git push --no-verify"
+  exit 1
+fi
+sh .githooks/with-test-lock.sh ./node_modules/.bin/vitest run
