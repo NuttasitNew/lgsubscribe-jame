@@ -17,18 +17,19 @@ import { subscribeDayImage } from "@/lib/subscribe-day-image";
 
 export const metadata: Metadata = {
   ...createPageMetadata({
-    title: "LG Subscribe Day ขยายเวลาถึง 15 พ.ย. 69 | ลด 15% ฉลองครบรอบ 2 ปี",
+    title: "LG Subscribe ฉลองครบรอบ 2 ปี ลดเพิ่ม 10% | 16–30 พ.ย. 69",
     description:
-      "ขยายเวลาโปรโมชั่น LG Subscribe Day ถึง 15 พ.ย. 69 ลูกค้าใหม่ Subscribe 2 เครื่องขึ้นไป ลด 15% ลูกค้าเดิม Subscribe 1 เครื่องขึ้นไป ลด 15% ฉลองครบรอบ 2 ปี ยิ่งซับ ยิ่งฟิน ลุ้นบินมัลดีฟส์ เงื่อนไขเป็นไปตามที่บริษัทฯ กำหนด เฉพาะรุ่นที่ร่วมรายการ",
+      "LG Subscribe ฉลองครบรอบ 2 ปี ยิ่งซับ ยิ่งฟิน ลุ้นบินมัลดีฟส์ ลูกค้าเก่า Subscribe ตั้งแต่ 1 เครื่องขึ้นไป ลดเพิ่ม 10% ลูกค้าใหม่ Subscribe ตั้งแต่ 2 เครื่องขึ้นไป ลดเพิ่ม 10% โปรโมชัน 16 – 30 พ.ย. 69 เงื่อนไขเป็นไปตามที่บริษัทฯ กำหนด เฉพาะรุ่นที่ร่วมรายการ",
     path: subscribeDayCampaign.path,
   }),
   // The page redirects away when the campaign ends, so it should not linger in search results.
   robots: { index: false, follow: true },
 };
 
+// Same order and wording as the poster: existing customers first.
 const offers = [
-  { customer: "ลูกค้าใหม่", condition: "Subscribe 2 เครื่องขึ้นไป" },
-  { customer: "ลูกค้าเดิม", condition: "Subscribe 1 เครื่องขึ้นไป" },
+  { customer: "ลูกค้าเก่า", condition: "เมื่อ Subscribe ตั้งแต่ 1 เครื่องขึ้นไป" },
+  { customer: "ลูกค้าใหม่", condition: "เมื่อ Subscribe ตั้งแต่ 2 เครื่องขึ้นไป" },
 ] as const;
 
 const categories = [
@@ -70,7 +71,7 @@ function ProductPrice({ product }: { product: Product }) {
         {baht((firstBill * (100 - discount)) / 100)}
       </span>
       <span className="text-xs font-semibold text-red-700">
-        จาก {baht(firstBill)} ลดอีก {discount}%
+        จาก {baht(firstBill)} ลดเพิ่ม {discount}%
       </span>
       {product.monthlyPrice !== null ? (
         <span className="text-xs text-neutral-600">ราคาปกติ {baht(product.monthlyPrice)}/เดือน</span>
@@ -111,20 +112,22 @@ export default async function SubscribeDayPage({
           <div>
             <p className="inline-flex -rotate-1 items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-base font-black text-white shadow-[0_6px_0_#991b1b] sm:text-lg">
               <Megaphone aria-hidden="true" className="size-5 text-amber-200" />
-              ขยายเวลาโปรโมชั่น
+              ฉลองครบรอบ 2 ปี
             </p>
             <h1 className="mt-5 font-black leading-tight">
-              <span className="block text-5xl text-red-700 [text-shadow:0_2px_0_#fde68a] sm:text-6xl">LG Subscribe Day</span>
-              <span className="mt-2 block text-3xl text-[#0c3a4a] sm:text-4xl">ขยายเวลาถึง 15 พ.ย. 69</span>
-              <span className="mt-3 block text-xl font-bold text-[#0e5a6b] sm:text-2xl">
-                ฉลองครบรอบ 2 ปี ยิ่งซับ ยิ่งฟิน ลุ้นบินมัลดีฟส์
+              <span className="block text-5xl text-red-700 [text-shadow:0_2px_0_#fde68a] sm:text-6xl">LG Subscribe</span>
+              <span className="mt-2 block text-4xl text-red-700 [text-shadow:0_2px_0_#fde68a] sm:text-5xl">
+                ยิ่งซับ ยิ่งฟิน <span className="text-teal-700 [text-shadow:0_2px_0_#fff]">ลุ้นบินมัลดีฟส์</span>
+              </span>
+              <span className="mt-3 block text-2xl font-bold text-[#0c3a4a] sm:text-3xl">
+                ลูกค้าเก่า ลูกค้าใหม่ ลดเพิ่ม {subscribeDayCampaign.maxDiscountPercent}%
               </span>
             </h1>
             <p className="mt-5 inline-flex rounded-full bg-white px-5 py-2 text-lg font-bold text-red-700 shadow-sm ring-2 ring-amber-300">
               โปรโมชั่น {subscribeDayCampaign.dateLabel}
             </p>
             <p className="mt-4 max-w-xl leading-7 text-[#0c3a4a]/85">
-              ลูกค้าใหม่และลูกค้าเดิมรับส่วนลด 15% เมื่อ Subscribe ตามจำนวนเครื่องที่กำหนด เฉพาะรุ่นที่ร่วมรายการ
+              ลูกค้าเก่าและลูกค้าใหม่รับส่วนลดเพิ่ม {subscribeDayCampaign.maxDiscountPercent}% เมื่อ Subscribe ตามจำนวนเครื่องที่กำหนด เฉพาะรุ่นที่ร่วมรายการ
             </p>
             <p className="mt-3 max-w-xl rounded-xl bg-white/70 px-4 py-3 text-sm leading-6 text-[#0c3a4a]">
               สมัครผ่านคุณ{authorizedAgent.nameTh} ตัวแทนขาย LG Subscribe ที่ได้รับอนุญาต รหัส {authorizedAgent.code}{" "}
@@ -152,7 +155,7 @@ export default async function SubscribeDayPage({
             {/* Flowers sit on the sky and lagoon areas so they never cover the poster's text. */}
             <Plumeria className="absolute -right-4 -top-4 z-10 size-14 drop-shadow sm:size-16" />
             <Hibiscus className="absolute -left-6 top-[58%] z-10 size-14 drop-shadow sm:size-16" />
-            {/* Poster supplied by the user (LG's extended campaign artwork, 31 ต.ค.69 – 15 พ.ย.69). */}
+            {/* Poster supplied by the user (LG's 2nd-anniversary campaign artwork, 16 – 30 พ.ย.69). */}
             <Image
               {...subscribeDayImage}
               unoptimized
@@ -173,13 +176,16 @@ export default async function SubscribeDayPage({
           {offers.map((offer) => (
             <article
               key={offer.customer}
-              className="relative overflow-hidden rounded-2xl border-4 border-amber-300 bg-gradient-to-b from-white to-amber-50 p-6 shadow-[0_8px_24px_rgba(180,130,30,0.18)] sm:p-8"
+              className="relative overflow-hidden rounded-2xl border-4 border-red-600 bg-gradient-to-r from-orange-200 via-orange-50 to-white p-6 shadow-[0_8px_24px_rgba(220,38,38,0.18)] sm:p-8"
             >
-              <p className="inline-flex rounded-lg bg-gradient-to-b from-amber-200 to-amber-400 px-3 py-1 text-2xl font-black text-red-800">
+              <p className="inline-flex rounded-lg bg-red-600 px-4 py-1 text-2xl font-black text-white shadow-[0_4px_0_#991b1b]">
                 {offer.customer}
               </p>
               <p className="mt-3 text-lg font-semibold text-[#0c3a4a]">{offer.condition}</p>
-              <p className="mt-2 text-6xl font-black text-red-700">ลด 15%</p>
+              <p className="mt-2 text-6xl font-black text-red-600">
+                <span className="mr-2 align-middle text-2xl font-bold">ลดเพิ่ม</span>
+                {subscribeDayCampaign.maxDiscountPercent}%
+              </p>
             </article>
           ))}
         </div>
@@ -247,7 +253,7 @@ export default async function SubscribeDayPage({
             <ArrowRight />
           </Link>
         </Button>
-        <p className="mt-4 text-sm text-[#0c3a4a]/70">ราคาตาม Price List เดือนตุลาคม 2569</p>
+        <p className="mt-4 text-sm text-[#0c3a4a]/70">ราคาตาม Price List เดือนพฤศจิกายน 2569</p>
       </section>
 
       <section className="container-page pb-12 sm:pb-16" aria-labelledby="subscribe-day-reviews">
@@ -309,7 +315,7 @@ export default async function SubscribeDayPage({
         </ol>
         <div className="relative mt-10 flex flex-col items-start gap-5 overflow-hidden rounded-2xl bg-gradient-to-r from-red-600 to-red-700 p-6 text-white sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <Hibiscus className="absolute -bottom-6 -right-6 size-24 opacity-40" />
-          <p className="text-2xl font-bold">ขยายเวลาถึง 15 พ.ย. 69 สนใจแอดไลน์ได้เลย</p>
+          <p className="text-2xl font-bold">โปรถึง 30 พ.ย. 69 สนใจแอดไลน์ได้เลย</p>
           <LineButton className="relative bg-white text-red-700 hover:bg-red-50" />
         </div>
         <p className="mt-6 text-sm text-[#0c3a4a]/70">*เงื่อนไขเป็นไปตามที่บริษัทฯ กำหนด | เฉพาะรุ่นที่ร่วมรายการ</p>

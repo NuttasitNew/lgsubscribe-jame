@@ -22,20 +22,25 @@ afterEach(() => {
   redirect.mockClear();
 });
 
-describe("Subscribe Day page", () => {
+describe("LG Subscribe 2nd-anniversary page", () => {
   it("shows the offers during the campaign", async () => {
-    vi.useFakeTimers({ now: new Date("2026-11-15T23:59:59+07:00") });
+    vi.useFakeTimers({ now: new Date("2026-11-30T23:59:59+07:00") });
     render(await page());
     const heading = screen.getByRole("heading", { level: 1 }).textContent;
-    expect(heading).toContain("LG Subscribe Day");
-    expect(heading).toContain("ขยายเวลาถึง 15 พ.ย. 69");
-    expect(screen.getByText("ขยายเวลาโปรโมชั่น")).toBeTruthy();
-    expect(screen.getByText(/31 ต.ค.69 – 15 พ.ย.69/)).toBeTruthy();
-    expect(screen.getByText("Subscribe 2 เครื่องขึ้นไป")).toBeTruthy();
-    expect(screen.getByText("Subscribe 1 เครื่องขึ้นไป")).toBeTruthy();
+    expect(heading).toContain("LG Subscribe");
+    expect(heading).toContain("ลุ้นบินมัลดีฟส์");
+    expect(heading).toContain("ลดเพิ่ม 10%");
+    expect(screen.getByText("ฉลองครบรอบ 2 ปี")).toBeTruthy();
+    expect(screen.getByText(/16 พ.ย.69 – 30 พ.ย.69/)).toBeTruthy();
+    const cards = screen.getAllByRole("article").map((card) => card.textContent);
+    expect(cards[0]).toContain("ลูกค้าเก่า");
+    expect(cards[0]).toContain("เมื่อ Subscribe ตั้งแต่ 1 เครื่องขึ้นไป");
+    expect(cards[1]).toContain("ลูกค้าใหม่");
+    expect(cards[1]).toContain("เมื่อ Subscribe ตั้งแต่ 2 เครื่องขึ้นไป");
+    expect(cards.every((card) => card?.includes("ลดเพิ่ม10%"))).toBe(true);
   });
 
-  it.each(["2026-10-30T23:59:59+07:00", "2026-11-16T00:00:00+07:00"])(
+  it.each(["2026-11-15T23:59:59+07:00", "2026-12-01T00:00:00+07:00"])(
     "redirects home at %s",
     async (now) => {
       vi.useFakeTimers({ now: new Date(now) });
@@ -44,11 +49,11 @@ describe("Subscribe Day page", () => {
   );
 
   it("shows products of the category in the ad keyword", async () => {
-    vi.useFakeTimers({ now: new Date("2026-11-01T12:00:00+07:00") });
+    vi.useFakeTimers({ now: new Date("2026-11-20T12:00:00+07:00") });
     render(await page("ตู้เย็น lg รายเดือน"));
     expect(screen.getByRole("heading", { name: "ตู้เย็นแนะนำ" })).toBeTruthy();
-    expect(screen.getAllByText("฿126.65")).toHaveLength(4);
-    expect(screen.getAllByText("จาก ฿149 ลดอีก 15%")).toHaveLength(4);
+    expect(screen.getAllByText("฿134.1")).toHaveLength(4);
+    expect(screen.getAllByText("จาก ฿149 ลดเพิ่ม 10%")).toHaveLength(4);
     expect(screen.getByText("ราคาปกติ ฿399/เดือน")).toBeTruthy();
     expect(screen.getByRole("link", { name: "ดูตู้เย็นทุกรุ่น" }).getAttribute("href")).toContain(
       `?category=${encodeURIComponent("ตู้เย็น")}`,
@@ -88,7 +93,7 @@ describe("Subscribe Day page", () => {
   });
 
   it("shows the Maldives headline as LG's campaign without inventing draw rules", async () => {
-    vi.useFakeTimers({ now: new Date("2026-11-13T12:00:00+07:00") });
+    vi.useFakeTimers({ now: new Date("2026-11-20T12:00:00+07:00") });
     render(await page());
     const maldives = screen.getByRole("heading", { name: /ลุ้นบินมัลดีฟส์/, level: 2 });
     const card = maldives.parentElement!;
@@ -97,12 +102,28 @@ describe("Subscribe Day page", () => {
     expect(screen.getByText(/ไม่ใช่ LG Electronics/)).toBeTruthy();
   });
 
-  it("uses the extended dates in the page metadata", () => {
-    expect(String(metadata.title)).toContain("15 พ.ย. 69");
-    expect(metadata.description).toContain("ขยายเวลาโปรโมชั่น");
+  it("uses the campaign dates in the page metadata", () => {
+    expect(String(metadata.title)).toContain("16–30 พ.ย. 69");
+    expect(metadata.description).toContain("ฉลองครบรอบ 2 ปี");
   });
 
   it("stays out of search results", () => {
     expect(metadata.robots).toEqual({ index: false, follow: true });
+  });
+});
+
+describe("legacy /subscribe-day/ path", () => {
+  it("forwards to the current campaign page with the ad keyword", async () => {
+    const { default: LegacyPage } = await import("@/app/(public)/subscribe-day/page");
+    vi.useFakeTimers({ now: new Date("2026-11-20T12:00:00+07:00") });
+    await expect(LegacyPage({ searchParams: Promise.resolve({ kw: "ตู้เย็น lg" }) })).rejects.toThrow(
+      `redirect:/subscribe-anniversary/?kw=${encodeURIComponent("ตู้เย็น lg").replace(/%20/g, "+")}`,
+    );
+  });
+
+  it("sends visitors home outside the campaign", async () => {
+    const { default: LegacyPage } = await import("@/app/(public)/subscribe-day/page");
+    vi.useFakeTimers({ now: new Date("2026-12-01T00:00:00+07:00") });
+    await expect(LegacyPage({ searchParams: Promise.resolve({}) })).rejects.toThrow("redirect:/");
   });
 });
