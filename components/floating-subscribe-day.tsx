@@ -82,7 +82,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
         <Dialog.Overlay data-promotion-overlay="" className="fixed inset-0 z-[80] bg-black/65" />
         <Dialog.Content
           aria-modal="true"
-          className="subscribe-day-popup fixed left-1/2 top-1/2 z-[81] w-[min(32rem,calc(100vw-24px),calc(100dvh-100px))] -translate-x-1/2 -translate-y-1/2 outline-none"
+          className="subscribe-day-popup fixed left-1/2 top-1/2 z-[81] w-[min(28rem,calc(100vw-24px),calc((100dvh-160px)*0.75))] -translate-x-1/2 -translate-y-1/2 outline-none"
           onOpenAutoFocus={(event) => {
             event.preventDefault();
             previousFocus.current =
@@ -113,7 +113,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
         >
           <Dialog.Title className="sr-only">{subscribeDayCampaign.dialogLabel}</Dialog.Title>
           <Dialog.Description className="sr-only">
-            ฉลองครบรอบ 2 ปี ลูกค้าเก่าและลูกค้าใหม่ลดเพิ่ม 10% โปรโมชัน 16 – 30 พฤศจิกายน 2569 ตามเวลาไทย สอบถามรายละเอียดและเงื่อนไขผ่าน LINE
+            Subscribe Day ฉลองครบรอบ 2 ปี ลูกค้าใหม่และลูกค้าเดิมลด 15% โปรโมชั่น 21 – 29 พฤศจิกายน 2569 ตามเวลาไทย สอบถามรายละเอียดและเงื่อนไขผ่าน LINE
           </Dialog.Description>
           <Dialog.Close asChild>
             <button
@@ -127,7 +127,7 @@ export function FloatingSubscribeDay({ image }: { image?: ReactNode }) {
           </Dialog.Close>
           <div className="overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(0,0,0,0.45)] ring-4 ring-amber-200">
             <a
-              className="block aspect-square"
+              className="block aspect-[1087/1447]"
               href={siteConfig.lineUrl}
               target="_blank"
               rel="noreferrer"

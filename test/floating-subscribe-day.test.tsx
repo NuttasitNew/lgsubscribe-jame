@@ -23,7 +23,7 @@ vi.mock("next/navigation", () => ({ usePathname: () => navigation.pathname }));
 
 const dialogName = "โปรโมชัน LG Subscribe ฉลองครบรอบ 2 ปี";
 const closeName = "ปิดโปรโมชัน LG Subscribe ฉลองครบรอบ 2 ปี";
-const duringCampaign = "2026-11-17T14:05:00+07:00";
+const duringCampaign = "2026-11-23T14:05:00+07:00";
 
 beforeEach(() => {
   window.localStorage.setItem("lg_tracking_consent_v1", "necessary");
@@ -152,7 +152,7 @@ describe("FloatingSubscribeDay", () => {
     ).toBeInTheDocument();
   });
 
-  it.each(["2026-11-15T23:59:59.999+07:00", SUBSCRIBE_DAY_END])(
+  it.each(["2026-11-20T23:59:59.999+07:00", SUBSCRIBE_DAY_END])(
     "does not open outside the window at %s",
     (timestamp) => {
       setDate(timestamp);
