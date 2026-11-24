@@ -28,6 +28,7 @@ export function PriceListDetail({
   start,
   promo,
   combo,
+  appliedCombo = null,
   customer,
   countOf,
   onAdd,
@@ -39,6 +40,8 @@ export function PriceListDetail({
   promo: PromoSettings;
   /** Best combo running today for this customer type (null when none or switched off). */
   combo: ComboPromotion | null;
+  /** The combo the current order already qualifies for: prices on this page include it. */
+  appliedCombo?: ComboPromotion | null;
   customer: ComboPromotion["customer"];
   countOf: (itemId: string) => number;
   onAdd: (item: PriceListItem) => void;
@@ -145,7 +148,7 @@ export function PriceListDetail({
           (option.saleType === "Outright" ? (
             <OutrightPrice item={option} />
           ) : (
-            <ScheduleSummary item={option} wide={wide} promo={promo.item} />
+            <ScheduleSummary item={option} wide={wide} promo={promo.item} combo={appliedCombo} />
           ))}
 
         {option && (
@@ -159,7 +162,13 @@ export function PriceListDetail({
               {option.saleType === "Outright" ? (
                 <p className="text-xs text-muted-foreground">ซื้อขาดไม่ร่วมโปรคอมโบ</p>
               ) : (
-                <ComboPreview item={option} promo={promo} combo={combo} customer={customer} />
+                <ComboPreview
+                  item={option}
+                  promo={promo}
+                  combo={combo}
+                  applied={appliedCombo !== null}
+                  customer={customer}
+                />
               )}
             </div>
             <QuantityStepper
@@ -179,6 +188,7 @@ export function PriceListDetail({
           wide={wide}
           start={start}
           promo={promo.item}
+          combo={appliedCombo}
         />
       )}
     </div>
@@ -295,8 +305,24 @@ function OutrightPrice({ item }: { item: PriceListItem }) {
   );
 }
 
-function ScheduleSummary({ item, wide, promo }: { item: PriceListItem; wide: boolean; promo: boolean }) {
+/** This contract's schedule, with the order's combo applied once it qualifies. */
+function scheduleFor(item: PriceListItem, promo: boolean, combo: ComboPromotion | null) {
   const schedule = buildInstallmentSchedule(item, { promo });
+  return schedule && combo ? applyComboDiscount(schedule, combo.percent) : schedule;
+}
+
+function ScheduleSummary({
+  item,
+  wide,
+  promo,
+  combo,
+}: {
+  item: PriceListItem;
+  wide: boolean;
+  promo: boolean;
+  combo: ComboPromotion | null;
+}) {
+  const schedule = scheduleFor(item, promo, combo);
   if (!schedule) return null;
   const first = schedule.rows[0]?.amount ?? item.regularPrice;
 
@@ -322,7 +348,7 @@ function ScheduleSummary({ item, wide, promo }: { item: PriceListItem; wide: boo
 
       <SavingsBanner
         total={schedule.savings}
-        caption={`ตลอดสัญญา ${schedule.months} เดือน เทียบราคาปกติ ฿${formatBaht(schedule.regularTotal)}`}
+        caption={`ตลอดสัญญา ${schedule.months} เดือน เทียบราคาปกติ ฿${formatBaht(schedule.regularTotal)}${combo ? ` · รวมส่วนลดคอมโบ ${combo.percent}% แล้ว` : ""}`}
         parts={[]}
       />
 
@@ -342,13 +368,22 @@ function ComboPreview({
   item,
   promo,
   combo,
+  applied,
   customer,
 }: {
   item: PriceListItem;
   promo: PromoSettings;
   combo: ComboPromotion | null;
+  applied: boolean;
   customer: ComboPromotion["customer"];
 }) {
+  if (combo && applied) {
+    return (
+      <p className="text-xs font-medium text-green-700">
+        รายการเข้าเงื่อนไขคอมโบแล้ว · ราคาและตารางในหน้านี้ลดเพิ่ม {combo.percent}% แล้ว
+      </p>
+    );
+  }
   if (!combo) {
     return <p className="text-xs text-muted-foreground">รวมหลายเครื่องเพื่อดูยอดผ่อนต่อเดือนรวมกัน</p>;
   }
@@ -372,13 +407,15 @@ function ItemSchedule({
   wide,
   start,
   promo,
+  combo,
 }: {
   item: PriceListItem;
   wide: boolean;
   start: Start;
   promo: boolean;
+  combo: ComboPromotion | null;
 }) {
-  const schedule = buildInstallmentSchedule(item, { promo });
+  const schedule = scheduleFor(item, promo, combo);
   if (!schedule) return null;
   return (
     <ScheduleView

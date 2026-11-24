@@ -5,6 +5,7 @@ import { ArrowLeft, RotateCcw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   contractLabel,
+  findCombo,
   type ComboPromotion,
   type PriceListItem,
   type PriceListModel,
@@ -17,6 +18,7 @@ import { SelectedBar } from "./cart-controls";
 import { CustomerBadge, CustomerChooser, type CustomerType } from "./customer-profile";
 import { bestCombo, PromoBar, type PromoSettings } from "./promo-bar";
 import { describeItem, useActivityLog } from "./use-activity-log";
+import { ConfirmDialog } from "./confirm-dialog";
 
 type Meta = { source: string; version: string; period: string };
 
@@ -53,6 +55,7 @@ export function PriceListBrowser({
   const nextKey = useRef(1);
   const start = currentStart(today);
   const [promo, setPromo] = useState<PromoSettings>({ item: true, combo: true });
+  const [confirming, setConfirming] = useState<"clear" | "reset" | null>(null);
   const log = useActivityLog();
   const summary = (lines: CartLine[]) =>
     [...Map.groupBy(lines, (l) => l.item.id).values()].map((ls) => ({
@@ -64,6 +67,12 @@ export function PriceListBrowser({
     setPromo(next);
   };
   const combo = promo.combo && customer ? bestCombo(combos, today, customer) : null;
+  const subscriptionUnits = cart.filter(
+    (l) => l.item.saleType !== "Outright" && l.item.contractMonths,
+  ).length;
+  // Once the order meets the combo rule, the product page shows prices with the combo applied.
+  const comboNow = promo.combo && customer ? findCombo(combos, customer, subscriptionUnits, today) : null;
+  const appliedCombo = comboNow?.qualifies ? comboNow.combo : null;
 
   const current = models.find((m) => m.model === selected) ?? null;
   const cartOpen = showCart && cart.length > 0;
@@ -99,18 +108,15 @@ export function PriceListBrowser({
   };
   const optionsOf = (model: string) =>
     models.find((m) => m.model === model)?.options.filter((o) => o.saleType !== "Outright") ?? [];
-  const clearCart = () => {
-    if (!window.confirm(`ล้างรายการทั้งหมด ${cart.length} เครื่อง?`)) return;
+  const clearCart = () => setConfirming("clear");
+  const doClearCart = () => {
     log("clear", { units: cart.length, items: summary(cart) });
     setCart([]);
     setShowCart(false);
   };
   // "ล้างทั้งหมด": end this customer's round (logged with what was chosen) and start fresh.
-  const resetAll = () => {
-    if (
-      !window.confirm("ล้างทั้งหมดแล้วเริ่มลูกค้ารายใหม่? (ประเภทลูกค้า สินค้า และรายการที่เลือกจะถูกล้าง)")
-    )
-      return;
+  const resetAll = () => setConfirming("reset");
+  const doResetAll = () => {
     log("reset", { customer, model: selected, units: cart.length, items: summary(cart), promo });
     setCart([]);
     setShowCart(false);
@@ -212,7 +218,7 @@ export function PriceListBrowser({
               settings={promo}
               onChange={changePromo}
               customer={customer ?? "new"}
-              units={cart.filter((l) => l.item.saleType !== "Outright" && l.item.contractMonths).length}
+              units={subscriptionUnits}
               className="border-b border-border bg-white px-4 py-3 md:rounded-t-2xl md:px-6"
             />
           )}
@@ -250,6 +256,7 @@ export function PriceListBrowser({
               start={start}
               promo={promo}
               combo={combo}
+              appliedCombo={appliedCombo}
               customer={customer ?? "new"}
               countOf={(id) => cart.filter((l) => l.item.id === id).length}
               onAdd={addToCart}
@@ -288,6 +295,25 @@ export function PriceListBrowser({
         onOpenCart={openCart}
         onClear={clearCart}
       />
+
+      <ConfirmDialog
+        open={confirming !== null}
+        onOpenChange={(open) => !open && setConfirming(null)}
+        title={
+          confirming === "reset" ? "ล้างทั้งหมด เริ่มลูกค้ารายใหม่?" : `ล้างรายการ ${cart.length} เครื่อง?`
+        }
+        confirmLabel={confirming === "reset" ? "ล้างทั้งหมด" : "ล้างรายการ"}
+        onConfirm={confirming === "reset" ? doResetAll : doClearCart}
+      >
+        {confirming === "reset" ? (
+          <p>
+            ประเภทลูกค้า สินค้าที่เปิดอยู่ และรายการที่เลือก
+            {cart.length > 0 && ` (${cart.length} เครื่อง)`} จะถูกล้าง แล้วเริ่มเลือกลูกค้ารายใหม่
+          </p>
+        ) : (
+          <p>ประเภทลูกค้ายังอยู่ เลือกสินค้าใหม่ต่อได้เลย</p>
+        )}
+      </ConfirmDialog>
 
       <CustomerChooser
         open={chooserOpen}
