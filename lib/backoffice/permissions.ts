@@ -4,6 +4,7 @@ export const permissionOptions = [
   { key: "google.manage", label: "ตั้งค่าการเชื่อมต่อ Google และดาวน์โหลดสคริปต์" },
   { key: "line.view", label: "ดูภาพรวม ผู้ใช้ และข้อความ LINE" },
   { key: "line.manage", label: "ตั้งค่าการเชื่อมต่อ LINE (Channel secret / Access token)" },
+  { key: "pricelist.manage", label: "จัดการรหัสเข้าหน้าราคาพนักงาน และดูสถิติการใช้งาน" },
   { key: "seo.manage", label: "เขียน แก้ไข เผยแพร่บทความ SEO / FAQ และดูผลจาก Search Console" },
   { key: "users.manage", label: "สร้างผู้ใช้ ตั้งรหัสผ่าน และจัดการสิทธิ์" },
 ] as const;
@@ -26,6 +27,12 @@ export const backofficePages: { href: string; label: string; permission: Permiss
   { href: "/backoffice/line/users/", label: "ผู้ใช้ LINE", permission: "line.view", group: "LINE" },
   { href: "/backoffice/line/messages/", label: "ข้อความ LINE", permission: "line.view", group: "LINE" },
   { href: "/backoffice/line/settings/", label: "ตั้งค่า LINE", permission: "line.manage", group: "LINE" },
+  {
+    href: "/backoffice/price-list/",
+    label: "รหัสหน้าราคาพนักงาน",
+    permission: "pricelist.manage",
+    group: "ราคาพนักงาน",
+  },
   { href: "/backoffice/seo/", label: "บทความ SEO และ FAQ", permission: "seo.manage", group: "SEO" },
   { href: "/backoffice/users/", label: "ผู้ใช้และสิทธิ์", permission: "users.manage", group: "ผู้ดูแลระบบ" },
 ];
