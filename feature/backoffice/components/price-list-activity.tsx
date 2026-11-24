@@ -47,83 +47,72 @@ export function describeActivity(kind: string, raw: unknown): string {
   }
 }
 
-/** Latest customer rounds, newest first, each replayed step by step. */
-export function PriceListActivity({ events, code = null }: { events: Activity[]; code?: string | null }) {
-  // With a code picked from the stats table: only that code's rounds, the newest one opened.
-  const sessions = splitRounds(code ? events.filter((e) => e.code === code) : events).slice(
-    0,
-    code ? 50 : 20,
-  );
-
+/** Latest customer rounds (all codes), newest first, each replayed step by step. */
+export function PriceListActivity({ events }: { events: Activity[] }) {
+  const rounds = splitRounds(events).slice(0, 20);
   return (
-    <section
-      id="activity"
-      className="scroll-mt-4 overflow-hidden rounded-xl border border-[#d4d7da] bg-white"
-    >
+    <section className="overflow-hidden rounded-xl border border-[#d4d7da] bg-white">
       <div className="border-b border-[#d4d7da] px-4 py-3">
-        <div className="flex flex-wrap items-baseline gap-x-3">
-          <h2 className="font-semibold">
-            {code ? `กิจกรรมของรหัส ${code} (ล่าสุด 50 รอบ)` : "กิจกรรมแต่ละรอบ (ล่าสุด 20 รอบ)"}
-          </h2>
-          {code && (
-            <a href="?#activity" className="text-sm font-medium text-primary hover:underline">
-              ดูทุกรหัส
-            </a>
-          )}
-        </div>
+        <h2 className="font-semibold">กิจกรรมแต่ละรอบ (ล่าสุด 20 รอบ)</h2>
         <p className="text-xs text-[#666b70]">
-          ขึ้นรอบใหม่เมื่อพนักงานกด &quot;ล้างทั้งหมด&quot; หรือเว้นช่วงเกิน {roundGap / 60000} นาที
+          ขึ้นรอบใหม่เมื่อพนักงานกด &quot;ล้างทั้งหมด&quot; หรือเว้นช่วงเกิน {roundGap / 60000} นาที ·
+          ดูเฉพาะรหัสได้จากปุ่ม &quot;ดู N รอบ&quot; ในตารางด้านบน
         </p>
       </div>
-      {sessions.length === 0 ? (
-        <p className="p-4 text-sm text-[#666b70]">ยังไม่มีกิจกรรม</p>
-      ) : (
-        <ul className="divide-y divide-[#e5e7e9]">
-          {sessions.map((list, index) => {
-            const first = list[0];
-            const last = list.at(-1)!;
-            const customer = list.findLast((e) => e.kind === "customer")?.detail as Detail | undefined;
-            const adds = list.filter((e) => e.kind === "add").length;
-            const order = finalItems(list);
-            const ended = last.kind === "reset";
-            return (
-              <li key={first.id}>
-                <details className="group" open={code !== null && index === 0}>
-                  <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm hover:bg-[#f5f6f7]">
-                    <b className="font-semibold">{first.code}</b>
-                    <span className="tabular-nums text-[#666b70]">
-                      {dateTime(first.createdAt)} – {time(last.createdAt)}
-                    </span>
-                    <span>{customerName(customer?.customer)}</span>
-                    <span className="text-[#666b70]">
-                      {list.length} ขั้น · เพิ่มสินค้า {adds} ครั้ง
-                    </span>
-                    {ended && (
-                      <span className="rounded-full bg-[#eef0f2] px-2 py-0.5 text-xs text-[#666b70]">
-                        กดล้างทั้งหมด
-                      </span>
-                    )}
-                    <span className="ml-auto text-xs text-primary group-open:hidden">ดูทีละขั้น</span>
-                    <span className="basis-full text-[#3d4247]">
-                      {order.length
-                        ? `รายการสุดท้าย: ${order.map((o) => `${o.model} (${o.contract}) × ${o.units}`).join(", ")}`
-                        : "รายการสุดท้าย: ไม่มีสินค้า"}
-                    </span>
-                  </summary>
-                  <ol className="space-y-1.5 border-t border-[#e5e7e9] bg-[#fafafa] px-4 py-3 text-sm">
-                    {list.map((e) => (
-                      <li key={e.id} className="flex gap-3">
-                        <span className="w-20 shrink-0 tabular-nums text-[#666b70]">{time(e.createdAt)}</span>
-                        <span className="min-w-0 break-words">{describeActivity(e.kind, e.detail)}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </details>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <RoundList rounds={rounds} />
     </section>
+  );
+}
+
+/** Rounds as expandable rows: summary (code, time, customer, final order) then every step. */
+export function RoundList({ rounds, openFirst = false }: { rounds: Activity[][]; openFirst?: boolean }) {
+  const sessions = rounds;
+  if (sessions.length === 0) return <p className="p-4 text-sm text-[#666b70]">ยังไม่มีกิจกรรม</p>;
+  return (
+    <ul className="divide-y divide-[#e5e7e9]">
+      {sessions.map((list, index) => {
+        const first = list[0];
+        const last = list.at(-1)!;
+        const customer = list.findLast((e) => e.kind === "customer")?.detail as Detail | undefined;
+        const adds = list.filter((e) => e.kind === "add").length;
+        const order = finalItems(list);
+        const ended = last.kind === "reset";
+        return (
+          <li key={first.id}>
+            <details className="group" open={openFirst && index === 0}>
+              <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm hover:bg-[#f5f6f7]">
+                <b className="font-semibold">{first.code}</b>
+                <span className="tabular-nums text-[#666b70]">
+                  {dateTime(first.createdAt)} – {time(last.createdAt)}
+                </span>
+                <span>{customerName(customer?.customer)}</span>
+                <span className="text-[#666b70]">
+                  {list.length} ขั้น · เพิ่มสินค้า {adds} ครั้ง
+                </span>
+                {ended && (
+                  <span className="rounded-full bg-[#eef0f2] px-2 py-0.5 text-xs text-[#666b70]">
+                    กดล้างทั้งหมด
+                  </span>
+                )}
+                <span className="ml-auto text-xs text-primary group-open:hidden">ดูทีละขั้น</span>
+                <span className="basis-full text-[#3d4247]">
+                  {order.length
+                    ? `รายการสุดท้าย: ${order.map((o) => `${o.model} (${o.contract}) × ${o.units}`).join(", ")}`
+                    : "รายการสุดท้าย: ไม่มีสินค้า"}
+                </span>
+              </summary>
+              <ol className="space-y-1.5 border-t border-[#e5e7e9] bg-[#fafafa] px-4 py-3 text-sm">
+                {list.map((e) => (
+                  <li key={e.id} className="flex gap-3">
+                    <span className="w-20 shrink-0 tabular-nums text-[#666b70]">{time(e.createdAt)}</span>
+                    <span className="min-w-0 break-words">{describeActivity(e.kind, e.detail)}</span>
+                  </li>
+                ))}
+              </ol>
+            </details>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
