@@ -141,15 +141,49 @@ describe("averages and combos", () => {
         { from: 13, to: 60, amount: 449 },
       ],
     })!;
-    expect(s.rows[0].advanceDeduction).toBe(224.5);
-    expect(applyComboDiscount(s, 10).rows[0].amount).toBe(449 - 45 - 224.5);
+    // 224.50 is rounded down to 224 (every price is whole baht, rounded down per unit).
+    expect(s.rows[0].amount).toBe(224);
+    expect(applyComboDiscount(s, 10).rows[0].amount).toBe(179); // 449 − 10% = 404.1 → 404 − 224.5 → 179
     // Promo switched off: the pay-back stays.
     expect(
       buildInstallmentSchedule(
         { ...base, regularPrice: 449, advancePayment: 2694, bills: [{ from: 1, to: 12, amount: 224.5 }] },
         { promo: false },
       )!.rows[0].amount,
-    ).toBe(224.5);
+    ).toBe(224);
+  });
+
+  it("collects a fixed first bill as is and takes its combo discount off bill 2, rounded down per unit", () => {
+    const a = buildInstallmentSchedule({
+      ...base,
+      regularPrice: 799,
+      promotion: ["ราคา 99.- (1 รอบบิลแรก)"],
+      bills: [{ from: 1, to: 1, amount: 99 }],
+    })!;
+    const b = buildInstallmentSchedule({
+      ...base,
+      regularPrice: 649,
+      promotion: ["ราคา 149.- (1 รอบบิลแรก)"],
+      bills: [{ from: 1, to: 1, amount: 149 }],
+    })!;
+    expect(a.fixedFirstBill).toBe(true);
+    const ca = applyComboDiscount(a, 15);
+    const cb = applyComboDiscount(b, 15);
+    // A: 99 kept, 99 − 84.15→84 = 15 moves on; bill 2 = 799 − 15% = 679.15 → 679 − 15 = 664.
+    expect(ca.rows.slice(0, 3).map((r) => [r.from, r.to, r.amount])).toEqual([
+      [1, 1, 99],
+      [2, 2, 664],
+      [3, 60, 679],
+    ]);
+    // B: 149 kept, 149 − 126.65→126 = 23 moves on; bill 2 = 551.65 → 551 − 23 = 528.
+    expect(cb.rows.slice(0, 2).map((r) => r.amount)).toEqual([149, 528]);
+    const both = combineSchedules([
+      { schedule: ca, regularPrice: 799 },
+      { schedule: cb, regularPrice: 649 },
+    ])!;
+    expect(both.rows.slice(0, 3).map((r) => r.amount)).toEqual([248, 1192, 1230]);
+    // Without a fixed-price promo, bill 1 is discounted directly.
+    expect(applyComboDiscount(buildInstallmentSchedule(base)!, 15).rows[0].amount).toBe(126);
   });
 
   it("adds contracts of different lengths month by month", () => {

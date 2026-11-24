@@ -82,6 +82,8 @@ export type InstallmentSchedule = {
   savings: number;
   /** Everything the customer pays (advance included) spread over the contract months. */
   averageMonthly: number;
+  /** Bill 1 is a fixed promo price ("ราคา 149.-"): collected as is, its combo discount moves to bill 2. */
+  fixedFirstBill?: boolean;
 };
 
 export function getPriceList(): PriceList {
@@ -105,6 +107,10 @@ export function buildInstallmentSchedule(
   const push = (from: number, to: number, amount: number, advanceDeduction = 0) => {
     if (to < from) return;
     const count = to - from + 1;
+    // Round the bill down; the pay-back absorbs the satang so bill + pay-back stays the gross fee.
+    const floored = floorBaht(amount);
+    if (advanceDeduction) advanceDeduction = round2(advanceDeduction + amount - floored);
+    amount = floored;
     rows.push({
       from,
       to,
@@ -132,7 +138,10 @@ export function buildInstallmentSchedule(
   }
   push(next, months, item.regularPrice);
 
-  return finishSchedule(rows, item.advancePayment ?? 0, item.regularPrice * months);
+  const schedule = finishSchedule(rows, item.advancePayment ?? 0, item.regularPrice * months);
+  const first = bills[0];
+  if (promo && first?.from === 1 && fixedPrices(item).includes(first.amount)) schedule.fixedFirstBill = true;
+  return schedule;
 }
 
 /**
@@ -156,6 +165,13 @@ function advanceDeductions(item: PriceListItem, bills: PriceListItem["bills"]): 
 }
 
 const round2 = (value: number) => Math.round(value * 100) / 100;
+/** Every price staff quote is rounded down to whole baht, per unit (orders sum the rounded units). */
+export const floorBaht = (value: number) => Math.floor(value + 1e-6);
+/** Fixed promo prices printed as "ราคา 149.-" in the item's promotions. */
+const fixedPrices = (item: PriceListItem) =>
+  item.promotion.flatMap((p) =>
+    [...p.matchAll(/ราคา\s*([\d,]+(?:\.\d+)?)\s*\.-/g)].map((m) => Number(m[1].replace(/,/g, ""))),
+  );
 
 function finishSchedule(
   rows: ScheduleRow[],
@@ -179,19 +195,50 @@ function finishSchedule(
 
 /**
  * Combo discount, as in the PDF p.60 example: the % comes off the bill before any advance
- * pay-back and is rounded to whole baht, then the pay-back is subtracted again:
+ * pay-back, the bill is rounded down to whole baht, then the pay-back is subtracted again:
  * bills 1–6 2,999 − 1,499 promo − 225 = 1,275 · bills 7–12 2,999 − 450 − 1,499 advance = 1,050.
+ * A fixed first bill ("ราคา 149.-") is collected as is and its discount comes off bill 2.
  * Advance payment itself is unchanged.
  */
 export function applyComboDiscount(schedule: InstallmentSchedule, percent: number): InstallmentSchedule {
   if (!percent) return schedule;
-  const rows = schedule.rows.map((row) => {
+  const bills = schedule.rows.flatMap((row) =>
+    Array.from({ length: row.months }, (_, i) => ({ bill: row.from + i, row })),
+  );
+  let carry = 0;
+  const rows: ScheduleRow[] = [];
+  for (const { bill, row } of bills) {
     const deduction = row.advanceDeduction ?? 0;
     const before = row.amount + deduction;
-    const amount = round2(before - Math.round((before * percent) / 100) - deduction);
-    return { ...row, amount, subtotal: round2(amount * row.months), isPromotion: true };
-  });
-  return finishSchedule(rows, schedule.advancePayment, schedule.regularTotal);
+    let amount = floorBaht((before * (100 - percent)) / 100) - deduction;
+    if (bill === 1 && schedule.fixedFirstBill) {
+      carry = row.amount - amount;
+      amount = row.amount;
+    } else if (carry) {
+      amount = Math.max(0, amount - carry);
+      carry = 0;
+    }
+    const last = rows.at(-1);
+    if (last && last.amount === amount && (last.advanceDeduction ?? 0) === deduction) {
+      last.to = bill;
+      last.months += 1;
+      last.subtotal = amount * last.months;
+    } else {
+      rows.push({
+        from: bill,
+        to: bill,
+        months: 1,
+        amount,
+        subtotal: amount,
+        isPromotion: true,
+        ...(deduction ? { advanceDeduction: deduction } : {}),
+      });
+    }
+  }
+  return {
+    ...finishSchedule(rows, schedule.advancePayment, schedule.regularTotal),
+    fixedFirstBill: schedule.fixedFirstBill,
+  };
 }
 
 /** Month-by-month sum of several contracts (different lengths allowed), regrouped into rows. */
