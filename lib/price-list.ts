@@ -68,6 +68,8 @@ export type ScheduleRow = {
   amount: number;
   subtotal: number;
   isPromotion: boolean;
+  /** Part of this bill's reduction that pays back the advance payment (not a promotion). */
+  advanceDeduction?: number;
 };
 
 export type InstallmentSchedule = {
@@ -89,7 +91,8 @@ export function getPriceList(): PriceList {
 /**
  * Bill-by-bill payments for a Subscription contract, as printed in the PDF:
  * promotional bill ranges first, any gap or remainder at the regular monthly fee.
- * Advance payment (TV/monitor/speaker) is paid on top, per the PDF worked example.
+ * Advance payment (TV/monitor/speaker) is paid on top and paid back by lower bills
+ * ("partial deduction"), per the PDF worked example (p.59).
  */
 export function buildInstallmentSchedule(
   item: PriceListItem,
@@ -99,7 +102,7 @@ export function buildInstallmentSchedule(
   if (item.saleType === "Outright" || !months) return null;
 
   const rows: ScheduleRow[] = [];
-  const push = (from: number, to: number, amount: number) => {
+  const push = (from: number, to: number, amount: number, advanceDeduction = 0) => {
     if (to < from) return;
     const count = to - from + 1;
     rows.push({
@@ -109,23 +112,47 @@ export function buildInstallmentSchedule(
       amount,
       subtotal: amount * count,
       isPromotion: amount < item.regularPrice,
+      ...(advanceDeduction ? { advanceDeduction } : {}),
     });
   };
 
   let next = 1;
-  // promo: false → every bill at the regular fee (to compare against the promotion).
-  const bills = promo ? [...item.bills].sort((a, b) => a.from - b.from) : [];
-  for (const bill of bills) {
+  const bills = [...item.bills].sort((a, b) => a.from - b.from);
+  const deductions = advanceDeductions(item, bills);
+  for (const [index, bill] of bills.entries()) {
     if (bill.from > months || bill.to < next) continue;
+    const deduction = deductions.get(index) ?? 0;
+    // promo: false → regular fee everywhere, but the advance is still paid back.
+    if (!promo && !deduction) continue;
     push(next, Math.min(bill.from, months + 1) - 1, item.regularPrice);
     const from = Math.max(bill.from, next);
     const to = Math.min(bill.to, months);
-    push(from, to, bill.amount);
+    push(from, to, promo ? bill.amount : round2(item.regularPrice - deduction), deduction);
     next = to + 1;
   }
   push(next, months, item.regularPrice);
 
   return finishSchedule(rows, item.advancePayment ?? 0, item.regularPrice * months);
+}
+
+/**
+ * Which bill ranges pay back the advance: the last reduced ranges whose reductions add up to
+ * the advance (the PDF prints e.g. 1,349 in bills 7–12 for an 8,094 advance, so allow ~1 baht/bill).
+ * Returns the per-bill deduction keyed by index in the sorted bills.
+ */
+function advanceDeductions(item: PriceListItem, bills: PriceListItem["bills"]): Map<number, number> {
+  const result = new Map<number, number>();
+  let remaining = item.advancePayment ?? 0;
+  for (let i = bills.length - 1; i >= 0 && remaining > 0; i--) {
+    const bill = bills[i];
+    const reduction = item.regularPrice - bill.amount;
+    if (reduction <= 0) continue;
+    const count = bill.to - bill.from + 1;
+    const perBill = reduction * count - remaining <= count ? reduction : round2(remaining / count);
+    result.set(i, perBill);
+    remaining = round2(remaining - perBill * count);
+  }
+  return result;
 }
 
 const round2 = (value: number) => Math.round(value * 100) / 100;
@@ -151,13 +178,17 @@ function finishSchedule(
 }
 
 /**
- * Combo discount: percent off every bill after the single-product promotion
- * (PDF p.60 example: 2,999 − 1,499 promo − 15% × 1,500 = 1,275). Advance payment unchanged.
+ * Combo discount, as in the PDF p.60 example: the % comes off the bill before any advance
+ * pay-back and is rounded to whole baht, then the pay-back is subtracted again:
+ * bills 1–6 2,999 − 1,499 promo − 225 = 1,275 · bills 7–12 2,999 − 450 − 1,499 advance = 1,050.
+ * Advance payment itself is unchanged.
  */
 export function applyComboDiscount(schedule: InstallmentSchedule, percent: number): InstallmentSchedule {
   if (!percent) return schedule;
   const rows = schedule.rows.map((row) => {
-    const amount = round2(row.amount * (1 - percent / 100));
+    const deduction = row.advanceDeduction ?? 0;
+    const before = row.amount + deduction;
+    const amount = round2(before - Math.round((before * percent) / 100) - deduction);
     return { ...row, amount, subtotal: round2(amount * row.months), isPromotion: true };
   });
   return finishSchedule(rows, schedule.advancePayment, schedule.regularTotal);

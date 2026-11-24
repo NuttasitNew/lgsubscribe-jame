@@ -103,9 +103,53 @@ describe("averages and combos", () => {
     const combo = applyComboDiscount(s, 15);
     expect(combo.rows.map((r) => [r.from, r.to, r.amount])).toEqual([
       [1, 12, 1275],
-      [13, 60, 2549.15],
+      [13, 60, 2549],
     ]);
     expect(combo.regularTotal).toBe(s.regularTotal);
+  });
+
+  it("keeps the advance pay-back out of the combo % (PDF p.60: total 145,296)", () => {
+    const s = buildInstallmentSchedule({
+      ...base,
+      contract: "No Service / 5Y",
+      regularPrice: 2999,
+      advancePayment: 8994,
+      bills: [
+        { from: 1, to: 6, amount: 1500 },
+        { from: 7, to: 12, amount: 1500 },
+        { from: 13, to: 60, amount: 2999 },
+      ],
+    })!;
+    expect(s.rows.map((r) => r.advanceDeduction ?? 0)).toEqual([0, 1499, 0]);
+    const combo = applyComboDiscount(s, 15);
+    expect(combo.rows.map((r) => [r.from, r.to, r.amount])).toEqual([
+      [1, 6, 1275],
+      [7, 12, 1050],
+      [13, 60, 2549],
+    ]);
+    expect(combo.total).toBe(145296);
+  });
+
+  it("treats a 12-bill half price with a 6-month advance as pay-back only (27GX704A-B)", () => {
+    const s = buildInstallmentSchedule({
+      ...base,
+      contract: "No Service / 5Y",
+      regularPrice: 449,
+      advancePayment: 2694,
+      bills: [
+        { from: 1, to: 12, amount: 224.5 },
+        { from: 13, to: 60, amount: 449 },
+      ],
+    })!;
+    expect(s.rows[0].advanceDeduction).toBe(224.5);
+    expect(applyComboDiscount(s, 10).rows[0].amount).toBe(449 - 45 - 224.5);
+    // Promo switched off: the pay-back stays.
+    expect(
+      buildInstallmentSchedule(
+        { ...base, regularPrice: 449, advancePayment: 2694, bills: [{ from: 1, to: 12, amount: 224.5 }] },
+        { promo: false },
+      )!.rows[0].amount,
+    ).toBe(224.5);
   });
 
   it("adds contracts of different lengths month by month", () => {
