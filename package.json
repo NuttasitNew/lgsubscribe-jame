@@ -20,6 +20,7 @@
     "generate:sep-promotions": "node scripts/generate-sep-promotion-batch.mjs",
     "verify:sep-promotions": "node scripts/verify-sep-promotion-assets.mjs",
     "organize:promotion-images": "node scripts/organize-promotion-images.mjs",
+    "import:price-list": "uv run -q --with pdfplumber python scripts/import-price-list.py",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "analyze": "next experimental-analyze",
