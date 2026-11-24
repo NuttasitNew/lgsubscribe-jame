@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       update: { attempts: { increment: 1 } },
     });
     if (attempt.attempts > 20)
-      return Response.json({ error: "ใส่รหัสผิดหลายครั้งเกินไป กรุณารอ 15 นาที" }, { status: 429 });
+      return Response.json({ error: "ใส่สังกัดทีมผิดหลายครั้งเกินไป กรุณารอ 15 นาที" }, { status: 429 });
 
     // Google first (when configured), so every sign-in has a name.
     const identity = parseIdentityToken(
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     const data = await request.json().catch(() => null);
     const code = normalizeCode(data?.code);
     const row = code ? await prisma.priceListAccessCode.findUnique({ where: { code } }) : null;
-    if (!code || !row?.isActive) return Response.json({ error: "รหัสไม่ถูกต้อง" }, { status: 401 });
+    if (!code || !row?.isActive) return Response.json({ error: "สังกัดทีมไม่ถูกต้อง" }, { status: 401 });
 
     const deviceId = normalizeDeviceId(data?.deviceId);
     await logAccess(code, "login", request.headers, { deviceId, device: parseDevice(data?.device), identity });

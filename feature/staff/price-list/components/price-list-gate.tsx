@@ -76,7 +76,7 @@ function GoogleMark() {
 function Steps({ current }: { current: 1 | 2 }) {
   return (
     <ol className="flex items-center gap-2 text-xs font-medium">
-      {["บัญชี Google", "รหัสผ่าน"].map((label, i) => {
+      {["บัญชี Google", "สังกัดทีม"].map((label, i) => {
         const step = i + 1;
         const done = step < current;
         const active = step === current;
@@ -174,7 +174,7 @@ export function PriceListGate({
           {heading}
           <Steps current={1} />
           <p className="text-sm text-muted-foreground">
-            เข้าสู่ระบบด้วยบัญชี Google ของคุณก่อน แล้วจึงใส่รหัสผ่าน
+            เข้าสู่ระบบด้วยบัญชี Google ของคุณก่อน แล้วจึงใส่สังกัดทีม
           </p>
           {googleError && googleErrors[googleError] && (
             <p role="alert" className="text-sm font-medium text-red-700">
@@ -218,13 +218,13 @@ export function PriceListGate({
           </div>
         )}
         <label className="block text-sm font-medium">
-          รหัสผ่าน
+          สังกัดทีม
           <input
             name="code"
             required
             autoFocus
-            type="password"
-            autoComplete="current-password"
+            type="text"
+            autoComplete="off"
             autoCapitalize="none"
             spellCheck={false}
             className="mt-1 h-12 w-full rounded-xl border border-input bg-white px-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -236,7 +236,7 @@ export function PriceListGate({
           </p>
         )}
         <Button type="submit" disabled={pending} className="h-12 w-full text-base">
-          {pending ? "กำลังตรวจรหัส…" : "เข้าใช้"}
+          {pending ? "กำลังตรวจสอบ…" : "เข้าใช้"}
         </Button>
         {notice}
       </form>
