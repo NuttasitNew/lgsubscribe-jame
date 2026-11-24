@@ -1,3 +1,18 @@
+import {
+  CalendarDays,
+  ChevronDown,
+  Clock,
+  Eye,
+  Minus,
+  Plus,
+  Repeat,
+  RotateCcw,
+  ShoppingCart,
+  Tag,
+  Trash2,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react";
 import { finalItems, roundGap, splitRounds } from "@/lib/price-list-activity";
 
 type Activity = { id: string; code: string; session: string; kind: string; detail: unknown; createdAt: Date };
@@ -5,12 +20,6 @@ type Detail = Record<string, unknown>;
 
 const time = (value: Date) =>
   new Intl.DateTimeFormat("th-TH", { timeStyle: "medium", timeZone: "Asia/Bangkok" }).format(value);
-const dateTime = (value: Date) =>
-  new Intl.DateTimeFormat("th-TH", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "Asia/Bangkok",
-  }).format(value);
 const baht = (value: unknown) => (typeof value === "number" ? `฿${value.toLocaleString("th-TH")}` : "");
 const customerName = (value: unknown) =>
   value === "new" ? "ลูกค้าใหม่" : value === "existing" ? "ลูกค้าเดิม" : "-";
@@ -56,7 +65,7 @@ export function PriceListActivity({ events }: { events: Activity[] }) {
         <h2 className="font-semibold">กิจกรรมแต่ละรอบ (ล่าสุด 20 รอบ)</h2>
         <p className="text-xs text-[#666b70]">
           ขึ้นรอบใหม่เมื่อพนักงานกด &quot;ล้างทั้งหมด&quot; หรือเว้นช่วงเกิน {roundGap / 60000} นาที ·
-          ดูเฉพาะรหัสได้จากปุ่ม &quot;ดู N รอบ&quot; ในตารางด้านบน
+          ดูเฉพาะรหัสได้จากปุ่ม &quot;ดูรายละเอียด&quot; ในตารางด้านบน
         </p>
       </div>
       <RoundList rounds={rounds} />
@@ -64,50 +73,129 @@ export function PriceListActivity({ events }: { events: Activity[] }) {
   );
 }
 
-/** Rounds as expandable rows: summary (code, time, customer, final order) then every step. */
-export function RoundList({ rounds, openFirst = false }: { rounds: Activity[][]; openFirst?: boolean }) {
-  const sessions = rounds;
-  if (sessions.length === 0) return <p className="p-4 text-sm text-[#666b70]">ยังไม่มีกิจกรรม</p>;
+const kindIcon: Record<string, LucideIcon> = {
+  customer: UserRound,
+  model: Eye,
+  add: Plus,
+  remove: Minus,
+  contract: Repeat,
+  cart: ShoppingCart,
+  schedule: CalendarDays,
+  promo: Tag,
+  clear: Trash2,
+  reset: RotateCcw,
+};
+const kindTone: Record<string, string> = {
+  add: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  remove: "bg-amber-50 text-amber-700 ring-amber-200",
+  clear: "bg-rose-50 text-rose-700 ring-rose-200",
+  reset: "bg-rose-50 text-rose-700 ring-rose-200",
+  cart: "bg-sky-50 text-sky-700 ring-sky-200",
+};
+const customerTone = (value: unknown) =>
+  value === "new"
+    ? "bg-sky-50 text-sky-700 ring-sky-200"
+    : value === "existing"
+      ? "bg-violet-50 text-violet-700 ring-violet-200"
+      : "bg-[#f1f2f4] text-[#666b70] ring-[#e1e3e6]";
+const day = (value: Date) =>
+  new Intl.DateTimeFormat("th-TH", { dateStyle: "medium", timeZone: "Asia/Bangkok" }).format(value);
+const clock = (value: Date) =>
+  new Intl.DateTimeFormat("th-TH", { timeStyle: "short", timeZone: "Asia/Bangkok" }).format(value);
+const minutes = (from: Date, to: Date) => Math.max(1, Math.round((to.getTime() - from.getTime()) / 60000));
+
+/** Rounds as expandable cards: when, customer type, final order as chips, then a timeline of every step. */
+export function RoundList({
+  rounds,
+  openFirst = false,
+  showCode = true,
+}: {
+  rounds: Activity[][];
+  openFirst?: boolean;
+  showCode?: boolean;
+}) {
+  if (rounds.length === 0) return <p className="p-6 text-center text-sm text-[#666b70]">ยังไม่มีกิจกรรม</p>;
   return (
-    <ul className="divide-y divide-[#e5e7e9]">
-      {sessions.map((list, index) => {
+    <ul className="space-y-3 p-3 sm:p-4">
+      {rounds.map((list, index) => {
         const first = list[0];
         const last = list.at(-1)!;
-        const customer = list.findLast((e) => e.kind === "customer")?.detail as Detail | undefined;
+        const customer = (list.findLast((e) => e.kind === "customer")?.detail as Detail | undefined)?.customer;
         const adds = list.filter((e) => e.kind === "add").length;
         const order = finalItems(list);
+        const units = order.reduce((sum, o) => sum + o.units, 0);
         const ended = last.kind === "reset";
         return (
           <li key={first.id}>
-            <details className="group" open={openFirst && index === 0}>
-              <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm hover:bg-[#f5f6f7]">
-                <b className="font-semibold">{first.code}</b>
-                <span className="tabular-nums text-[#666b70]">
-                  {dateTime(first.createdAt)} – {time(last.createdAt)}
-                </span>
-                <span>{customerName(customer?.customer)}</span>
-                <span className="text-[#666b70]">
-                  {list.length} ขั้น · เพิ่มสินค้า {adds} ครั้ง
-                </span>
-                {ended && (
-                  <span className="rounded-full bg-[#eef0f2] px-2 py-0.5 text-xs text-[#666b70]">
-                    กดล้างทั้งหมด
+            <details
+              className="group overflow-hidden rounded-xl border border-[#e1e3e6] bg-white shadow-sm transition-shadow open:shadow-md"
+              open={openFirst && index === 0}
+            >
+              <summary className="flex cursor-pointer list-none flex-col gap-2.5 px-4 py-3 hover:bg-[#fafbfc] [&::-webkit-details-marker]:hidden">
+                <div className="flex flex-wrap items-center gap-2">
+                  {showCode && <span className="font-semibold">{first.code}</span>}
+                  <span className="text-sm font-medium">{day(first.createdAt)}</span>
+                  <span className="inline-flex items-center gap-1 text-sm tabular-nums text-[#666b70]">
+                    <Clock className="size-3.5" aria-hidden />
+                    {clock(first.createdAt)}–{clock(last.createdAt)}
+                    <span className="text-xs">({minutes(first.createdAt, last.createdAt)} นาที)</span>
                   </span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${customerTone(customer)}`}
+                  >
+                    {customerName(customer)}
+                  </span>
+                  {ended && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#f1f2f4] px-2 py-0.5 text-xs text-[#666b70]">
+                      <RotateCcw className="size-3" aria-hidden />
+                      จบรอบด้วยล้างทั้งหมด
+                    </span>
+                  )}
+                  <span className="ml-auto inline-flex items-center gap-1 text-xs text-[#666b70]">
+                    {list.length} ขั้น · เพิ่ม {adds} ครั้ง
+                    <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden />
+                  </span>
+                </div>
+                {order.length ? (
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="mr-1 text-xs text-[#666b70]">รายการสุดท้าย {units} เครื่อง</span>
+                    {order.map((o) => (
+                      <span
+                        key={`${o.model}-${o.contract}`}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-[#e1e3e6] bg-[#f8f9fa] px-2 py-1 text-xs"
+                      >
+                        <span className="font-medium text-foreground">{o.model}</span>
+                        <span className="text-[#666b70]">{o.contract}</span>
+                        <span className="rounded bg-white px-1 font-semibold tabular-nums ring-1 ring-[#e1e3e6]">
+                          ×{o.units}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-[#9aa0a6]">รายการสุดท้าย: ไม่มีสินค้า</p>
                 )}
-                <span className="ml-auto text-xs text-primary group-open:hidden">ดูทีละขั้น</span>
-                <span className="basis-full text-[#3d4247]">
-                  {order.length
-                    ? `รายการสุดท้าย: ${order.map((o) => `${o.model} (${o.contract}) × ${o.units}`).join(", ")}`
-                    : "รายการสุดท้าย: ไม่มีสินค้า"}
-                </span>
               </summary>
-              <ol className="space-y-1.5 border-t border-[#e5e7e9] bg-[#fafafa] px-4 py-3 text-sm">
-                {list.map((e) => (
-                  <li key={e.id} className="flex gap-3">
-                    <span className="w-20 shrink-0 tabular-nums text-[#666b70]">{time(e.createdAt)}</span>
-                    <span className="min-w-0 break-words">{describeActivity(e.kind, e.detail)}</span>
-                  </li>
-                ))}
+              <ol className="relative border-t border-[#eef0f2] bg-[#fafbfc] px-4 py-3">
+                {list.map((e, i) => {
+                  const Icon = kindIcon[e.kind] ?? Eye;
+                  return (
+                    <li key={e.id} className="relative flex gap-3 pb-3 last:pb-0">
+                      {i < list.length - 1 && (
+                        <span className="absolute left-[13px] top-7 bottom-0 w-px bg-[#e1e3e6]" aria-hidden />
+                      )}
+                      <span
+                        className={`relative z-10 grid size-7 shrink-0 place-items-center rounded-full ring-1 ring-inset ${kindTone[e.kind] ?? "bg-white text-[#666b70] ring-[#e1e3e6]"}`}
+                      >
+                        <Icon className="size-3.5" aria-hidden />
+                      </span>
+                      <div className="min-w-0 pt-1 text-sm">
+                        <span className="mr-2 text-xs tabular-nums text-[#9aa0a6]">{time(e.createdAt)}</span>
+                        <span className="break-words">{describeActivity(e.kind, e.detail)}</span>
+                      </div>
+                    </li>
+                  );
+                })}
               </ol>
             </details>
           </li>

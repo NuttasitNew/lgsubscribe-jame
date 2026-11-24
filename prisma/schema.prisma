@@ -583,11 +583,21 @@ model PriceListAccessLog {
   code      String              @db.VarChar(32)
   kind      String              @db.VarChar(10)
   userAgent String?             @db.VarChar(300)
+  /// Random id kept in the staff browser (localStorage + cookie): same id = same device.
+  deviceId  String?             @db.VarChar(40)
+  ip        String?             @db.VarChar(64)
+  /// Approximate place from Vercel's IP geolocation headers.
+  city      String?             @db.VarChar(80)
+  region    String?             @db.VarChar(16)
+  country   String?             @db.VarChar(8)
+  /// Screen, language, time zone, phone model… sent by the sign-in form (no permission prompts).
+  device    Json?
   createdAt DateTime            @default(now())
   access    PriceListAccessCode @relation(fields: [code], references: [code], onDelete: Cascade)
 
   @@index([code, createdAt])
   @@index([createdAt])
+  @@index([deviceId])
 }
 
 // What staff did on the price page, step by step: customer type, products, contracts,

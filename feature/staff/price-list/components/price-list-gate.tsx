@@ -5,6 +5,45 @@ import { useRouter } from "next/navigation";
 import { KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+/** Random id kept in this browser so the backoffice can tell devices apart (no permission needed). */
+function deviceId() {
+  const key = "price-list-device";
+  try {
+    let id = localStorage.getItem(key);
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem(key, id);
+    }
+    return id;
+  } catch {
+    return null;
+  }
+}
+
+type UAData = {
+  platform?: string;
+  getHighEntropyValues?: (hints: string[]) => Promise<{ model?: string; platformVersion?: string }>;
+};
+
+/** Device details that need no permission prompt; the phone model comes from Chrome's client hints. */
+async function deviceDetails() {
+  const ua = (navigator as Navigator & { userAgentData?: UAData }).userAgentData;
+  const hints = await Promise.race([
+    ua?.getHighEntropyValues?.(["model", "platformVersion"]).catch(() => undefined),
+    new Promise<undefined>((resolve) => setTimeout(resolve, 500)),
+  ]);
+  return {
+    screen: `${screen.width}x${screen.height}`,
+    dpr: window.devicePixelRatio,
+    lang: navigator.language,
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    touch: navigator.maxTouchPoints,
+    platform: ua?.platform,
+    model: hints?.model || undefined,
+    platformVersion: hints?.platformVersion || undefined,
+  };
+}
+
 /** Shown instead of the price list until staff enter a valid access code. */
 export function PriceListGate() {
   const router = useRouter();
@@ -20,7 +59,7 @@ export function PriceListGate() {
       const response = await fetch("/api/price-list/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, deviceId: deviceId(), device: await deviceDetails() }),
       });
       if (!response.ok) {
         const result = await response.json().catch(() => ({}));
@@ -68,6 +107,9 @@ export function PriceListGate() {
         <Button type="submit" disabled={pending} className="h-12 w-full text-base">
           {pending ? "กำลังตรวจรหัส…" : "เข้าใช้"}
         </Button>
+        <p className="text-center text-xs text-muted-foreground">
+          การเข้าใช้และข้อมูลเครื่องถูกบันทึกเพื่อใช้ภายใน
+        </p>
       </form>
     </main>
   );

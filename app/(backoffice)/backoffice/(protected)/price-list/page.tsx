@@ -6,6 +6,8 @@ import { priceListHosts } from "@/lib/price-list-host";
 import { PriceListActivity, RoundList } from "@/feature/backoffice/components/price-list-activity";
 import { PriceListRoundsDialog } from "@/feature/backoffice/components/price-list-rounds-dialog";
 import { splitRounds } from "@/lib/price-list-activity";
+import { VisitList, numberDevices } from "@/feature/backoffice/components/price-list-visits";
+import { describeDevice } from "@/lib/price-list-access";
 
 export const metadata = { title: "รหัสหน้าราคาพนักงาน" };
 const number = new Intl.NumberFormat("th-TH");
@@ -112,7 +114,8 @@ export default async function PriceListAccessPage() {
                   label={r.label ?? ""}
                   rounds={r.rounds.length}
                   visits={r.visits.length}
-                  roundList={<RoundList rounds={r.rounds} openFirst />}
+                  devices={numberDevices(r.visits).size}
+                  roundList={<RoundList rounds={r.rounds} openFirst showCode={false} />}
                   visitList={<VisitList visits={r.visits} />}
                 />
               ) : (
@@ -137,7 +140,7 @@ export default async function PriceListAccessPage() {
             <td className={`${first} tabular-nums`}>{dateTime(e.createdAt)}</td>
             <td className={cell}>{e.code}</td>
             <td className={cell}>{e.kind === "login" ? "ใส่รหัส" : "เปิดหน้า"}</td>
-            <td className={cell}>{deviceOf(e.userAgent)}</td>
+            <td className={cell}>{describeDevice(e.userAgent, (e.device as { model?: string } | null)?.model)}</td>
           </tr>
         ))}
       </ReportTable>
@@ -145,45 +148,6 @@ export default async function PriceListAccessPage() {
   );
 }
 
-/** One code's sign-ins and page opens, newest first. */
-function VisitList({
-  visits,
-}: {
-  visits: { id: string; kind: string; createdAt: Date; userAgent: string | null }[];
-}) {
-  if (visits.length === 0) return <p className="p-4 text-sm text-slate-500">ยังไม่มีการเข้าใช้</p>;
-  return (
-    <table className="w-full text-sm">
-      <thead className="sticky top-0 bg-[#f5f6f7] text-[#666b70]">
-        <tr>
-          <th className="px-4 py-2 text-left font-medium">เวลา</th>
-          <th className="px-4 py-2 text-left font-medium">การใช้</th>
-          <th className="px-4 py-2 text-right font-medium">อุปกรณ์</th>
-        </tr>
-      </thead>
-      <tbody>
-        {visits.map((v) => (
-          <tr key={v.id} className="border-t border-[#e5e7e9]">
-            <td className="px-4 py-2 tabular-nums">{dateTime(v.createdAt)}</td>
-            <td className={`px-4 py-2 ${v.kind === "login" ? "font-semibold" : "text-slate-500"}`}>
-              {v.kind === "login" ? "ใส่รหัส (login)" : "เปิดหน้า"}
-            </td>
-            <td className="px-4 py-2 text-right">{deviceOf(v.userAgent)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
 function daysAgo(days: number) {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-}
-
-function deviceOf(userAgent: string | null) {
-  if (!userAgent) return "-";
-  if (/iPad|Tablet/i.test(userAgent)) return "แท็บเล็ต";
-  if (/iPhone|Android.*Mobile/i.test(userAgent)) return "มือถือ";
-  if (/Android/i.test(userAgent)) return "แท็บเล็ต";
-  return "คอมพิวเตอร์";
 }

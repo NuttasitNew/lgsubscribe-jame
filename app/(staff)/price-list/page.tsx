@@ -4,7 +4,13 @@ import { after } from "next/server";
 import { PriceListBrowser } from "@/feature/staff/price-list/components/price-list-browser";
 import { bangkokToday, getPriceList, groupByModel } from "@/lib/price-list";
 import { subscribeDayCombos } from "@/lib/subscribe-day";
-import { accessCookie, logAccess, readAccessCode } from "@/lib/price-list-access";
+import {
+  accessCookie,
+  deviceCookie,
+  logAccess,
+  normalizeDeviceId,
+  readAccessCode,
+} from "@/lib/price-list-access";
 import { PriceListGate } from "@/feature/staff/price-list/components/price-list-gate";
 
 // Staff tool on its own hostname: never index it and drop every hint of the public site
@@ -36,10 +42,12 @@ export default async function PriceListPage({
   searchParams: Promise<{ model?: string | string[]; customer?: string | string[] }>;
 }) {
   // Staff only: any active code from the backoffice; every open is logged per code.
-  const code = await readAccessCode((await cookies()).get(accessCookie)?.value).catch(() => null);
+  const jar = await cookies();
+  const code = await readAccessCode(jar.get(accessCookie)?.value).catch(() => null);
   if (!code) return <PriceListGate />;
-  const userAgent = (await headers()).get("user-agent");
-  after(() => logAccess(code, "view", userAgent).catch(() => undefined));
+  const requestHeaders = new Headers(await headers());
+  const deviceId = normalizeDeviceId(jar.get(deviceCookie)?.value);
+  after(() => logAccess(code, "view", requestHeaders, { deviceId }).catch(() => undefined));
 
   const { model, customer } = await searchParams;
   const priceList = getPriceList();

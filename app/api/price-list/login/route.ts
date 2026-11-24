@@ -5,8 +5,12 @@ import {
   accessCookie,
   accessMaxAge,
   createAccessToken,
+  deviceCookie,
+  deviceMaxAge,
   logAccess,
   normalizeCode,
+  normalizeDeviceId,
+  parseDevice,
 } from "@/lib/price-list-access";
 
 /** The page runs on its own hostname, so compare the browser Origin with the Host it called. */
@@ -24,7 +28,7 @@ function sameHost(request: Request) {
 /** Staff enters one of the backoffice access codes to open /price-list/. Each sign-in is logged. */
 export async function POST(request: Request) {
   if (!sameHost(request)) return new Response(null, { status: 403 });
-  if (Number(request.headers.get("content-length")) > 1024) return new Response(null, { status: 413 });
+  if (Number(request.headers.get("content-length")) > 4096) return new Response(null, { status: 413 });
   try {
     const prisma = getPrisma();
     const now = new Date();
@@ -45,15 +49,18 @@ export async function POST(request: Request) {
     const row = code ? await prisma.priceListAccessCode.findUnique({ where: { code } }) : null;
     if (!code || !row?.isActive) return Response.json({ error: "รหัสไม่ถูกต้อง" }, { status: 401 });
 
-    await logAccess(code, "login", request.headers.get("user-agent"));
+    const deviceId = normalizeDeviceId(data?.deviceId);
+    await logAccess(code, "login", request.headers, { deviceId, device: parseDevice(data?.device) });
     const response = NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
-    response.cookies.set(accessCookie, createAccessToken(code), {
+    const cookie = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "lax" as const,
       path: "/",
-      maxAge: accessMaxAge,
-    });
+    };
+    response.cookies.set(accessCookie, createAccessToken(code), { ...cookie, maxAge: accessMaxAge });
+    // Page opens read the device id from this cookie (the form sends it only at sign-in).
+    if (deviceId) response.cookies.set(deviceCookie, deviceId, { ...cookie, maxAge: deviceMaxAge });
     return response;
   } catch (reason) {
     console.error("price-list login failed", reason);
