@@ -23,7 +23,7 @@ export default async function PriceListAccessPage() {
   const prisma = getPrisma();
   const since7 = daysAgo(7);
   const since30 = daysAgo(30);
-  const [codes, totals, last7, last30, recent, activity] = await Promise.all([
+  const [codes, totals, last7, last30, recent, activity, visitLog] = await Promise.all([
     prisma.priceListAccessCode.findMany({ orderBy: { code: "asc" } }),
     prisma.priceListAccessLog.groupBy({
       by: ["code", "kind"],
@@ -43,6 +43,8 @@ export default async function PriceListAccessPage() {
     prisma.priceListAccessLog.findMany({ orderBy: { createdAt: "desc" }, take: 50 }),
     // Enough recent steps to replay the latest visits.
     prisma.priceListActivity.findMany({ orderBy: { createdAt: "desc" }, take: 1000 }),
+    // Sign-ins and page opens per code for the details dialog.
+    prisma.priceListAccessLog.findMany({ orderBy: { createdAt: "desc" }, take: 1000 }),
   ]);
   const count = (code: string, kind: string) =>
     totals.find((t) => t.code === code && t.kind === kind)?._count._all ?? 0;
@@ -63,6 +65,7 @@ export default async function PriceListAccessPage() {
       month: last30.find((t) => t.code === c.code)?._count._all ?? 0,
       lastUsed: lastUsed(c.code),
       rounds: roundsOf(c.code),
+      visits: visitLog.filter((v) => v.code === c.code).slice(0, 100),
     }))
     .sort((a, b) => (b.lastUsed?.getTime() ?? 0) - (a.lastUsed?.getTime() ?? 0));
 
@@ -103,10 +106,15 @@ export default async function PriceListAccessPage() {
               {r.lastUsed ? dateTime(r.lastUsed) : "ยังไม่เคยใช้"}
             </td>
             <td className={cell}>
-              {r.rounds.length > 0 ? (
-                <PriceListRoundsDialog code={r.code} label={r.label ?? ""} rounds={r.rounds.length}>
-                  <RoundList rounds={r.rounds} openFirst />
-                </PriceListRoundsDialog>
+              {r.rounds.length + r.visits.length > 0 ? (
+                <PriceListRoundsDialog
+                  code={r.code}
+                  label={r.label ?? ""}
+                  rounds={r.rounds.length}
+                  visits={r.visits.length}
+                  roundList={<RoundList rounds={r.rounds} openFirst />}
+                  visitList={<VisitList visits={r.visits} />}
+                />
               ) : (
                 <span className="text-slate-400">-</span>
               )}
@@ -134,6 +142,37 @@ export default async function PriceListAccessPage() {
         ))}
       </ReportTable>
     </main>
+  );
+}
+
+/** One code's sign-ins and page opens, newest first. */
+function VisitList({
+  visits,
+}: {
+  visits: { id: string; kind: string; createdAt: Date; userAgent: string | null }[];
+}) {
+  if (visits.length === 0) return <p className="p-4 text-sm text-slate-500">ยังไม่มีการเข้าใช้</p>;
+  return (
+    <table className="w-full text-sm">
+      <thead className="sticky top-0 bg-[#f5f6f7] text-[#666b70]">
+        <tr>
+          <th className="px-4 py-2 text-left font-medium">เวลา</th>
+          <th className="px-4 py-2 text-left font-medium">การใช้</th>
+          <th className="px-4 py-2 text-right font-medium">อุปกรณ์</th>
+        </tr>
+      </thead>
+      <tbody>
+        {visits.map((v) => (
+          <tr key={v.id} className="border-t border-[#e5e7e9]">
+            <td className="px-4 py-2 tabular-nums">{dateTime(v.createdAt)}</td>
+            <td className={`px-4 py-2 ${v.kind === "login" ? "font-semibold" : "text-slate-500"}`}>
+              {v.kind === "login" ? "ใส่รหัส (login)" : "เปิดหน้า"}
+            </td>
+            <td className="px-4 py-2 text-right">{deviceOf(v.userAgent)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
