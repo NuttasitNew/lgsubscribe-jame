@@ -2,9 +2,12 @@ import { requireBackofficeSession } from "@/lib/backoffice/auth";
 import { getPrisma } from "@/lib/db/prisma";
 import { ReportTable } from "@/feature/backoffice/components/report-table";
 import { PriceListCodes } from "@/feature/backoffice/components/price-list-codes";
+import { priceListHosts } from "@/lib/price-list-host";
 
 export const metadata = { title: "รหัสหน้าราคาพนักงาน" };
 const number = new Intl.NumberFormat("th-TH");
+const first = "px-4 py-3 text-left font-medium";
+const cell = "px-4 py-3 text-right tabular-nums whitespace-nowrap";
 const dateTime = (value: Date) =>
   new Intl.DateTimeFormat("th-TH", {
     dateStyle: "medium",
@@ -55,14 +58,18 @@ export default async function PriceListAccessPage() {
     }))
     .sort((a, b) => (b.lastUsed?.getTime() ?? 0) - (a.lastUsed?.getTime() ?? 0));
 
+  // The price list lives on its own hostname (PRICE_LIST_HOSTS); fall back to the path in local dev.
+  const host = priceListHosts()[0];
+  const pageUrl = host ? `https://${host}/` : "/price-list/";
+
   return (
     <main className="mx-auto max-w-5xl space-y-5 px-4 py-6 sm:px-6">
       <header>
         <h1 className="text-2xl font-semibold">รหัสหน้าราคาพนักงาน</h1>
         <p className="mt-2 text-sm text-slate-500">
           พนักงานใส่รหัสใดก็ได้ที่เปิดใช้อยู่เพื่อเข้าหน้า{" "}
-          <a href="/price-list/" target="_blank" className="font-medium text-primary underline">
-            /price-list/
+          <a href={pageUrl} target="_blank" rel="noreferrer" className="font-medium text-primary underline">
+            {host ?? "/price-list/"}
           </a>{" "}
           (จำไว้ 7 วันต่อเครื่อง) · ทุกครั้งที่ใส่รหัสและเปิดหน้าจะถูกบันทึกไว้ด้านล่าง
         </p>
@@ -74,17 +81,19 @@ export default async function PriceListAccessPage() {
         empty={rows.length === 0}
       >
         {rows.map((r) => (
-          <tr key={r.code}>
-            <td>
+          <tr key={r.code} className="border-t border-[#e5e7e9]">
+            <td className={first}>
               {r.code}
               {r.label ? ` · ${r.label}` : ""}
               {r.isActive ? "" : " (ปิดอยู่)"}
             </td>
-            <td>{number.format(r.logins)}</td>
-            <td>{number.format(r.views)}</td>
-            <td>{number.format(r.week)}</td>
-            <td>{number.format(r.month)}</td>
-            <td>{r.lastUsed ? dateTime(r.lastUsed) : "ยังไม่เคยใช้"}</td>
+            <td className={cell}>{number.format(r.logins)}</td>
+            <td className={cell}>{number.format(r.views)}</td>
+            <td className={cell}>{number.format(r.week)}</td>
+            <td className={cell}>{number.format(r.month)}</td>
+            <td className={`${cell} ${r.lastUsed ? "" : "text-slate-400"}`}>
+              {r.lastUsed ? dateTime(r.lastUsed) : "ยังไม่เคยใช้"}
+            </td>
           </tr>
         ))}
       </ReportTable>
@@ -97,11 +106,11 @@ export default async function PriceListAccessPage() {
         empty={recent.length === 0}
       >
         {recent.map((e) => (
-          <tr key={e.id}>
-            <td>{dateTime(e.createdAt)}</td>
-            <td>{e.code}</td>
-            <td>{e.kind === "login" ? "ใส่รหัส" : "เปิดหน้า"}</td>
-            <td>{deviceOf(e.userAgent)}</td>
+          <tr key={e.id} className="border-t border-[#e5e7e9]">
+            <td className={`${first} tabular-nums`}>{dateTime(e.createdAt)}</td>
+            <td className={cell}>{e.code}</td>
+            <td className={cell}>{e.kind === "login" ? "ใส่รหัส" : "เปิดหน้า"}</td>
+            <td className={cell}>{deviceOf(e.userAgent)}</td>
           </tr>
         ))}
       </ReportTable>
