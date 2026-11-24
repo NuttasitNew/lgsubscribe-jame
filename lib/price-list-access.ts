@@ -99,7 +99,12 @@ export async function logAccess(
   {
     deviceId = null,
     device = null,
-  }: { deviceId?: string | null; device?: Record<string, unknown> | null } = {},
+    identity = null,
+  }: {
+    deviceId?: string | null;
+    device?: Record<string, unknown> | null;
+    identity?: { email: string; name: string | null } | null;
+  } = {},
 ) {
   await getPrisma().priceListAccessLog.create({
     data: {
@@ -108,6 +113,8 @@ export async function logAccess(
       userAgent: headers.get("user-agent")?.slice(0, 300) ?? null,
       deviceId,
       ...requestPlace(headers),
+      email: identity?.email ?? null,
+      googleName: identity?.name ?? null,
       ...(device ? { device: device as Prisma.InputJsonObject } : {}),
     },
   });

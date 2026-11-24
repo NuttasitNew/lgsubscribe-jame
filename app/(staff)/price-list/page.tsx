@@ -11,6 +11,7 @@ import {
   normalizeDeviceId,
   readAccessCode,
 } from "@/lib/price-list-access";
+import { googleCookie, googleEnabled, parseIdentityToken } from "@/lib/price-list-google";
 import { PriceListGate } from "@/feature/staff/price-list/components/price-list-gate";
 
 // Staff tool on its own hostname: never index it and drop every hint of the public site
@@ -39,15 +40,26 @@ export const viewport: Viewport = {
 export default async function PriceListPage({
   searchParams,
 }: {
-  searchParams: Promise<{ model?: string | string[]; customer?: string | string[] }>;
+  searchParams: Promise<{ model?: string | string[]; customer?: string | string[]; google?: string | string[] }>;
 }) {
-  // Staff only: any active code from the backoffice; every open is logged per code.
+  // Staff only: their Google account (when configured) + any active code from the backoffice;
+  // every open is logged per code with the account.
   const jar = await cookies();
+  const needGoogle = googleEnabled();
+  const identity = parseIdentityToken(jar.get(googleCookie)?.value);
   const code = await readAccessCode(jar.get(accessCookie)?.value).catch(() => null);
-  if (!code) return <PriceListGate />;
+  if (!code || (needGoogle && !identity)) {
+    const { google } = await searchParams;
+    return (
+      <PriceListGate
+        google={needGoogle ? (identity ? { email: identity.email, name: identity.name } : "required") : null}
+        googleError={typeof google === "string" ? google : undefined}
+      />
+    );
+  }
   const requestHeaders = new Headers(await headers());
   const deviceId = normalizeDeviceId(jar.get(deviceCookie)?.value);
-  after(() => logAccess(code, "view", requestHeaders, { deviceId }).catch(() => undefined));
+  after(() => logAccess(code, "view", requestHeaders, { deviceId, identity }).catch(() => undefined));
 
   const { model, customer } = await searchParams;
   const priceList = getPriceList();

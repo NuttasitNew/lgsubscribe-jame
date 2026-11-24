@@ -592,12 +592,16 @@ model PriceListAccessLog {
   country   String?             @db.VarChar(8)
   /// Screen, language, time zone, phone model… sent by the sign-in form (no permission prompts).
   device    Json?
+  /// Google account the staff signed in with before entering the code.
+  email      String?            @db.VarChar(254)
+  googleName String?            @db.VarChar(120)
   createdAt DateTime            @default(now())
   access    PriceListAccessCode @relation(fields: [code], references: [code], onDelete: Cascade)
 
   @@index([code, createdAt])
   @@index([createdAt])
   @@index([deviceId])
+  @@index([email])
 }
 
 // What staff did on the price page, step by step: customer type, products, contracts,
