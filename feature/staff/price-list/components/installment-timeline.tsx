@@ -33,6 +33,7 @@ function rangeText(ranges: [number, number][]) {
 
 /**
  * Month-by-month boxes, one row per contract year, coloured by how much the customer pays.
+ * The contract average and total sit under the boxes and legend.
  * Columns are bills 1–12 of each contract year; the calendar month is in each box's tooltip.
  */
 export function InstallmentTimeline({
@@ -90,31 +91,6 @@ export function InstallmentTimeline({
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1 rounded-xl bg-primary/5 px-3 py-2.5">
-        <div>
-          <p className="text-xs text-muted-foreground">เฉลี่ยตลอดสัญญา {schedule.months} เดือน</p>
-          <p className="text-2xl font-bold leading-tight text-primary tabular-nums">
-            ฿{formatBaht(Math.round(schedule.averageMonthly))}
-            <span className="text-sm font-medium text-muted-foreground">/เดือน</span>
-            {regularMonthly && Math.round(schedule.averageMonthly) < regularMonthly ? (
-              <s className="ml-2 text-base font-medium text-muted-foreground">
-                ฿{formatBaht(regularMonthly)}
-              </s>
-            ) : null}
-          </p>
-        </div>
-        <p className="text-xs text-muted-foreground tabular-nums">
-          รวม ฿{formatBaht(schedule.total)}
-          {schedule.regularTotal > schedule.total ? (
-            <>
-              {" "}
-              จาก <s>฿{formatBaht(schedule.regularTotal)}</s>
-            </>
-          ) : null}
-          {schedule.advancePayment > 0 ? " (รวมเงินล่วงหน้า)" : ""}
-        </p>
-      </div>
-
       {schedule.advancePayment > 0 && (
         <div className="flex items-center gap-2">
           <span className="w-11 shrink-0 text-xs font-medium text-muted-foreground">ล่วงหน้า</span>
@@ -195,6 +171,31 @@ export function InstallmentTimeline({
           </li>
         ))}
       </ul>
+
+      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1 rounded-xl bg-primary/5 px-3 py-2.5">
+        <div>
+          <p className="text-xs text-muted-foreground">เฉลี่ยตลอดสัญญา {schedule.months} เดือน</p>
+          <p className="text-2xl font-bold leading-tight text-primary tabular-nums">
+            ฿{formatBaht(Math.round(schedule.averageMonthly))}
+            <span className="text-sm font-medium text-muted-foreground">/เดือน</span>
+            {regularMonthly && Math.round(schedule.averageMonthly) < regularMonthly ? (
+              <s className="ml-2 text-base font-medium text-muted-foreground">
+                ฿{formatBaht(regularMonthly)}
+              </s>
+            ) : null}
+          </p>
+        </div>
+        <p className="text-xs text-muted-foreground tabular-nums">
+          รวม ฿{formatBaht(schedule.total)}
+          {schedule.regularTotal > schedule.total ? (
+            <>
+              {" "}
+              จาก <s>฿{formatBaht(schedule.regularTotal)}</s>
+            </>
+          ) : null}
+          {schedule.advancePayment > 0 ? " (รวมเงินล่วงหน้า)" : ""}
+        </p>
+      </div>
     </div>
   );
 }
