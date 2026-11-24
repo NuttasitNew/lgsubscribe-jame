@@ -63,6 +63,11 @@ export function PriceListBrowser({
       return next;
     });
   const removeItem = (id: string) => removeLast((l) => l.item.id === id);
+  const clearCart = () => {
+    if (!window.confirm(`ล้างรายการทั้งหมด ${cart.length} เครื่อง?`)) return;
+    setCart([]);
+    setShowCart(false);
+  };
   const addModel = (model: string) => {
     const entry = models.find((m) => m.model === model);
     const option = entry?.options.find((o) => o.saleType !== "Outright") ?? entry?.options[0];
@@ -139,6 +144,7 @@ export function PriceListBrowser({
             onAdd={addToCart}
             onRemoveItem={removeItem}
             onOpenCart={openCart}
+            onClear={clearCart}
             className="mx-auto max-w-6xl border-t border-border px-3 py-1.5 sm:px-4"
           />
         )}
@@ -178,6 +184,7 @@ export function PriceListBrowser({
                 onAdd={addToCart}
                 onRemoveItem={removeItem}
                 onAddMore={() => setPickerOpen(true)}
+                onClear={clearCart}
               />
             </>
           ) : current ? (
@@ -220,6 +227,7 @@ export function PriceListBrowser({
         onAddItem={addToCart}
         onRemoveItem={removeItem}
         onOpenCart={openCart}
+        onClear={clearCart}
       />
 
       <CustomerChooser

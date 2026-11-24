@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, Minus, Plus, X } from "lucide-react";
+import { ChevronRight, Minus, Plus, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { contractLabel, type PriceListItem } from "@/lib/price-list";
 import type { CartLine } from "./price-list-cart";
@@ -77,6 +77,7 @@ export function SelectedBar({
   onAdd,
   onRemoveItem,
   onOpenCart,
+  onClear,
   layout = "row",
   className,
 }: {
@@ -85,6 +86,8 @@ export function SelectedBar({
   /** Remove one unit of this contract option. */
   onRemoveItem: (itemId: string) => void;
   onOpenCart?: () => void;
+  /** Empty the whole order. */
+  onClear?: () => void;
   layout?: "row" | "list";
   className?: string;
 }) {
@@ -112,11 +115,25 @@ export function SelectedBar({
     </button>
   );
 
+  const clearButton = onClear && (
+    <button
+      type="button"
+      onClick={onClear}
+      aria-label="ล้างรายการทั้งหมด"
+      className="inline-flex h-8 shrink-0 items-center gap-1 rounded-full px-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      <Trash2 className="size-4" aria-hidden />
+      <span className={layout === "row" ? "hidden sm:inline" : undefined}>ล้าง</span>
+    </button>
+  );
+
   if (layout === "list") {
     return (
       <div className={cn("flex flex-col gap-1.5", className)}>
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
           {label}
+          <span className="ml-auto" />
+          {clearButton}
           {cartButton}
         </div>
         <ul className="max-h-[30dvh] divide-y divide-primary/10 overflow-y-auto rounded-xl border border-primary/30 bg-primary/5">
@@ -152,6 +169,7 @@ export function SelectedBar({
           </li>
         ))}
       </ul>
+      {clearButton}
       {cartButton}
     </div>
   );

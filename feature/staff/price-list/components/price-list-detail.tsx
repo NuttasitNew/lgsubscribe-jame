@@ -185,7 +185,7 @@ export function PriceListDetail({
   );
 }
 
-function Segmented({
+export function Segmented({
   label,
   value,
   onChange,

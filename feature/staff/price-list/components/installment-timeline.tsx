@@ -31,13 +31,9 @@ function rangeText(ranges: [number, number][]) {
   return ranges.map(([a, b]) => (a === b ? `${a}` : `${a}–${b}`)).join(", ");
 }
 
-function shortBaht(amount: number) {
-  return amount >= 1000 ? `${Math.round(amount / 100) / 10}k` : formatBaht(Math.round(amount));
-}
-
 /**
  * Month-by-month boxes, one row per contract year, coloured by how much the customer pays.
- * Column headers are calendar months counted from the contract start (default: this month).
+ * Columns are bills 1–12 of each contract year; the calendar month is in each box's tooltip.
  */
 export function InstallmentTimeline({
   schedule,
@@ -129,15 +125,17 @@ export function InstallmentTimeline({
       )}
 
       <div className="space-y-1.5">
-        <div className="flex items-center gap-2" aria-hidden>
-          <span className="w-11 shrink-0" />
+        <div className="hidden items-center gap-2 sm:flex" aria-hidden>
+          <span className="w-11 shrink-0 text-[10px] font-medium text-muted-foreground sm:text-[11px]">
+            งวดที่
+          </span>
           <div className="grid flex-1 grid-cols-12 gap-0.5 sm:gap-1">
             {Array.from({ length: 12 }, (_, i) => (
               <span
                 key={i}
                 className="truncate text-center text-[9px] font-medium text-muted-foreground sm:text-[11px]"
               >
-                {monthName(i)}
+                {i + 1}
               </span>
             ))}
           </div>
@@ -146,11 +144,11 @@ export function InstallmentTimeline({
           <div key={y} className="flex items-center gap-2">
             <span className="w-11 shrink-0 leading-tight">
               <span className="block text-xs font-semibold">ปี {y + 1}</span>
-              <span className="block text-[10px] text-muted-foreground">
-                {monthName(0)} {yearOf(y * 12)}
+              <span className="block text-[10px] text-muted-foreground tabular-nums">
+                {y * 12 + 1}–{y * 12 + year.length}
               </span>
             </span>
-            <ol className="grid flex-1 grid-cols-12 gap-0.5 sm:gap-1">
+            <ol className="grid flex-1 grid-cols-6 gap-1 sm:grid-cols-12">
               {year.map((m) => {
                 const offset = m.bill - 1;
                 const label = `งวดที่ ${m.bill} (${monthName(offset)} ${yearOf(offset)}): ฿${formatBaht(m.amount)}`;
@@ -160,11 +158,15 @@ export function InstallmentTimeline({
                     title={label}
                     aria-label={label}
                     className={cn(
-                      "flex h-8 items-center justify-center overflow-hidden rounded-[5px] border text-[10px] font-semibold tabular-nums sm:h-9 sm:text-[11px]",
+                      "flex h-10 flex-col items-center justify-center overflow-hidden whitespace-nowrap rounded-[5px] border text-xs font-semibold leading-none tracking-tight tabular-nums sm:h-9 sm:text-[10px] sm:tracking-tighter lg:text-[11px]",
                       toneOf(m.amount, m.isPromotion).box,
                     )}
                   >
-                    <span className="hidden sm:inline">{shortBaht(m.amount)}</span>
+                    {/* Phones: 6 boxes per line without the column header, so each box names its bill. */}
+                    <span className="mb-0.5 text-[9px] font-medium opacity-70 sm:hidden" aria-hidden>
+                      งวด {m.bill}
+                    </span>
+                    <span aria-hidden>{formatBaht(Math.round(m.amount))}</span>
                   </li>
                 );
               })}

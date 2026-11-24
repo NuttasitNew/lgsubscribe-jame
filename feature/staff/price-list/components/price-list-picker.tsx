@@ -29,6 +29,7 @@ export function PriceListPicker({
   onAddItem,
   onRemoveItem,
   onOpenCart,
+  onClear,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -42,6 +43,7 @@ export function PriceListPicker({
   onAddItem: (item: PriceListItem) => void;
   onRemoveItem: (itemId: string) => void;
   onOpenCart: () => void;
+  onClear: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(ALL);
@@ -98,6 +100,7 @@ export function PriceListPicker({
             lines={lines}
             onAdd={onAddItem}
             onRemoveItem={onRemoveItem}
+            onClear={onClear}
             layout="list"
             className="border-b border-border bg-white px-3 py-2 md:px-4"
           />

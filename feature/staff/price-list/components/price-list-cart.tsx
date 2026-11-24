@@ -1,6 +1,8 @@
 "use client";
 
-import { BadgePercent, Plus } from "lucide-react";
+import { useState } from "react";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { BadgePercent, Eye, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -13,7 +15,8 @@ import {
   type ComboPromotion,
   type PriceListItem,
 } from "@/lib/price-list";
-import { ProductImage, ScheduleView } from "./price-list-detail";
+import { ProductImage, ScheduleView, Segmented } from "./price-list-detail";
+import { InstallmentTimeline } from "./installment-timeline";
 import { QuantityStepper } from "./cart-controls";
 import { SavingsBanner, type PromoSettings } from "./promo-bar";
 
@@ -38,6 +41,7 @@ export function PriceListCart({
   onAdd,
   onRemoveItem,
   onAddMore,
+  onClear,
 }: {
   lines: CartLine[];
   combos: ComboPromotion[];
@@ -50,6 +54,7 @@ export function PriceListCart({
   /** Remove one unit of this contract option. */
   onRemoveItem: (itemId: string) => void;
   onAddMore: () => void;
+  onClear: () => void;
 }) {
   const subs = lines.filter((l) => l.item.saleType !== "Outright" && buildInstallmentSchedule(l.item));
   // One card per contract option with its quantity, in the order first added.
@@ -74,6 +79,12 @@ export function PriceListCart({
   const comboSavings = combined && withoutCombo ? withoutCombo.total - combined.total : 0;
   const regularFirst = priced.reduce((sum, p) => sum + p.line.item.regularPrice, 0);
   const outrightTotal = outright.reduce((sum, l) => sum + (l.item.promoPrice ?? l.item.regularPrice), 0);
+  // One product's own schedule (eye button), with the same promos/combo as the total.
+  const [viewing, setViewing] = useState<string | null>(null);
+  // Right panel: one combined schedule, or each product's own schedule stacked.
+  const [split, setSplit] = useState(false);
+  const canSplit = new Set(priced.map((p) => p.line.item.id)).size > 1;
+  const viewed = priced.find((p) => p.line.item.id === viewing) ?? null;
 
   return (
     <div
@@ -83,8 +94,8 @@ export function PriceListCart({
       )}
     >
       <div className="space-y-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
+        <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+          <div className="min-w-0 flex-1 basis-60">
             <p className="text-sm text-muted-foreground">
               ใบเสนอหลายเครื่อง · {customer === "new" ? "ลูกค้าใหม่" : "ลูกค้าเดิม"}
             </p>
@@ -92,9 +103,19 @@ export function PriceListCart({
               รายการที่เลือก ({lines.length} เครื่อง)
             </h2>
           </div>
-          <Button variant="outline" size="sm" onClick={onAddMore}>
-            <Plus /> เพิ่มสินค้า
-          </Button>
+          <div className="flex shrink-0 flex-wrap justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClear}
+              className="text-muted-foreground hover:bg-red-50 hover:text-red-700"
+            >
+              <Trash2 /> ล้างรายการ
+            </Button>
+            <Button variant="outline" size="sm" onClick={onAddMore}>
+              <Plus /> เพิ่มสินค้า
+            </Button>
+          </div>
         </div>
 
         <ComboStatus
@@ -164,13 +185,27 @@ export function PriceListCart({
                         </>
                       )}
                     </p>
-                    <QuantityStepper
-                      size="sm"
-                      label={`${l.item.model} ${label}`}
-                      count={count}
-                      onAdd={() => onAdd(l.item)}
-                      onRemove={() => onRemoveItem(l.item.id)}
-                    />
+                    <div className="flex items-center gap-1.5">
+                      {p && (
+                        <button
+                          type="button"
+                          onClick={() => setViewing(l.item.id)}
+                          aria-haspopup="dialog"
+                          aria-label={`ดูตารางผ่อน ${l.item.model} ${label}`}
+                          className="inline-flex h-9 items-center gap-1 rounded-xl border border-border px-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <Eye className="size-4 text-primary" aria-hidden />
+                          <span className="hidden min-[400px]:inline">ตาราง</span>
+                        </button>
+                      )}
+                      <QuantityStepper
+                        size="sm"
+                        label={`${l.item.model} ${label}`}
+                        count={count}
+                        onAdd={() => onAdd(l.item)}
+                        onRemove={() => onRemoveItem(l.item.id)}
+                      />
+                    </div>
                   </div>
                 </div>
               </li>
@@ -221,30 +256,124 @@ export function PriceListCart({
       </div>
 
       {combined ? (
-        <ScheduleView
-          key={`${percent}-${promo.item}-${lines.length}`}
-          schedule={combined}
-          regularMonthly={Math.round(combined.regularTotal / combined.months)}
-          wide={wide}
-          start={start}
-          note={
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              ยอดรวมทุกเครื่องต่อเดือน (สัญญาสั้นจบก่อน ยอดจะลดลงเอง)
-              {combo && percent > 0 && (
-                <>
-                  {" "}
-                  · คอมโบคิดจากบิลหลังหักโปรแต่ละรุ่น ตามตัวอย่าง Price list หน้า 60 · {combo.name}
-                  {combo.page > 0 && <> (หน้า {combo.page})</>} · ยอดจริงอาจปัดเศษต่างจากระบบ OSMS ได้เล็กน้อย
-                </>
-              )}
-            </p>
-          }
-        />
+        <div className="space-y-4">
+          {canSplit && (
+            <Segmented
+              label="ตารางผ่อนรวมหรือแยกรายเครื่อง"
+              value={split ? "split" : "all"}
+              onChange={(v) => setSplit(v === "split")}
+              items={[
+                { value: "all", label: "รวมทุกเครื่อง" },
+                { value: "split", label: "แยกรายเครื่อง" },
+              ]}
+            />
+          )}
+          {split && canSplit ? (
+            <ol className="space-y-6">
+              {groups.flatMap(({ line: l, count }) => {
+                const p = priced.find((x) => x.line.item.id === l.item.id);
+                if (!p) return [];
+                return [
+                  <li key={l.item.id} className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <ProductImage
+                        src={l.image}
+                        alt=""
+                        sizes="64px"
+                        className="size-12 shrink-0 bg-secondary/40"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="break-all font-semibold leading-snug">{l.item.model}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {l.item.category} · {contractLabel(l.item)}
+                          {count > 1 ? ` · ต่อเครื่อง (สั่ง ${count} เครื่อง)` : ""}
+                          {percent > 0 && ` · หักคอมโบ ${percent}% แล้ว`}
+                        </p>
+                      </div>
+                    </div>
+                    <InstallmentTimeline
+                      schedule={p.schedule}
+                      regularMonthly={l.item.regularPrice}
+                      start={start}
+                    />
+                  </li>,
+                ];
+              })}
+            </ol>
+          ) : (
+            <ScheduleView
+              key={`${percent}-${promo.item}-${lines.length}`}
+              schedule={combined}
+              regularMonthly={Math.round(combined.regularTotal / combined.months)}
+              wide={wide}
+              start={start}
+              note={
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  ยอดรวมทุกเครื่องต่อเดือน (สัญญาสั้นจบก่อน ยอดจะลดลงเอง)
+                  {combo && percent > 0 && (
+                    <>
+                      {" "}
+                      · คอมโบคิดจากบิลหลังหักโปรแต่ละรุ่น ตามตัวอย่าง Price list หน้า 60 · {combo.name}
+                      {combo.page > 0 && <> (หน้า {combo.page})</>} · ยอดจริงอาจปัดเศษต่างจากระบบ OSMS
+                      ได้เล็กน้อย
+                    </>
+                  )}
+                </p>
+              }
+            />
+          )}
+        </div>
       ) : (
         <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
           ยังไม่มีสินค้าแบบผ่อนในรายการ
         </p>
       )}
+
+      <DialogPrimitive.Root open={viewed !== null} onOpenChange={(open) => !open && setViewing(null)}>
+        <DialogPrimitive.Portal>
+          <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <DialogPrimitive.Content
+            aria-describedby={undefined}
+            className="fixed inset-x-2 top-[7.5dvh] z-50 flex h-[85dvh] flex-col overflow-hidden rounded-2xl bg-white shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 md:inset-auto md:left-1/2 md:top-[6dvh] md:h-auto md:max-h-[88dvh] md:w-[min(48rem,calc(100vw-3rem))] md:-translate-x-1/2 md:overflow-hidden md:rounded-2xl"
+          >
+            {viewed && (
+              <>
+                <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+                  <ProductImage
+                    src={viewed.line.image}
+                    alt=""
+                    sizes="64px"
+                    className="size-14 bg-secondary/40"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <DialogPrimitive.Title className="break-all font-bold leading-snug">
+                      {viewed.line.item.model}
+                    </DialogPrimitive.Title>
+                    <p className="text-xs text-muted-foreground">
+                      {viewed.line.item.category} · {contractLabel(viewed.line.item)} · ต่อ 1 เครื่อง
+                      {percent > 0 && ` · หักคอมโบ ${percent}% แล้ว`}
+                    </p>
+                  </div>
+                  <DialogPrimitive.Close
+                    aria-label="ปิด"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <X className="size-5" />
+                  </DialogPrimitive.Close>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                  <ScheduleView
+                    schedule={viewed.schedule}
+                    regularMonthly={viewed.line.item.regularPrice}
+                    wide={false}
+                    start={start}
+                  />
+                </div>
+              </>
+            )}
+          </DialogPrimitive.Content>
+        </DialogPrimitive.Portal>
+      </DialogPrimitive.Root>
     </div>
   );
 }
