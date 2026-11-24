@@ -342,6 +342,18 @@ def main(pdf_path):
     if not rows:
         sys.exit('อ่านราคาไม่ได้เลย — รูปแบบ PDF อาจเปลี่ยน')
 
+    # "(Control Stock)" is sometimes printed in the column header instead of the model cell
+    # (Nov p.6 A9T-CORE): on a page with a single model, the header flag belongs to it.
+    for number in sorted({r['page'] for r in rows}):
+        on_page = [r for r in rows if r['page'] == number]
+        if len({r['model'] for r in on_page}) != 1 or all(r['controlStock'] for r in on_page):
+            continue
+        text = subprocess.run(['pdftotext', '-layout', '-f', str(number), '-l', str(number), str(pdf_path), '-'],
+                              capture_output=True, text=True, check=True).stdout
+        if 'Control Stock' in text:
+            for r in on_page:
+                r['controlStock'] = True
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     data = {
         'source': pdf_path.name,
