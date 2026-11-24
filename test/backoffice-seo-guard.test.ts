@@ -104,6 +104,14 @@ describe("backoffice SEO boundary", () => {
     const rules = robots().rules;
     const normalizedRules = Array.isArray(rules) ? rules : [rules];
 
-    expect(normalizedRules.some((rule) => rule.disallow === "/backoffice/")).toBe(true);
+    const disallowed = normalizedRules.flatMap((rule) => [rule.disallow ?? []].flat());
+    expect(disallowed).toContain("/backoffice/");
+  });
+
+  it("blocks crawlers from the staff price list", () => {
+    const rules = robots().rules;
+    const normalizedRules = Array.isArray(rules) ? rules : [rules];
+    const disallowed = normalizedRules.flatMap((rule) => [rule.disallow ?? []].flat());
+    expect(disallowed).toContain("/price-list/");
   });
 });
