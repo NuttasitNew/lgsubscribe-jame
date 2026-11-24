@@ -3,6 +3,7 @@ import { getPrisma } from "@/lib/db/prisma";
 import { ReportTable } from "@/feature/backoffice/components/report-table";
 import { PriceListCodes } from "@/feature/backoffice/components/price-list-codes";
 import { priceListHosts } from "@/lib/price-list-host";
+import { PriceListActivity } from "@/feature/backoffice/components/price-list-activity";
 
 export const metadata = { title: "รหัสหน้าราคาพนักงาน" };
 const number = new Intl.NumberFormat("th-TH");
@@ -20,7 +21,7 @@ export default async function PriceListAccessPage() {
   const prisma = getPrisma();
   const since7 = daysAgo(7);
   const since30 = daysAgo(30);
-  const [codes, totals, last7, last30, recent] = await Promise.all([
+  const [codes, totals, last7, last30, recent, activity] = await Promise.all([
     prisma.priceListAccessCode.findMany({ orderBy: { code: "asc" } }),
     prisma.priceListAccessLog.groupBy({
       by: ["code", "kind"],
@@ -38,6 +39,8 @@ export default async function PriceListAccessPage() {
       _count: { _all: true },
     }),
     prisma.priceListAccessLog.findMany({ orderBy: { createdAt: "desc" }, take: 50 }),
+    // Enough recent steps to replay the latest visits.
+    prisma.priceListActivity.findMany({ orderBy: { createdAt: "desc" }, take: 1000 }),
   ]);
   const count = (code: string, kind: string) =>
     totals.find((t) => t.code === code && t.kind === kind)?._count._all ?? 0;
@@ -97,6 +100,8 @@ export default async function PriceListAccessPage() {
           </tr>
         ))}
       </ReportTable>
+
+      <PriceListActivity events={activity} />
 
       <PriceListCodes codes={codes.map(({ code, label, isActive }) => ({ code, label, isActive }))} />
 

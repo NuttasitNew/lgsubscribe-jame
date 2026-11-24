@@ -44,6 +44,7 @@ export function PriceListCart({
   onClear,
   optionsOf,
   onSwap,
+  onViewSchedule,
 }: {
   lines: CartLine[];
   combos: ComboPromotion[];
@@ -61,6 +62,8 @@ export function PriceListCart({
   optionsOf: (model: string) => PriceListItem[];
   /** Move every unit of one card to another contract option of the same model. */
   onSwap: (fromId: string, to: PriceListItem) => void;
+  /** Eye button opened one unit's schedule (for the activity log). */
+  onViewSchedule?: (item: PriceListItem, units: number) => void;
 }) {
   const subs = lines.filter((l) => l.item.saleType !== "Outright" && buildInstallmentSchedule(l.item));
   // One card per contract option with its quantity, in the order first added.
@@ -203,7 +206,10 @@ export function PriceListCart({
                       {p && (
                         <button
                           type="button"
-                          onClick={() => setViewing(l.item.id)}
+                          onClick={() => {
+                            setViewing(l.item.id);
+                            onViewSchedule?.(l.item, count);
+                          }}
                           aria-haspopup="dialog"
                           aria-label={`ดูตารางผ่อน ${l.item.model} ${label}`}
                           className="inline-flex h-9 items-center gap-1 rounded-xl border border-border px-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

@@ -574,6 +574,7 @@ model PriceListAccessCode {
   createdAt DateTime             @default(now())
   updatedAt DateTime             @updatedAt
   events    PriceListAccessLog[]
+  activity  PriceListActivity[]
 }
 
 // One row per sign-in ("login") or page open ("view") with a code. No raw IPs.
@@ -586,5 +587,20 @@ model PriceListAccessLog {
   access    PriceListAccessCode @relation(fields: [code], references: [code], onDelete: Cascade)
 
   @@index([code, createdAt])
+  @@index([createdAt])
+}
+
+// What staff did on the price page, step by step: customer type, products, contracts,
+// cart, schedules, clear. "session" groups one browser tab from sign-in until it closes.
+model PriceListActivity {
+  id        String              @id @default(uuid()) @db.Uuid
+  code      String              @db.VarChar(32)
+  session   String              @db.VarChar(40)
+  kind      String              @db.VarChar(20)
+  detail    Json?
+  createdAt DateTime            @default(now())
+  access    PriceListAccessCode @relation(fields: [code], references: [code], onDelete: Cascade)
+
+  @@index([session, createdAt])
   @@index([createdAt])
 }

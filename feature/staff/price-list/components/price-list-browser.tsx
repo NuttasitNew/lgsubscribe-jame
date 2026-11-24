@@ -3,7 +3,12 @@
 import { useRef, useState } from "react";
 import { ArrowLeft, Search, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { type ComboPromotion, type PriceListItem, type PriceListModel } from "@/lib/price-list";
+import {
+  contractLabel,
+  type ComboPromotion,
+  type PriceListItem,
+  type PriceListModel,
+} from "@/lib/price-list";
 import { currentStart } from "./installment-timeline";
 import { PriceListCart, type CartLine } from "./price-list-cart";
 import { PriceListDetail } from "./price-list-detail";
@@ -11,6 +16,7 @@ import { PriceListPicker } from "./price-list-picker";
 import { SelectedBar } from "./cart-controls";
 import { CustomerBadge, CustomerChooser, type CustomerType } from "./customer-profile";
 import { bestCombo, PromoBar, type PromoSettings } from "./promo-bar";
+import { describeItem, useActivityLog } from "./use-activity-log";
 
 type Meta = { source: string; version: string; period: string };
 
@@ -47,6 +53,16 @@ export function PriceListBrowser({
   const nextKey = useRef(1);
   const start = currentStart(today);
   const [promo, setPromo] = useState<PromoSettings>({ item: true, combo: true });
+  const log = useActivityLog();
+  const summary = (lines: CartLine[]) =>
+    [...Map.groupBy(lines, (l) => l.item.id).values()].map((ls) => ({
+      ...describeItem(ls[0].item),
+      units: ls.length,
+    }));
+  const changePromo = (next: PromoSettings) => {
+    log("promo", { item: next.item, combo: next.combo });
+    setPromo(next);
+  };
   const combo = promo.combo && customer ? bestCombo(combos, today, customer) : null;
 
   const current = models.find((m) => m.model === selected) ?? null;
@@ -54,6 +70,7 @@ export function PriceListBrowser({
 
   const addToCart = (item: PriceListItem) => {
     const image = models.find((m) => m.model === item.model)?.image ?? null;
+    log("add", describeItem(item));
     setCart((lines) => [...lines, { key: nextKey.current++, item, image }]);
   };
   // Remove the most recently added unit of this contract option / model.
@@ -65,14 +82,26 @@ export function PriceListBrowser({
       if (next.length === 0) setShowCart(false);
       return next;
     });
-  const removeItem = (id: string) => removeLast((l) => l.item.id === id);
+  const removeItem = (id: string) => {
+    const line = cart.findLast((l) => l.item.id === id);
+    if (line) log("remove", describeItem(line.item));
+    removeLast((l) => l.item.id === id);
+  };
   // Switch every unit of one cart card to another contract option of the same model.
-  const swapItem = (fromId: string, to: PriceListItem) =>
+  const swapItem = (fromId: string, to: PriceListItem) => {
+    const from = cart.find((l) => l.item.id === fromId)?.item;
+    log("contract", {
+      ...describeItem(to),
+      from: from ? contractLabel(from) : null,
+      units: cart.filter((l) => l.item.id === fromId).length,
+    });
     setCart((lines) => lines.map((l) => (l.item.id === fromId ? { ...l, item: to } : l)));
+  };
   const optionsOf = (model: string) =>
     models.find((m) => m.model === model)?.options.filter((o) => o.saleType !== "Outright") ?? [];
   const clearCart = () => {
     if (!window.confirm(`ล้างรายการทั้งหมด ${cart.length} เครื่อง?`)) return;
+    log("clear", { units: cart.length, items: summary(cart) });
     setCart([]);
     setShowCart(false);
   };
@@ -82,6 +111,7 @@ export function PriceListBrowser({
     if (option) addToCart(option);
   };
   const openCart = () => {
+    log("cart", { units: cart.length, items: summary(cart), customer, promo });
     setShowCart(true);
     setPickerOpen(false);
     window.scrollTo({ top: 0 });
@@ -89,6 +119,7 @@ export function PriceListBrowser({
 
   const chooseCustomer = (next: CustomerType) => {
     const first = customer === null;
+    log("customer", { customer: next, previous: customer });
     setCustomer(next);
     setChooserOpen(false);
     const url = new URL(window.location.href);
@@ -99,6 +130,7 @@ export function PriceListBrowser({
 
   // Keep the chosen model in the URL so staff can share or refresh the same product.
   const select = (model: string) => {
+    log("model", { model, category: models.find((m) => m.model === model)?.category });
     setShowCart(false);
     setSelected(model);
     setPickerOpen(false);
@@ -166,7 +198,7 @@ export function PriceListBrowser({
               today={today}
               period={meta.period}
               settings={promo}
-              onChange={setPromo}
+              onChange={changePromo}
               customer={customer ?? "new"}
               units={cart.filter((l) => l.item.saleType !== "Outright" && l.item.contractMonths).length}
               className="border-b border-border bg-white px-4 py-3 md:rounded-t-2xl md:px-6"
@@ -195,6 +227,7 @@ export function PriceListBrowser({
                 onClear={clearCart}
                 optionsOf={optionsOf}
                 onSwap={swapItem}
+                onViewSchedule={(item, units) => log("schedule", { ...describeItem(item), units })}
               />
             </>
           ) : current ? (
