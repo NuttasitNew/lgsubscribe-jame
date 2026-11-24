@@ -1,3 +1,5 @@
+import type { ComboPromotion } from "@/lib/price-list";
+
 /**
  * Current LG Subscribe promotion (popup + landing page). The module keeps its Subscribe Day name,
  * but the campaign is now Subscribe Day "ฉลองครบรอบ 2 ปี" ลด 15%: 21–29 November 2569 (2026),
@@ -21,12 +23,38 @@ export const subscribeDayCampaign = {
   alt: "LG Subscribe Day ฉลองครบรอบ 2 ปี ยิ่งซับ ยิ่งฟิน ลุ้นบินมัลดีฟส์ ลูกค้าใหม่ Subscribe 2 เครื่องขึ้นไป ลด 15% ลูกค้าเดิม Subscribe 1 เครื่องขึ้นไป ลด 15% โปรโมชั่น 21 พ.ย. 69 – 29 พ.ย. 69 เงื่อนไขเป็นไปตามที่บริษัทฯ กำหนด เฉพาะรุ่นที่ร่วมรายการ",
 } as const;
 
+/**
+ * The banner's offer as combo rules for the staff price list (/price-list/):
+ * new customer 2+ Subscription units or existing customer 1+ added unit → 15% off each bill,
+ * applied like the PDF combo (after the single-product promotion). Inclusive Bangkok dates.
+ */
+export const subscribeDayCombos: ComboPromotion[] = [
+  {
+    name: "Subscribe Day ฉลองครบรอบ 2 ปี (แบนเนอร์)",
+    page: 0,
+    customer: "new",
+    minUnits: 2,
+    percent: subscribeDayCampaign.maxDiscountPercent,
+    from: SUBSCRIBE_DAY_START.slice(0, 10),
+    to: "2026-11-29",
+    source: "campaign",
+  },
+  {
+    name: "Subscribe Day ฉลองครบรอบ 2 ปี (แบนเนอร์)",
+    page: 0,
+    customer: "existing",
+    minUnits: 1,
+    percent: subscribeDayCampaign.maxDiscountPercent,
+    from: SUBSCRIBE_DAY_START.slice(0, 10),
+    to: "2026-11-29",
+    source: "campaign",
+  },
+];
+
 export const subscribeDayPopupStorageKey = `lg-subscribe-day-popup:${SUBSCRIBE_DAY_END}`;
 
 export function isSubscribeDayActive(now: Date = new Date()): boolean {
-  return (
-    now >= new Date(SUBSCRIBE_DAY_START) && now < new Date(SUBSCRIBE_DAY_END)
-  );
+  return now >= new Date(SUBSCRIBE_DAY_START) && now < new Date(SUBSCRIBE_DAY_END);
 }
 
 export function wasSubscribeDayPopupDismissed(): boolean {
