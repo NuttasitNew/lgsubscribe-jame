@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ArrowLeft, Search, ShoppingBag } from "lucide-react";
+import { ArrowLeft, RotateCcw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   contractLabel,
@@ -105,6 +105,23 @@ export function PriceListBrowser({
     setCart([]);
     setShowCart(false);
   };
+  // "ล้างทั้งหมด": end this customer's round (logged with what was chosen) and start fresh.
+  const resetAll = () => {
+    if (
+      !window.confirm("ล้างทั้งหมดแล้วเริ่มลูกค้ารายใหม่? (ประเภทลูกค้า สินค้า และรายการที่เลือกจะถูกล้าง)")
+    )
+      return;
+    log("reset", { customer, model: selected, units: cart.length, items: summary(cart), promo });
+    setCart([]);
+    setShowCart(false);
+    setSelected(null);
+    setCustomer(null);
+    setPickerOpen(false);
+    setChooserOpen(true);
+    setPromo({ item: true, combo: true });
+    window.history.replaceState(null, "", window.location.pathname);
+    window.scrollTo({ top: 0 });
+  };
   const addModel = (model: string) => {
     const entry = models.find((m) => m.model === model);
     const option = entry?.options.find((o) => o.saleType !== "Outright") ?? entry?.options[0];
@@ -162,19 +179,14 @@ export function PriceListBrowser({
             </span>
           </button>
           <Button
-            variant={cartOpen ? "default" : "outline"}
-            onClick={() => (cartOpen ? setShowCart(false) : openCart())}
-            disabled={cart.length === 0}
-            aria-label={`รายการที่เลือก ${cart.length} เครื่อง`}
+            variant="outline"
+            onClick={resetAll}
+            disabled={cart.length === 0 && !selected && customer === null}
             className="h-11 shrink-0 px-3"
           >
-            <ShoppingBag />
-            <span className="hidden md:inline">รายการ</span>
-            {cart.length > 0 && (
-              <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground ring-2 ring-white">
-                {cart.length}
-              </span>
-            )}
+            <RotateCcw />
+            <span className="hidden sm:inline">ล้างทั้งหมด</span>
+            <span className="sm:hidden">ล้าง</span>
           </Button>
         </div>
         {/* In the cart view each item card has its own − n +, so the bar would only repeat it. */}
@@ -266,7 +278,11 @@ export function PriceListBrowser({
         lines={cart}
         countOf={(model) => cart.filter((l) => l.item.model === model).length}
         onAdd={addModel}
-        onRemoveModel={(model) => removeLast((l) => l.item.model === model)}
+        onRemoveModel={(model) => {
+          const line = cart.findLast((l) => l.item.model === model);
+          if (line) log("remove", describeItem(line.item));
+          removeLast((l) => l.item.model === model);
+        }}
         onAddItem={addToCart}
         onRemoveItem={removeItem}
         onOpenCart={openCart}

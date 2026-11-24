@@ -1,3 +1,5 @@
+import { finalItems, roundGap, splitRounds } from "@/lib/price-list-activity";
+
 type Activity = { id: string; code: string; session: string; kind: string; detail: unknown; createdAt: Date };
 type Detail = Record<string, unknown>;
 
@@ -38,21 +40,25 @@ export function describeActivity(kind: string, raw: unknown): string {
       return `โปรรายรุ่น ${d.item ? "เปิด" : "ปิด"} · คอมโบ ${d.combo ? "เปิด" : "ปิด"}`;
     case "clear":
       return `ล้างรายการ ${d.units ?? 0} เครื่อง (ก่อนล้าง: ${items(d.items) || "-"})`;
+    case "reset":
+      return `ล้างทั้งหมด จบรอบ${d.customer ? ` ${customerName(d.customer)}` : ""} (${d.units ?? 0} เครื่อง${items(d.items) ? `: ${items(d.items)}` : ""})`;
     default:
       return kind;
   }
 }
 
-/** Latest visits, newest first, each replayed step by step. */
+/** Latest customer rounds, newest first, each replayed step by step. */
 export function PriceListActivity({ events }: { events: Activity[] }) {
-  const sessions = [...Map.groupBy(events, (e) => e.session).values()]
-    .map((list) => list.toSorted((a, b) => a.createdAt.getTime() - b.createdAt.getTime()))
-    .sort((a, b) => b.at(-1)!.createdAt.getTime() - a.at(-1)!.createdAt.getTime())
-    .slice(0, 20);
+  const sessions = splitRounds(events).slice(0, 20);
 
   return (
     <section className="overflow-hidden rounded-xl border border-[#d4d7da] bg-white">
-      <h2 className="border-b border-[#d4d7da] px-4 py-3 font-semibold">กิจกรรมแต่ละรอบ (ล่าสุด 20 รอบ)</h2>
+      <div className="border-b border-[#d4d7da] px-4 py-3">
+        <h2 className="font-semibold">กิจกรรมแต่ละรอบ (ล่าสุด 20 รอบ)</h2>
+        <p className="text-xs text-[#666b70]">
+          ขึ้นรอบใหม่เมื่อพนักงานกด &quot;ล้างทั้งหมด&quot; หรือเว้นช่วงเกิน {roundGap / 60000} นาที
+        </p>
+      </div>
       {sessions.length === 0 ? (
         <p className="p-4 text-sm text-[#666b70]">ยังไม่มีกิจกรรม</p>
       ) : (
@@ -62,8 +68,10 @@ export function PriceListActivity({ events }: { events: Activity[] }) {
             const last = list.at(-1)!;
             const customer = list.findLast((e) => e.kind === "customer")?.detail as Detail | undefined;
             const adds = list.filter((e) => e.kind === "add").length;
+            const order = finalItems(list);
+            const ended = last.kind === "reset";
             return (
-              <li key={first.session}>
+              <li key={first.id}>
                 <details className="group">
                   <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm hover:bg-[#f5f6f7]">
                     <b className="font-semibold">{first.code}</b>
@@ -74,7 +82,17 @@ export function PriceListActivity({ events }: { events: Activity[] }) {
                     <span className="text-[#666b70]">
                       {list.length} ขั้น · เพิ่มสินค้า {adds} ครั้ง
                     </span>
+                    {ended && (
+                      <span className="rounded-full bg-[#eef0f2] px-2 py-0.5 text-xs text-[#666b70]">
+                        กดล้างทั้งหมด
+                      </span>
+                    )}
                     <span className="ml-auto text-xs text-primary group-open:hidden">ดูทีละขั้น</span>
+                    <span className="basis-full text-[#3d4247]">
+                      {order.length
+                        ? `รายการสุดท้าย: ${order.map((o) => `${o.model} (${o.contract}) × ${o.units}`).join(", ")}`
+                        : "รายการสุดท้าย: ไม่มีสินค้า"}
+                    </span>
                   </summary>
                   <ol className="space-y-1.5 border-t border-[#e5e7e9] bg-[#fafafa] px-4 py-3 text-sm">
                     {list.map((e) => (
