@@ -48,13 +48,29 @@ export function describeActivity(kind: string, raw: unknown): string {
 }
 
 /** Latest customer rounds, newest first, each replayed step by step. */
-export function PriceListActivity({ events }: { events: Activity[] }) {
-  const sessions = splitRounds(events).slice(0, 20);
+export function PriceListActivity({ events, code = null }: { events: Activity[]; code?: string | null }) {
+  // With a code picked from the stats table: only that code's rounds, the newest one opened.
+  const sessions = splitRounds(code ? events.filter((e) => e.code === code) : events).slice(
+    0,
+    code ? 50 : 20,
+  );
 
   return (
-    <section className="overflow-hidden rounded-xl border border-[#d4d7da] bg-white">
+    <section
+      id="activity"
+      className="scroll-mt-4 overflow-hidden rounded-xl border border-[#d4d7da] bg-white"
+    >
       <div className="border-b border-[#d4d7da] px-4 py-3">
-        <h2 className="font-semibold">กิจกรรมแต่ละรอบ (ล่าสุด 20 รอบ)</h2>
+        <div className="flex flex-wrap items-baseline gap-x-3">
+          <h2 className="font-semibold">
+            {code ? `กิจกรรมของรหัส ${code} (ล่าสุด 50 รอบ)` : "กิจกรรมแต่ละรอบ (ล่าสุด 20 รอบ)"}
+          </h2>
+          {code && (
+            <a href="?#activity" className="text-sm font-medium text-primary hover:underline">
+              ดูทุกรหัส
+            </a>
+          )}
+        </div>
         <p className="text-xs text-[#666b70]">
           ขึ้นรอบใหม่เมื่อพนักงานกด &quot;ล้างทั้งหมด&quot; หรือเว้นช่วงเกิน {roundGap / 60000} นาที
         </p>
@@ -63,7 +79,7 @@ export function PriceListActivity({ events }: { events: Activity[] }) {
         <p className="p-4 text-sm text-[#666b70]">ยังไม่มีกิจกรรม</p>
       ) : (
         <ul className="divide-y divide-[#e5e7e9]">
-          {sessions.map((list) => {
+          {sessions.map((list, index) => {
             const first = list[0];
             const last = list.at(-1)!;
             const customer = list.findLast((e) => e.kind === "customer")?.detail as Detail | undefined;
@@ -72,7 +88,7 @@ export function PriceListActivity({ events }: { events: Activity[] }) {
             const ended = last.kind === "reset";
             return (
               <li key={first.id}>
-                <details className="group">
+                <details className="group" open={code !== null && index === 0}>
                   <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm hover:bg-[#f5f6f7]">
                     <b className="font-semibold">{first.code}</b>
                     <span className="tabular-nums text-[#666b70]">

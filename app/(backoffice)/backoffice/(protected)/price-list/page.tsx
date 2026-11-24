@@ -4,6 +4,7 @@ import { ReportTable } from "@/feature/backoffice/components/report-table";
 import { PriceListCodes } from "@/feature/backoffice/components/price-list-codes";
 import { priceListHosts } from "@/lib/price-list-host";
 import { PriceListActivity } from "@/feature/backoffice/components/price-list-activity";
+import { splitRounds } from "@/lib/price-list-activity";
 
 export const metadata = { title: "รหัสหน้าราคาพนักงาน" };
 const number = new Intl.NumberFormat("th-TH");
@@ -16,8 +17,13 @@ const dateTime = (value: Date) =>
     timeZone: "Asia/Bangkok",
   }).format(value);
 
-export default async function PriceListAccessPage() {
+export default async function PriceListAccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ code?: string | string[] }>;
+}) {
   await requireBackofficeSession("pricelist.manage");
+  const { code: rawCode } = await searchParams;
   const prisma = getPrisma();
   const since7 = daysAgo(7);
   const since30 = daysAgo(30);
@@ -50,6 +56,9 @@ export default async function PriceListAccessPage() {
       .map((t) => t._max.createdAt)
       .filter((d): d is Date => d !== null)
       .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
+  const rounds = splitRounds(activity);
+  const roundsOf = (code: string) => rounds.filter((r) => r[0].code === code).length;
+  const selected = typeof rawCode === "string" && codes.some((c) => c.code === rawCode) ? rawCode : null;
   const rows = codes
     .map((c) => ({
       ...c,
@@ -58,6 +67,7 @@ export default async function PriceListAccessPage() {
       week: last7.find((t) => t.code === c.code)?._count._all ?? 0,
       month: last30.find((t) => t.code === c.code)?._count._all ?? 0,
       lastUsed: lastUsed(c.code),
+      rounds: roundsOf(c.code),
     }))
     .sort((a, b) => (b.lastUsed?.getTime() ?? 0) - (a.lastUsed?.getTime() ?? 0));
 
@@ -80,7 +90,7 @@ export default async function PriceListAccessPage() {
 
       <ReportTable
         title="สถิติการใช้งานแต่ละรหัส"
-        columns={["รหัส", "ใส่รหัส", "เปิดหน้า", "7 วัน", "30 วัน", "ใช้ล่าสุด"]}
+        columns={["รหัส", "ใส่รหัส", "เปิดหน้า", "7 วัน", "30 วัน", "ใช้ล่าสุด", "รายละเอียด"]}
         empty={rows.length === 0}
       >
         {rows.map((r) => (
@@ -97,11 +107,24 @@ export default async function PriceListAccessPage() {
             <td className={`${cell} ${r.lastUsed ? "" : "text-slate-400"}`}>
               {r.lastUsed ? dateTime(r.lastUsed) : "ยังไม่เคยใช้"}
             </td>
+            <td className={cell}>
+              {r.rounds > 0 ? (
+                <a
+                  href={`?code=${encodeURIComponent(r.code)}#activity`}
+                  aria-current={selected === r.code ? "true" : undefined}
+                  className="font-medium text-primary underline-offset-2 hover:underline aria-[current]:underline"
+                >
+                  ดู {number.format(r.rounds)} รอบ
+                </a>
+              ) : (
+                <span className="text-slate-400">-</span>
+              )}
+            </td>
           </tr>
         ))}
       </ReportTable>
 
-      <PriceListActivity events={activity} />
+      <PriceListActivity events={activity} code={selected} />
 
       <PriceListCodes codes={codes.map(({ code, label, isActive }) => ({ code, label, isActive }))} />
 
