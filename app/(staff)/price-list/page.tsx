@@ -24,7 +24,8 @@ export default async function PriceListPage({
   const priceList = getPriceList();
   return (
     <PriceListBrowser
-      models={groupByModel(priceList.items)}
+      // Staff quote Subscription only: outright (ซื้อขาด) rows are left out of the page.
+      models={groupByModel(priceList.items.filter((item) => item.saleType !== "Outright"))}
       meta={{ source: priceList.source, version: priceList.version, period: priceList.period }}
       initialModel={typeof model === "string" ? model : undefined}
       initialCustomer={customer === "new" || customer === "existing" ? customer : undefined}
