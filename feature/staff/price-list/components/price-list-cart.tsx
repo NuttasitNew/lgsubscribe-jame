@@ -42,6 +42,8 @@ export function PriceListCart({
   onRemoveItem,
   onAddMore,
   onClear,
+  optionsOf,
+  onSwap,
 }: {
   lines: CartLine[];
   combos: ComboPromotion[];
@@ -55,6 +57,10 @@ export function PriceListCart({
   onRemoveItem: (itemId: string) => void;
   onAddMore: () => void;
   onClear: () => void;
+  /** Subscription contract options of a model (5/7 years, Visit/Self). */
+  optionsOf: (model: string) => PriceListItem[];
+  /** Move every unit of one card to another contract option of the same model. */
+  onSwap: (fromId: string, to: PriceListItem) => void;
 }) {
   const subs = lines.filter((l) => l.item.saleType !== "Outright" && buildInstallmentSchedule(l.item));
   // One card per contract option with its quantity, in the order first added.
@@ -147,6 +153,14 @@ export function PriceListCart({
                     <p className="text-xs text-muted-foreground">
                       {l.item.category} · {label}
                     </p>
+                    <ContractChips
+                      item={l.item}
+                      options={optionsOf(l.item.model)}
+                      onPick={(to) => {
+                        if (viewing === l.item.id) setViewing(to.id);
+                        onSwap(l.item.id, to);
+                      }}
+                    />
                     {p ? (
                       <p className="text-xs tabular-nums">
                         บิลแรก <b className="text-primary">฿{formatBaht(p.schedule.rows[0].amount)}</b> ·
@@ -455,6 +469,40 @@ function Tile({
           จาก <s>฿{formatBaht(was)}</s>
         </p>
       )}
+    </div>
+  );
+}
+
+/** Contract switch on each cart card: years (5/7) and service plan (Visit = technician visits, Self = self care). */
+function ContractChips({
+  item,
+  options,
+  onPick,
+}: {
+  item: PriceListItem;
+  options: PriceListItem[];
+  onPick: (to: PriceListItem) => void;
+}) {
+  if (item.saleType === "Outright" || options.length < 2) return null;
+  return (
+    <div className="my-1.5 flex flex-wrap gap-1" role="group" aria-label={`เลือกสัญญา ${item.model}`}>
+      {options.map((o) => (
+        <button
+          key={o.id}
+          type="button"
+          onClick={() => o.id !== item.id && onPick(o)}
+          aria-pressed={o.id === item.id}
+          className={cn(
+            "h-8 rounded-lg border px-2.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            o.id === item.id
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-white text-foreground hover:bg-secondary",
+          )}
+        >
+          {contractLabel(o)}
+          <span className="ml-1 font-normal tabular-nums opacity-80">฿{formatBaht(o.regularPrice)}</span>
+        </button>
+      ))}
     </div>
   );
 }

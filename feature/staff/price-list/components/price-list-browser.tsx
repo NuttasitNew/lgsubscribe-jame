@@ -66,6 +66,11 @@ export function PriceListBrowser({
       return next;
     });
   const removeItem = (id: string) => removeLast((l) => l.item.id === id);
+  // Switch every unit of one cart card to another contract option of the same model.
+  const swapItem = (fromId: string, to: PriceListItem) =>
+    setCart((lines) => lines.map((l) => (l.item.id === fromId ? { ...l, item: to } : l)));
+  const optionsOf = (model: string) =>
+    models.find((m) => m.model === model)?.options.filter((o) => o.saleType !== "Outright") ?? [];
   const clearCart = () => {
     if (!window.confirm(`ล้างรายการทั้งหมด ${cart.length} เครื่อง?`)) return;
     setCart([]);
@@ -188,6 +193,8 @@ export function PriceListBrowser({
                 onRemoveItem={removeItem}
                 onAddMore={() => setPickerOpen(true)}
                 onClear={clearCart}
+                optionsOf={optionsOf}
+                onSwap={swapItem}
               />
             </>
           ) : current ? (
