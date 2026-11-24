@@ -47,11 +47,13 @@ export function CustomerChooser({
   customer,
   onChoose,
   onOpenChange,
+  accessCode,
 }: {
   open: boolean;
   customer: CustomerType | null;
   onChoose: (customer: CustomerType) => void;
   onOpenChange: (open: boolean) => void;
+  accessCode?: string;
 }) {
   // Until a type is chosen the dialog cannot be dismissed.
   const required = customer === null;
@@ -107,6 +109,23 @@ export function CustomerChooser({
               );
             })}
           </div>
+          {accessCode && (
+            <p className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-3 text-xs text-muted-foreground">
+              <span>
+                เข้าใช้ด้วยรหัส <b className="text-foreground">{accessCode}</b>
+              </span>
+              <button
+                type="button"
+                onClick={async () => {
+                  await fetch("/api/price-list/logout/", { method: "POST" }).catch(() => undefined);
+                  window.location.reload();
+                }}
+                className="h-9 rounded-lg px-2 font-semibold text-primary hover:bg-primary/5"
+              >
+                ออกจากระบบ
+              </button>
+            </p>
+          )}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

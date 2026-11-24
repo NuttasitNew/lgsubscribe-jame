@@ -25,6 +25,7 @@ export function PriceListBrowser({
   initialCustomer,
   combos,
   today,
+  accessCode,
 }: {
   models: PriceListModel[];
   meta: Meta;
@@ -32,6 +33,8 @@ export function PriceListBrowser({
   initialCustomer?: CustomerType;
   combos: ComboPromotion[];
   today: string;
+  /** Staff code used to open the page (shown in the customer dialog with a sign-out link). */
+  accessCode?: string;
 }) {
   const initial = initialModel && models.some((m) => m.model === initialModel) ? initialModel : null;
   const [selected, setSelected] = useState<string | null>(initial);
@@ -235,6 +238,7 @@ export function PriceListBrowser({
         customer={customer}
         onChoose={chooseCustomer}
         onOpenChange={setChooserOpen}
+        accessCode={accessCode}
       />
     </div>
   );
