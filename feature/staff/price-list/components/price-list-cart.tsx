@@ -93,6 +93,14 @@ export function PriceListCart({
   const [viewing, setViewing] = useState<string | null>(null);
   // Right panel: one combined schedule, or each product's own schedule stacked.
   const [split, setSplit] = useState(false);
+  // Split view: products switched to their full price (regular fee every bill, no promo/combo/advance).
+  const [fullPrice, setFullPrice] = useState<ReadonlySet<string>>(new Set());
+  const toggleFullPrice = (id: string) =>
+    setFullPrice((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
   const canSplit = new Set(priced.map((p) => p.line.item.id)).size > 1;
   const viewed = priced.find((p) => p.line.item.id === viewing) ?? null;
 
@@ -301,6 +309,10 @@ export function PriceListCart({
               {groups.flatMap(({ line: l, count }) => {
                 const p = priced.find((x) => x.line.item.id === l.item.id);
                 if (!p) return [];
+                const full = fullPrice.has(l.item.id);
+                const shown = full
+                  ? buildInstallmentSchedule({ ...l.item, bills: [], advancePayment: null }, { promo: false })!
+                  : p.schedule;
                 return [
                   <li key={l.item.id} className="space-y-2">
                     <div className="flex items-center gap-3">
@@ -315,12 +327,28 @@ export function PriceListCart({
                         <p className="text-xs text-muted-foreground">
                           {l.item.category} · {contractLabel(l.item)}
                           {count > 1 ? ` · ต่อเครื่อง (สั่ง ${count} เครื่อง)` : ""}
-                          {percent > 0 && ` · หักคอมโบ ${percent}% แล้ว`}
+                          {full
+                            ? " · ราคาเต็ม ยังไม่หักโปร/คอมโบ"
+                            : percent > 0 && ` · หักคอมโบ ${percent}% แล้ว`}
                         </p>
                       </div>
+                      <button
+                        type="button"
+                        aria-pressed={full}
+                        onClick={() => toggleFullPrice(l.item.id)}
+                        className={cn(
+                          "inline-flex h-9 shrink-0 items-center rounded-xl border px-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          full
+                            ? "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
+                            : "border-border bg-white text-foreground hover:border-primary/40 hover:bg-primary/5",
+                        )}
+                      >
+                        ราคาเต็ม
+                      </button>
                     </div>
                     <InstallmentTimeline
-                      schedule={p.schedule}
+                      key={full ? "full" : "deal"}
+                      schedule={shown}
                       regularMonthly={l.item.regularPrice}
                       start={start}
                     />
