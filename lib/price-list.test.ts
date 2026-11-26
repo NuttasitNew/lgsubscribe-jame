@@ -94,6 +94,21 @@ describe("buildInstallmentSchedule", () => {
     expect(buildInstallmentSchedule(base)!.firstBill).toBe(buildInstallmentSchedule(base)!.rows[0].amount);
   });
 
+  it("adds each contract's first bill in an order: advance + the other's bill 1 (2,244 + 149)", () => {
+    const withAdvance = buildInstallmentSchedule({
+      ...base,
+      regularPrice: 749,
+      advancePayment: 2244,
+      bills: [{ from: 1, to: 12, amount: 374.5 }],
+    })!;
+    const plain = buildInstallmentSchedule({ ...base, regularPrice: 149, bills: [] })!;
+    const order = combineSchedules([
+      { schedule: withAdvance, regularPrice: 749 },
+      { schedule: plain, regularPrice: 149 },
+    ])!;
+    expect(order.firstBill).toBe(2244 + 149);
+  });
+
   it("returns no schedule for outright sales", () => {
     expect(buildInstallmentSchedule({ ...base, saleType: "Outright", contractMonths: 24 })).toBeNull();
   });
