@@ -11,6 +11,7 @@ import {
   combineSchedules,
   contractLabel,
   findCombo,
+  floorBaht,
   formatBaht,
   type ComboPromotion,
   type PriceListItem,
@@ -166,8 +167,15 @@ export function PriceListCart({
                     />
                     {p ? (
                       <p className="text-xs tabular-nums">
-                        บิลแรก <b className="text-primary">฿{formatBaht(p.schedule.rows[0].amount)}</b> ·
-                        เฉลี่ย ฿{formatBaht(Math.round(p.schedule.averageMonthly))}/ด.
+                        บิลแรก <b className="text-primary">฿{formatBaht(p.schedule.firstBill)}</b>
+                        {p.schedule.advancePayment > 0 && (
+                          <span className="text-amber-800">
+                            {" "}
+                            (รวมล่วงหน้า ฿{formatBaht(p.schedule.advancePayment)})
+                          </span>
+                        )}{" "}
+                        ·
+                        เฉลี่ย ฿{formatBaht(floorBaht(p.schedule.averageMonthly))}/ด.
                         {count > 1 && " ต่อเครื่อง"}
                         {percent > 0 && (
                           <span className="ml-1 inline-block rounded-full bg-green-600 px-2 py-0.5 text-[11px] font-bold text-white">
@@ -189,7 +197,7 @@ export function PriceListCart({
                         <>
                           {" "}
                           · บิลแรกรวม{" "}
-                          <b className="text-foreground">฿{formatBaht(p.schedule.rows[0].amount * count)}</b>
+                          <b className="text-foreground">฿{formatBaht(p.schedule.firstBill * count)}</b>
                         </>
                       )}
                       {!p && count > 1 && (
@@ -236,15 +244,15 @@ export function PriceListCart({
         {combined && (
           <div className="grid grid-cols-2 gap-2">
             <Tile
-              label="บิลแรกรวม"
-              value={`฿${formatBaht(combined.rows[0].amount)}`}
-              was={regularFirst}
+              label={combined.advancePayment > 0 ? "บิลแรกรวม (รวมเงินล่วงหน้า)" : "บิลแรกรวม"}
+              value={`฿${formatBaht(combined.firstBill)}`}
+              was={regularFirst + combined.advancePayment}
               primary
             />
             <Tile
               label="เฉลี่ยรวม/เดือน"
-              value={`฿${formatBaht(Math.round(combined.averageMonthly))}`}
-              was={Math.round(combined.regularTotal / combined.months)}
+              value={`฿${formatBaht(floorBaht(combined.averageMonthly))}`}
+              was={floorBaht(combined.regularTotal / combined.months)}
               primary
             />
             <Tile
@@ -324,7 +332,7 @@ export function PriceListCart({
             <ScheduleView
               key={`${percent}-${promo.item}-${lines.length}`}
               schedule={combined}
-              regularMonthly={Math.round(combined.regularTotal / combined.months)}
+              regularMonthly={floorBaht(combined.regularTotal / combined.months)}
               wide={wide}
               start={start}
               note={

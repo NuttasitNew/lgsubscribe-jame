@@ -13,6 +13,7 @@ import {
   buildInstallmentSchedule,
   buildYearlySummary,
   contractLabel,
+  floorBaht,
   formatBaht,
   type ComboPromotion,
   type InstallmentSchedule,
@@ -234,12 +235,14 @@ function Stat({
   value,
   tone,
   was,
+  note,
   className,
 }: {
   label: string;
   value: string;
   tone?: "primary";
   was?: number;
+  note?: string;
   className?: string;
 }) {
   return (
@@ -253,6 +256,7 @@ function Stat({
           จาก <s>฿{formatBaht(was)}</s>
         </p>
       )}
+      {note && <p className="text-xs text-amber-800 tabular-nums">{note}</p>}
     </div>
   );
 }
@@ -324,25 +328,31 @@ function ScheduleSummary({
 }) {
   const schedule = scheduleFor(item, promo, combo);
   if (!schedule) return null;
-  const first = schedule.rows[0]?.amount ?? item.regularPrice;
+  const advance = schedule.advancePayment;
 
   return (
     <div className="space-y-4">
       <div className={cn("grid grid-cols-2 gap-2", !wide && "lg:grid-cols-4")}>
-        <Stat label="บิลแรก" value={`฿${formatBaht(first)}`} tone="primary" was={item.regularPrice} />
+        <Stat
+          label="บิลแรก"
+          value={`฿${formatBaht(schedule.firstBill)}`}
+          tone="primary"
+          was={item.regularPrice + advance}
+          note={advance > 0 ? `ค่าเช่า ฿${formatBaht(schedule.rows[0].amount)} + ล่วงหน้า ฿${formatBaht(advance)}` : undefined}
+        />
         <Stat
           label="เฉลี่ยตลอดสัญญา/เดือน"
-          value={`฿${formatBaht(Math.round(schedule.averageMonthly))}`}
+          value={`฿${formatBaht(floorBaht(schedule.averageMonthly))}`}
           tone="primary"
           was={item.regularPrice}
         />
         <Stat
           label="ราคาปกติ/เดือน"
           value={`฿${formatBaht(item.regularPrice)}`}
-          className={schedule.advancePayment > 0 ? undefined : "col-span-2"}
+          className={advance > 0 ? undefined : "col-span-2"}
         />
-        {schedule.advancePayment > 0 && (
-          <Stat label="เงินล่วงหน้า (วันทำสัญญา)" value={`฿${formatBaht(schedule.advancePayment)}`} />
+        {advance > 0 && (
+          <Stat label="เงินล่วงหน้า (รวมในบิลแรก)" value={`฿${formatBaht(advance)}`} />
         )}
       </div>
 
@@ -395,8 +405,9 @@ function ComboPreview({
       {customer === "new"
         ? `ลูกค้าใหม่ซื้อ ${combo.minUnits} เครื่องขึ้นไป ลดเพิ่ม ${combo.percent}%`
         : `ลูกค้าเดิมเพิ่ม ${combo.minUnits} เครื่องขึ้นไป ลดเพิ่ม ${combo.percent}%`}{" "}
-      → รุ่นนี้บิลแรก <b className="text-sm text-green-700">฿{formatBaht(withCombo.rows[0].amount)}</b> ·
-      เฉลี่ย <b className="text-sm text-green-700">฿{formatBaht(Math.round(withCombo.averageMonthly))}</b>
+      → รุ่นนี้บิลแรก <b className="text-sm text-green-700">฿{formatBaht(withCombo.firstBill)}</b>
+      {withCombo.advancePayment > 0 && " (รวมล่วงหน้า)"} ·
+      เฉลี่ย <b className="text-sm text-green-700">฿{formatBaht(floorBaht(withCombo.averageMonthly))}</b>
       /เดือน
     </p>
   );
@@ -617,7 +628,7 @@ export function ScheduleView({
                     colSpan={monthly ? 1 : 2}
                     className="px-3 pb-2.5 text-right text-sm font-semibold text-primary"
                   >
-                    ฿{formatBaht(Math.round(schedule.averageMonthly))}
+                    ฿{formatBaht(floorBaht(schedule.averageMonthly))}
                   </td>
                 </tr>
                 {schedule.savings > 0 && (

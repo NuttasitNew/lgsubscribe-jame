@@ -82,6 +82,8 @@ export type InstallmentSchedule = {
   savings: number;
   /** Everything the customer pays (advance included) spread over the contract months. */
   averageMonthly: number;
+  /** What the first bill collects: bill 1 plus the advance, which is paid on contract day with it. */
+  firstBill: number;
   /** Bill 1 is a fixed promo price ("ราคา 149.-"): collected as is, its combo discount moves to bill 2. */
   fixedFirstBill?: boolean;
 };
@@ -190,6 +192,7 @@ function finishSchedule(
     regularTotal,
     savings: Math.max(0, round2(regularTotal - total)),
     averageMonthly: months ? total / months : 0,
+    firstBill: round2((rows[0]?.amount ?? 0) + advancePayment),
   };
 }
 
@@ -358,7 +361,7 @@ export function groupByModel(items: PriceListItem[]): PriceListModel[] {
     entry.controlStock ||= item.controlStock;
     entry.image ??= item.image;
     if (item.saleType !== "Outright") {
-      const first = buildInstallmentSchedule(item)?.rows[0]?.amount ?? item.regularPrice;
+      const first = buildInstallmentSchedule(item)?.firstBill ?? item.regularPrice;
       entry.startingPrice = entry.startingPrice === null ? first : Math.min(entry.startingPrice, first);
     }
   }
