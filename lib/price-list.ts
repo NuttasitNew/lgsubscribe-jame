@@ -82,7 +82,7 @@ export type InstallmentSchedule = {
   savings: number;
   /** Everything the customer pays (advance included) spread over the contract months. */
   averageMonthly: number;
-  /** What the first bill collects: bill 1 plus the advance, which is paid on contract day with it. */
+  /** What the first bill collects: the advance alone when there is one (paid on contract day), else bill 1. */
   firstBill: number;
   /** Bill 1 is a fixed promo price ("ราคา 149.-"): collected as is, its combo discount moves to bill 2. */
   fixedFirstBill?: boolean;
@@ -192,7 +192,7 @@ function finishSchedule(
     regularTotal,
     savings: Math.max(0, round2(regularTotal - total)),
     averageMonthly: months ? total / months : 0,
-    firstBill: round2((rows[0]?.amount ?? 0) + advancePayment),
+    firstBill: advancePayment > 0 ? advancePayment : (rows[0]?.amount ?? 0),
   };
 }
 
@@ -271,11 +271,15 @@ export function combineSchedules(
       rows.push({ from: bill, to: bill, months: 1, amount, subtotal: amount, isPromotion });
     }
   }
-  return finishSchedule(
-    rows,
-    round2(parts.reduce((sum, p) => sum + p.schedule.advancePayment, 0)),
-    parts.reduce((sum, p) => sum + p.schedule.regularTotal, 0),
-  );
+  return {
+    ...finishSchedule(
+      rows,
+      round2(parts.reduce((sum, p) => sum + p.schedule.advancePayment, 0)),
+      parts.reduce((sum, p) => sum + p.schedule.regularTotal, 0),
+    ),
+    // Each contract's own first bill: its advance if it has one, else its bill 1.
+    firstBill: round2(parts.reduce((sum, p) => sum + p.schedule.firstBill, 0)),
+  };
 }
 
 /**

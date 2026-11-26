@@ -82,7 +82,7 @@ describe("buildInstallmentSchedule", () => {
     expect(s.savings).toBe(9000);
   });
 
-  it("collects the advance with the first bill (paid on contract day)", () => {
+  it("makes the advance the first bill (paid on contract day)", () => {
     const s = buildInstallmentSchedule({
       ...base,
       regularPrice: 749,
@@ -90,7 +90,7 @@ describe("buildInstallmentSchedule", () => {
       bills: [{ from: 1, to: 12, amount: 374.5 }],
     })!;
     expect(s.rows[0].amount).toBe(374);
-    expect(s.firstBill).toBe(374 + 2244);
+    expect(s.firstBill).toBe(2244);
     expect(buildInstallmentSchedule(base)!.firstBill).toBe(buildInstallmentSchedule(base)!.rows[0].amount);
   });
 

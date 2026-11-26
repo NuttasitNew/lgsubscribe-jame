@@ -337,8 +337,8 @@ function ScheduleSummary({
           label="บิลแรก"
           value={`฿${formatBaht(schedule.firstBill)}`}
           tone="primary"
-          was={item.regularPrice + advance}
-          note={advance > 0 ? `ค่าเช่า ฿${formatBaht(schedule.rows[0].amount)} + ล่วงหน้า ฿${formatBaht(advance)}` : undefined}
+          was={advance > 0 ? undefined : item.regularPrice}
+          note={advance > 0 ? "เงินล่วงหน้า จ่ายวันทำสัญญา" : undefined}
         />
         <Stat
           label="เฉลี่ยตลอดสัญญา/เดือน"
@@ -352,7 +352,7 @@ function ScheduleSummary({
           className={advance > 0 ? undefined : "col-span-2"}
         />
         {advance > 0 && (
-          <Stat label="เงินล่วงหน้า (รวมในบิลแรก)" value={`฿${formatBaht(advance)}`} />
+          <Stat label="งวดที่ 1 (ค่าเช่า)" value={`฿${formatBaht(schedule.rows[0].amount)}`} />
         )}
       </div>
 
@@ -406,7 +406,7 @@ function ComboPreview({
         ? `ลูกค้าใหม่ซื้อ ${combo.minUnits} เครื่องขึ้นไป ลดเพิ่ม ${combo.percent}%`
         : `ลูกค้าเดิมเพิ่ม ${combo.minUnits} เครื่องขึ้นไป ลดเพิ่ม ${combo.percent}%`}{" "}
       → รุ่นนี้บิลแรก <b className="text-sm text-green-700">฿{formatBaht(withCombo.firstBill)}</b>
-      {withCombo.advancePayment > 0 && " (รวมล่วงหน้า)"} ·
+      {withCombo.advancePayment > 0 && " (เงินล่วงหน้า)"} ·
       เฉลี่ย <b className="text-sm text-green-700">฿{formatBaht(floorBaht(withCombo.averageMonthly))}</b>
       /เดือน
     </p>

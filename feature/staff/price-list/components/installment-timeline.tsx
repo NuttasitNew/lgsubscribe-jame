@@ -95,8 +95,7 @@ export function InstallmentTimeline({
         <div className="flex items-center gap-2">
           <span className="w-11 shrink-0 text-xs font-medium text-muted-foreground">ล่วงหน้า</span>
           <div className="flex h-8 flex-1 items-center rounded-md border border-amber-300 bg-amber-50 px-2 text-xs font-semibold text-amber-900">
-            ฿{formatBaht(schedule.advancePayment)} จ่ายวันทำสัญญา · รวมในบิลแรก ฿
-            {formatBaht(schedule.firstBill)}
+            ฿{formatBaht(schedule.advancePayment)} จ่ายวันทำสัญญา (บิลแรก)
           </div>
         </div>
       )}

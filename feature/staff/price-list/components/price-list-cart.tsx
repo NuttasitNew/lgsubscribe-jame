@@ -171,7 +171,7 @@ export function PriceListCart({
                         {p.schedule.advancePayment > 0 && (
                           <span className="text-amber-800">
                             {" "}
-                            (รวมล่วงหน้า ฿{formatBaht(p.schedule.advancePayment)})
+                            (เงินล่วงหน้า)
                           </span>
                         )}{" "}
                         ·
@@ -244,9 +244,9 @@ export function PriceListCart({
         {combined && (
           <div className="grid grid-cols-2 gap-2">
             <Tile
-              label={combined.advancePayment > 0 ? "บิลแรกรวม (รวมเงินล่วงหน้า)" : "บิลแรกรวม"}
+              label={combined.advancePayment > 0 ? "บิลแรกรวม (มีเงินล่วงหน้า)" : "บิลแรกรวม"}
               value={`฿${formatBaht(combined.firstBill)}`}
-              was={regularFirst + combined.advancePayment}
+              was={combined.advancePayment > 0 ? undefined : regularFirst}
               primary
             />
             <Tile
