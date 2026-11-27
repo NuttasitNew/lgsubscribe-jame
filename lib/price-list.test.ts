@@ -24,7 +24,7 @@ const base: PriceListItem = {
   serviceCycle: "ทุกๆ 12 เดือน",
   regularPrice: 849,
   advancePayment: null,
-  advanceMonths: 1,
+  advanceMonths: null,
   paymentTerms: "",
   promotion: [],
   bills: [
@@ -211,6 +211,24 @@ describe("averages and combos", () => {
     expect(both.rows.slice(0, 3).map((r) => r.amount)).toEqual([248, 1192, 1230]);
     // Without a fixed-price promo, bill 1 is discounted directly.
     expect(applyComboDiscount(buildInstallmentSchedule(base)!, 15).rows[0].amount).toBe(126);
+  });
+
+  it("collects a 1-month advance (1st Payment 1M) in full and takes its combo discount off bill 2", () => {
+    // Microwave MS4295DIS: 119/month, no promo; LG charges 119 on bill 1 even with the 15% combo.
+    const microwave = buildInstallmentSchedule({
+      ...base,
+      regularPrice: 119,
+      advanceMonths: 1,
+      paymentTerms: "1st Payment 1M (Advance Payment/ 1 month **ยกเว้น OUTRIGHT)",
+      bills: [],
+    })!;
+    expect(microwave.fixedFirstBill).toBe(true);
+    // 119 − 15% = 101.15 → 101; bill 1 keeps 119, the 18 comes off bill 2: 101 − 18 = 83.
+    expect(applyComboDiscount(microwave, 15).rows.map((r) => [r.from, r.to, r.amount])).toEqual([
+      [1, 1, 119],
+      [2, 2, 83],
+      [3, 60, 101],
+    ]);
   });
 
   it("adds contracts of different lengths month by month", () => {

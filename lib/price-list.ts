@@ -84,7 +84,10 @@ export type InstallmentSchedule = {
   averageMonthly: number;
   /** What the first bill collects: the advance alone when there is one (paid on contract day), else bill 1. */
   firstBill: number;
-  /** Bill 1 is a fixed promo price ("ราคา 149.-"): collected as is, its combo discount moves to bill 2. */
+  /**
+   * Bill 1 is collected in full and its combo discount moves to bill 2: a fixed promo price
+   * ("ราคา 149.-"), or a 1-month advance ("1st Payment 1M") paid on contract day.
+   */
   fixedFirstBill?: boolean;
 };
 
@@ -142,7 +145,8 @@ export function buildInstallmentSchedule(
 
   const schedule = finishSchedule(rows, item.advancePayment ?? 0, item.regularPrice * months);
   const first = bills[0];
-  if (promo && first?.from === 1 && fixedPrices(item).includes(first.amount)) schedule.fixedFirstBill = true;
+  const fixedPromo = promo && first?.from === 1 && fixedPrices(item).includes(first.amount);
+  if (fixedPromo || item.advanceMonths === 1) schedule.fixedFirstBill = true;
   return schedule;
 }
 
@@ -200,7 +204,7 @@ function finishSchedule(
  * Combo discount, as in the PDF p.60 example: the % comes off the bill before any advance
  * pay-back, the bill is rounded down to whole baht, then the pay-back is subtracted again:
  * bills 1–6 2,999 − 1,499 promo − 225 = 1,275 · bills 7–12 2,999 − 450 − 1,499 advance = 1,050.
- * A fixed first bill ("ราคา 149.-") is collected as is and its discount comes off bill 2.
+ * A fixed first bill ("ราคา 149.-" or a 1-month advance) is collected as is and its discount comes off bill 2.
  * Advance payment itself is unchanged.
  */
 export function applyComboDiscount(schedule: InstallmentSchedule, percent: number): InstallmentSchedule {
