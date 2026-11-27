@@ -318,6 +318,12 @@ describe("price list data", () => {
     const models = groupByModel(getPriceList().items);
     expect(new Set(models.map((m) => m.model)).size).toBe(models.length);
     expect(contractLabel({ ...base, contract: "7Y_Self" })).toBe("7 ปี · Self");
+    expect(contractLabel({ ...base, contract: "5Y_Visit", serviceCycle: "ทุกๆ 6เดือน" }, { cycle: true })).toBe(
+      "5 ปี · Visit · ทุก 6 เดือน",
+    );
+    expect(
+      contractLabel({ ...base, contract: "No Service / 5Y", serviceCycle: "No Service" }, { cycle: true }),
+    ).toBe("5 ปี · No Service");
     expect(contractLabel({ ...base, contract: "No Service / 5Y", serviceCycle: "No Service" })).toBe(
       "5 ปี · No Service",
     );

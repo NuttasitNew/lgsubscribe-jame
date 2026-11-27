@@ -147,7 +147,7 @@ export function PriceListCart({
         <ul className="space-y-2">
           {groups.map(({ line: l, count }) => {
             const p = priced.find((x) => x.line.item.id === l.item.id);
-            const label = l.item.saleType === "Outright" ? "ซื้อขาด" : contractLabel(l.item);
+            const label = l.item.saleType === "Outright" ? "ซื้อขาด" : contractLabel(l.item, { cycle: true });
             return (
               <li
                 key={l.item.id}
@@ -325,7 +325,7 @@ export function PriceListCart({
                       <div className="min-w-0 flex-1">
                         <p className="break-all font-semibold leading-snug">{l.item.model}</p>
                         <p className="text-xs text-muted-foreground">
-                          {l.item.category} · {contractLabel(l.item)}
+                          {l.item.category} · {contractLabel(l.item, { cycle: true })}
                           {count > 1 ? ` · ต่อเครื่อง (สั่ง ${count} เครื่อง)` : ""}
                           {full
                             ? " · ราคาเต็ม ยังไม่หักโปร/คอมโบ"
@@ -408,7 +408,7 @@ export function PriceListCart({
                       {viewed.line.item.model}
                     </DialogPrimitive.Title>
                     <p className="text-xs text-muted-foreground">
-                      {viewed.line.item.category} · {contractLabel(viewed.line.item)} · ต่อ 1 เครื่อง
+                      {viewed.line.item.category} · {contractLabel(viewed.line.item, { cycle: true })} · ต่อ 1 เครื่อง
                       {percent > 0 && ` · หักคอมโบ ${percent}% แล้ว`}
                     </p>
                   </div>
@@ -543,7 +543,7 @@ function ContractChips({
               : "border-border bg-white text-foreground hover:bg-secondary",
           )}
         >
-          {contractLabel(o)}
+          {contractLabel(o, { cycle: true })}
           <span className="ml-1 font-normal tabular-nums opacity-80">฿{formatBaht(o.regularPrice)}</span>
         </button>
       ))}

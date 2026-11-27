@@ -142,7 +142,7 @@ export function SelectedBar({
               <div className="min-w-0 flex-1">
                 <p className="break-all font-semibold leading-snug">{item.model}</p>
                 <p className="text-xs text-muted-foreground">
-                  {item.saleType === "Outright" ? "ซื้อขาด" : contractLabel(item)}
+                  {item.saleType === "Outright" ? "ซื้อขาด" : contractLabel(item, { cycle: true })}
                 </p>
               </div>
               <MiniStepper item={item} count={count} onAdd={onAdd} onRemoveItem={onRemoveItem} />
@@ -162,7 +162,7 @@ export function SelectedBar({
             <span className="inline-flex h-8 items-center gap-1 rounded-full border border-primary/30 bg-primary/5 pl-3 pr-0.5 text-xs">
               <span className="max-w-40 truncate font-semibold">{item.model}</span>
               <span className="text-muted-foreground">
-                · {item.saleType === "Outright" ? "ซื้อขาด" : contractLabel(item)}
+                · {item.saleType === "Outright" ? "ซื้อขาด" : contractLabel(item, { cycle: true })}
               </span>
               <MiniStepper item={item} count={count} onAdd={onAdd} onRemoveItem={onRemoveItem} />
             </span>

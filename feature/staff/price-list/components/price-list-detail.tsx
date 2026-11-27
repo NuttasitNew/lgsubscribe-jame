@@ -157,7 +157,7 @@ export function PriceListDetail({
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">
                 {countOf(option.id) > 0
-                  ? `ในรายการ ${countOf(option.id)} เครื่อง (${option.saleType === "Outright" ? "ซื้อขาด" : contractLabel(option)})`
+                  ? `ในรายการ ${countOf(option.id)} เครื่อง (${option.saleType === "Outright" ? "ซื้อขาด" : contractLabel(option, { cycle: true })})`
                   : "ซื้อหลายเครื่อง?"}
               </p>
               {option.saleType === "Outright" ? (

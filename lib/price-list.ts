@@ -376,8 +376,11 @@ export function groupByModel(items: PriceListItem[]): PriceListModel[] {
   return [...models.values()];
 }
 
-/** "5Y_Visit" → "5 ปี · ช่างดูแล", "No Service / 5Y" → "5 ปี · ไม่มีบริการ". */
-export function contractLabel(item: PriceListItem): string {
+/**
+ * "5Y_Visit" → "5 ปี · Visit", "No Service / 5Y" → "5 ปี · No Service".
+ * `cycle` adds the service round ("· ทุก 12 เดือน") — contracts that differ only by it look alike otherwise.
+ */
+export function contractLabel(item: PriceListItem, { cycle = false }: { cycle?: boolean } = {}): string {
   const years = item.contract.match(/(\d+)Y/)?.[1];
   const plan = /Visit/i.test(item.contract)
     ? "Visit"
@@ -386,7 +389,14 @@ export function contractLabel(item: PriceListItem): string {
       : /No\s*Service/i.test(item.contract) || item.serviceCycle === "No Service"
         ? "No Service"
         : "";
-  return [years ? `${years} ปี` : item.contract, plan].filter(Boolean).join(" · ");
+  const round = cycle ? serviceRound(item) : "";
+  return [years ? `${years} ปี` : item.contract, plan, round].filter(Boolean).join(" · ");
+}
+
+/** "ทุกๆ 6เดือน" → "ทุก 6 เดือน"; "" for No Service. */
+function serviceRound(item: PriceListItem): string {
+  const months = item.serviceCycle.match(/(\d+)\s*เดือน/)?.[1];
+  return months ? `ทุก ${months} เดือน` : "";
 }
 
 export function formatBaht(value: number): string {
